@@ -46,10 +46,10 @@ public class SRP6JavascriptServerSession_N1024_SHA256 {
 	/**
 	 * Increments this SRP-6a authentication session to {@link State#STEP_1}.
 	 * 
-	 * @param userID
+	 * @param username
 	 *            The identity 'I' of the authenticating user. Must not be
 	 *            {@code null} or empty.
-	 * @param s
+	 * @param salt
 	 *            The password salt 's'. Must not be {@code null}.
 	 * @param v
 	 *            The password verifier 'v'. Must not be {@code null}.
