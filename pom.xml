@@ -9,23 +9,19 @@
 		<version>7</version>
 	</parent>
 	
-	<groupId>com.nimbusds</groupId>
-	<artifactId>srp6a</artifactId>
-	<version>1.5.0-SNAPSHOT</version>
+	<groupId>org.bitbucket.thinbus</groupId>
+	<artifactId>srp6a-js</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	
-	<name>Nimbus SRP6a</name>
-	<description>Complete Secure Remote Password (SRP-6a) implementation 
-		for Java.
+	<name>Thinbus SRP6a</name>
+	<description>Complete Secure Remote Password (SRP-6a) client session implementation 
+		written in Javascript / EMCAScript with a compatible server implementation 
+		written in Java Nimbus SRP6a .
 	</description>
 
-	<url>https://bitbucket.org/nimbusds/nimbus-srp</url>
+	<url>https://bitbucket.org/simon_massey/thinbus-srp-js</url>
 
-	<organization>
-		<name>NimbusDS</name>
-		<url>http://nimbusds.com/</url>
-	</organization>
-    
 	<licenses>
 		<license>
 			<name>GNU GENERAL PUBLIC LICENSE, Version 2, June 1991</name>
@@ -35,20 +31,12 @@
 	</licenses>
     
 	<scm>
-		<connection>scm:git:https://bitbucket.org/nimbusds/nimbus-srp.git</connection>
-		<developerConnection>scm:git:git@bitbucket.org:nimbusds/nimbus-srp.git</developerConnection>
-		<url>https://bitbucket.org/nimbusds/nimbus-srp.git</url>
+		<connection>scm:git:https://bitbucket.org/simon_massey/thinbus-srp.git</connection>
+		<developerConnection>scm:git:git@bitbucket.org:simon_massey/thinbus-srp.git</developerConnection>
+		<url>https://bitbucket.org/simon_massey/thinbus-srp.git</url>
 		<tag>HEAD</tag>
 	</scm>
     
-	<developers>
-		<developer>
-			<id>vdzhuvinov</id>
-			<name>Vladimir Dzhuvinov</name>
-			<email>vladimir@dzhuvinov.com</email>
-		</developer>
-	</developers>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
