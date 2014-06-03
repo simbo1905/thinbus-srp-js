@@ -1,4 +1,4 @@
-package com.nimbusds.srp6.js;
+package com.bitbucket.thinbus.srp6.js;
 
 import java.math.BigInteger;
 

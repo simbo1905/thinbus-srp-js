@@ -5,23 +5,23 @@ load("src/test/resources/JsUnitUtils.js");
 var test_random16byteHexAdvance = 0;
 
 // import collaborators
-load("src/main/resources/biginteger.js");
-load("src/main/resources/sha256.js");
-load("src/main/resources/isaac.js");
-load("src/main/resources/random.js");
+load("src/main/resources/js/biginteger.js");
+load("src/main/resources/js/sha256.js");
+load("src/main/resources/js/isaac.js");
+load("src/main/resources/js/random.js");
 
 // import script under test
-load("src/main/resources/nimbus-srp6client.js");
+load("src/main/resources/js/thinbus-srp6client.js");
 
 var salt = "132ce4591a29220827c6198169ea4320";
 var username = "tom@arcot.com";
 var password = "password1234";
 
 // we test the javascript client verifier generation against work-alike test java
-var javaMockClient = Packages.com.nimbusds.srp6.js.TestDouble_N1024_SHA256;
+var javaMockClient = Packages.com.bitbucket.thinbus.srp6.js.TestDouble_N1024_SHA256;
 
 // we test against the java session which uses the same string concat hashing as the javascript client
-var javaServerSession = Packages.com.nimbusds.srp6.js.SRP6JavascriptServerSession_N1024_SHA256;
+var javaServerSession = Packages.com.bitbucket.thinbus.srp6.js.SRP6JavascriptServerSession_N1024_SHA256;
 
 function fromHex(h) {
 	return new BigInteger(h, 16);
