@@ -5,7 +5,7 @@ Copyright (c) Simon Massey, 2014
  
 This package provides a Secure Remote Password (SRP-6a) client session implementation 
 for Javascript / EMCAScript in a browser talking to Java on the server to perform a zero 
-knowledge proof of password.The only dependency is nimbusds srp6a. 
+knowledge proof of password. The only deployment dependency is [nimbusds srp6a](https://bitbucket.org/connect2id/nimbus-srp). 
 
 Note that if you build on jdk17 the junit-js tests which test the javascript cryptography takes a 
 very long time. Building with jdk18 is ten times faster. 
