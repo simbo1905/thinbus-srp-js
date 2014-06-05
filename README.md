@@ -10,15 +10,18 @@ knowledge proof of password. The only deployment dependency is the [Nimbus SRP6a
 Note that if you build on jdk17 the junit-js tests which test the javascript cryptography takes a 
 very long time. Building with jdk18 is ten times faster. 
 
-N.B. Code currently depends on the soon to be released 1.5.0 version of Nimbus SRP6a so 
-you have have to git clone then mvn install that locally if you are keen to use this 
+N.B. Code current ```git clone``` then ```mvn install``` that locally if you are keen to use this 
 code today. 
 
 ## Using
 
+See the [junit-js](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with-junit/) test method `testMutualAuthentiation` file `TestSRP6JavascriptClientSession_N1024_SHA256.js` which shows mutual authentication between Java and Javascript.  
+
+There is a SpringMVC demonstration application over at https://bitbucket.org/simon_massey/thinbus-srp-js-demo
+
 The jar srp6a-js-XXXX.jar contains:
 
-  - js/thinbus-srp6a-min.js The all in one Javascript clientwith dependencies. Use this where possible. 
+  - js/thinbus-srp6a-min.js The all in one Javascript client with its dependencies minified. Use this as a preference possible. 
   - com/bitbucket/thinbus/srp6/js/SRP6JavascriptServerSession_N1024_SHA256.class The java class which can interface with the javascript class. 
 
 It is recommended that if you upgrade versions of the jar you *always* extract the js from the jar and place the new file in your webproject: 
@@ -27,8 +30,6 @@ It is recommended that if you upgrade versions of the jar you *always* extract t
 jar vxf srp6a-js-XXXX.jar js/thinbus-srp6a-min.js
 ```
 
-See the test method `testMutualAuthentiation` file `TestSRP6JavascriptClientSession_N1024_SHA256.js` which shows mutual authentication between Java and Javascript.  
-
 Other source files in the jar which show the original copyright of the libraries and the un-minified-algorithm: 
 
   - js/biginteger.js BigInteger math package. 
@@ -36,10 +37,6 @@ Other source files in the jar which show the original copyright of the libraries
   - js/random.js A class which uses window.crypto but will fall-back to using the Isaac generator. 
   - js/sha256.js The Crypto.JS SHA256 hash algorithm. 
   - js/thinbus-srp6client.js The SRP client session
-
-### Demo
-
-There is a SpringMVC demonstration application over at https://bitbucket.org/simon_massey/thinbus-srp-js-demo
 
 ## Build Prerequisites
 
@@ -63,7 +60,7 @@ TODO
 ----
 
 ```
-[] Implement the smaller keysizes as pluggable config
+[] Implement the smaller keysizes as plugable config
 [] Use window.crypo hashing if detected.<br/>
 ```
 
