@@ -10,14 +10,13 @@ knowledge proof of password. The only deployment dependency is the [Nimbus SRP6a
 Note that if you build on jdk17 the junit-js tests which test the javascript cryptography takes a 
 very long time. Building with jdk18 is ten times faster. 
 
-N.B. Code current ```git clone``` then ```mvn install``` that locally if you are keen to use this 
-code today. 
+N.B. Code current code uses Nimbus 1.5.0 which has not yet made it to maven central so you should  ```git clone``` then ```mvn install``` that locally to use this library today. 
 
 ## Using
 
-See the [junit-js](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with-junit/) test method `testMutualAuthentiation` file `TestSRP6JavascriptClientSession_N1024_SHA256.js` which shows mutual authentication between Java and Javascript.  
+See the [junit-js](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with-junit/) test method `testMutualAuthentiation` in the test file `TestSRP6JavascriptClientSession_N1024_SHA256.js` which shows mutual authentication between Java and Javascript.  
 
-There is a SpringMVC demonstration application over at https://bitbucket.org/simon_massey/thinbus-srp-js-demo
+There is a SpringMVC demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo).
 
 The jar srp6a-js-XXXX.jar contains:
 
