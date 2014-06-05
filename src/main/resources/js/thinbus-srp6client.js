@@ -316,7 +316,7 @@ var SRP6JavascriptClientSession_N1024_SHA256 = (function(){
 		//console.log("M2 jsServerM2:" + M2);
 		//console.log("M2 jsClientM2:" + computedM2);
 		
-		if (! computedM2.equals(M2)) {
+		if ( ""+computedM2 != ""+M2) {
 			console.log("server  M2:"+M2+"\ncomputedM2:"+computedM2);
 			throw new Error("SRP6Exception Bad server credentials");
 		}
