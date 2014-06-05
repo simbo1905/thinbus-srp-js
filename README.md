@@ -18,15 +18,24 @@ code today.
 
 The jar srp6a-js-XXXX.jar contains:
 
-  - js/thinbus-srp6a-min.js The all in one client and dependencies. Use this where possible. 
+  - js/thinbus-srp6a-min.js The all in one Javascript clientwith dependencies. Use this where possible. 
+  - com/bitbucket/thinbus/srp6/js/SRP6JavascriptServerSession_N1024_SHA256.class The java class which can interface with the javascript class. 
+
+It is recommended that if you upgrade versions of the jar you *always* extract the js from the jar and place the new file in your webproject: 
+
+```sh
+jar vxf srp6a-js-XXXX.jar js/thinbus-srp6a-min.js
+```
+
+See the test method `testMutualAuthentiation` file `TestSRP6JavascriptClientSession_N1024_SHA256.js` which shows mutual authentication between Java and Javascript.  
+
+Other source files in the jar which show the original copyright of the libraries and the un-minified-algorithm: 
+
   - js/biginteger.js BigInteger math package. 
   - js/isaac.js A random number generator only used if the browser does not have window.crypto secure random number generator. 
   - js/random.js A class which uses window.crypto but will fall-back to using the Isaac generator. 
   - js/sha256.js The Crypto.JS SHA256 hash algorithm. 
   - js/thinbus-srp6client.js The SRP client session
-  - com/bitbucket/thinbus/srp6/js/SRP6JavascriptServerSession_N1024_SHA256.class The java class which can interface with the javascript class. 
-
-See the test method `testMutualAuthentiation` file `TestSRP6JavascriptClientSession_N1024_SHA256.js` which shows mutual authentication between Java and Javascript.  
 
 ### Demo
 
