@@ -20,16 +20,18 @@ There is a SpringMVC demonstration application [thinbus-srp-js-demo](https://bit
 
 The jar srp6a-js-XXXX.jar contains:
 
-  - js/thinbus-srp6a-min.js The all in one Javascript client with its dependencies minified. Use this as a preference possible. 
+  - js/thinbus-srp6a-min.js The all in one Javascript client with its dependencies minified. Use this as a preference where possible. 
   - com/bitbucket/thinbus/srp6/js/SRP6JavascriptServerSession_N1024_SHA256.class The java class which can interface with the javascript class. 
 
-It is recommended that if you upgrade versions of the jar you *always* extract the js from the jar and place the new file in your webproject: 
+It is recommended that if you upgrade versions of the jar you *always* extract the js from the jar and place the javascript in your webproject: 
 
 ```sh
 jar vxf srp6a-js-XXXX.jar js/thinbus-srp6a-min.js
 ```
 
-Other source files in the jar which show the original copyright of the libraries and the un-minified-algorithm: 
+There will be no support for running old js files against newer java files. 
+
+Other source files in the jar which show the original copyright of the libraries and the un-minified client session: 
 
   - js/biginteger.js BigInteger math package. 
   - js/isaac.js A random number generator only used if the browser does not have window.crypto secure random number generator. 
@@ -41,6 +43,8 @@ Other source files in the jar which show the original copyright of the libraries
 
   - Java Platform (JDK 7+) http://www.oracle.com/technetwork/java/javase/downloads/index.html
   - Maven2 http://www.scala-sbt.org/release/docs/Getting-Started/Setup.html#installing-sbt
+
+It is highly recommended that you build with JDK1.8 or higher as the javascript testing is 10x faster than JDK1.7. 
 
 ## Building
 
