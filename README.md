@@ -3,8 +3,8 @@
 
 Copyright (c) Simon Massey, 2014
  
-This package provides a Secure Remote Password (SRP-6a) client session implementation 
-for Javascript / EMCAScript in a browser talking to Java on the server to perform a zero 
+This package provides a [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) 
+client implementation for Javascript / EMCAScript in a browser talking to a Java server implementation to perform a zero 
 knowledge proof of password. The only deployment dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
 There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written with SpringMVC. The demo is routinely tested with Firefox, Chrome, Safari and with an iPad. 
@@ -20,7 +20,7 @@ See the [junit-js](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with
 
 The jar srp6a-js-XXXX.jar contains:
 
-  - **js/thinbus-srp6a-min.js** The all in one Javascript libraries with all dependencies minified. Use this as a preference where possible.
+  - **js/thinbus-srp6a-min.js** The all in one Javascript libraries with all dependencies minified. 
   - **js/thinbus-srp6a-config-sha256n1024.js** An example of a configuration which uses SHA-256 hashing and a 1024 bit prime number. 
   - **com/bitbucket/thinbus/srp6/js/SRP6JavascriptServerSessionSHA256.class** The java class which can interface with the javascript class. 
 
@@ -35,17 +35,6 @@ jar vxf srp6a-js-XXXX.jar js/thinbus-srp6a-min.js
 ```
 
 There will be no support for running old js files against newer java files. 
-
-## Code
-
-Other JavaScript source files in the jar show the original copyright of the libraries and the un-minified client session: 
-
-  - js/biginteger.js BigInteger math package. 
-  - js/isaac.js A random number generator only used if the browser does not have window.crypto secure random number generator. 
-  - js/random.js A random number class which tries to use window.crypto or window.msCrypto random numbers else fall-backs to Isaac generator. 
-  - js/sha256.js The Crypto.JS SHA256 hash algorithm. 
-  - js/sha1.js The Crypto.JS SHA1 hash algorithm.   
-  - js/thinbus-srp6client.js The SRP client session
 
 ## Build Prerequisites
 
@@ -89,6 +78,17 @@ k base16: 1a3d1769e1d6337...
 ```
 
 Configure the Java session class of the correct hash with {N, g} and configure the Javascript session with {N, g, k}. 
+
+## Javascript Code
+
+Other JavaScript source files in the jar show the original copyright of the libraries and the un-minified client session: 
+
+  - **js/biginteger.js** BigInteger math package. 
+  - **js/isaac.js** A random number generator only used if the browser does not have window.crypto secure random number generator. 
+  - **js/random.js** A random number class which tries to use window.crypto or window.msCrypto random numbers else fall-backs to Isaac generator. 
+  - **js/sha256.js** The Crypto.JS SHA256 hash algorithm. 
+  - **js/sha1.js** The Crypto.JS SHA1 hash algorithm.   
+  - **js/thinbus-srp6client.js** The SRP client session
 
 ## License
 
