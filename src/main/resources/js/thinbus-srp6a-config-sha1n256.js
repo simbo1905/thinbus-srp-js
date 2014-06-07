@@ -16,8 +16,13 @@ On the server use the matching java class:
 
 	com.nimbusds.srp6.js.SRP6JavascriptServerSession_N256_SHA1
 	
-Running that class as a main outputs the constants. Note that 'k' 
-is the output of the servers hashing approach hex string. 
+Running that class as a main outputs the constants:
+
+	g: 2
+	N: 125617018995153554710546479714086468244499594888726646874671447258204721048803
+	k: dbe5dfe0704fee4c85ff106ecd38117d33bcfe50
+
+Note that 'k' is the output of the servers hashing approach hex string: 
 */
 
 function SRP6JavascriptClientSession_N256_SHA1(){ }
@@ -25,7 +30,7 @@ function SRP6JavascriptClientSession_N256_SHA1(){ }
 SRP6JavascriptClientSession_N256_SHA1.prototype = new SRP6JavascriptClientSession();
 
 SRP6JavascriptClientSession_N256_SHA1.prototype.N = function() {
-	return new BigInteger("115b8b692e0e045692cf280b436735c77a5a9e8a9e7ed56c965f87db5b2a2ece3", 16);
+	return new BigInteger("125617018995153554710546479714086468244499594888726646874671447258204721048803", 10);
 }
 
 SRP6JavascriptClientSession_N256_SHA1.prototype.g = function() {
@@ -37,3 +42,4 @@ SRP6JavascriptClientSession_N256_SHA1.prototype.H = function (x) {
 }
 
 SRP6JavascriptClientSession_N256_SHA1.prototype.k = this.fromHex("dbe5dfe0704fee4c85ff106ecd38117d33bcfe50");
+

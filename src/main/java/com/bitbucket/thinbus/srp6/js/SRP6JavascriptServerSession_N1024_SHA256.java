@@ -66,8 +66,8 @@ public class SRP6JavascriptServerSession_N1024_SHA256 implements SRP6JavascriptS
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println(String.format("g: %s", config.g.toString(16)));
-		System.out.println(String.format("N: %s", config.N.toString(16)));
+		System.out.println(String.format("g: %s", config.g.toString(10)));
+		System.out.println(String.format("N: %s", config.N.toString(10)));
 		System.out.println(String.format("k: %s", k));
 	}
 
