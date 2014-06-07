@@ -23,11 +23,11 @@ import com.nimbusds.srp6.URoutine;
  * 
  * @author Simon Massey
  */
-public class SRP6JavascriptServerSession_N256_SHA1 implements SRP6JavascriptServerSession {
+public class SRP6JavascriptServerSession_N1024_SHA1 implements SRP6JavascriptServerSession {
 
 	public static int HASH_HEX_LENGTH = 64;
 
-	public static SRP6CryptoParams config = SRP6CryptoParams.getInstance(256, "SHA-1");
+	public static SRP6CryptoParams config = SRP6CryptoParams.getInstance(1024, "SHA-1");
 
 	protected SRP6ServerSession session = new SRP6ServerSession(config);
 
@@ -35,7 +35,7 @@ public class SRP6JavascriptServerSession_N256_SHA1 implements SRP6JavascriptServ
 	protected final ClientEvidenceRoutine hexStringHashedclientEvidenceRoutine = new HexHashedClientEvidenceRoutine();
 	protected final ServerEvidenceRoutine hexStringHashedServerEvidenceRoutine = new HexHashedServerEvidenceRoutine();
 
-	public SRP6JavascriptServerSession_N256_SHA1() {
+	public SRP6JavascriptServerSession_N1024_SHA1() {
 		session.setHashedKeysRoutine(hexStringHashedKeysRoutine);
 		session.setClientEvidenceRoutine(hexStringHashedclientEvidenceRoutine);
 		session.setServerEvidenceRoutine(hexStringHashedServerEvidenceRoutine);

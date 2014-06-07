@@ -6,24 +6,21 @@ var test_random16byteHexAdvance = 0;
 
 // import collaborators
 load("src/main/resources/js/biginteger.js");
-load("src/main/resources/js/sha256.js");
+//load("src/main/resources/js/sha256.js");
 load("src/main/resources/js/sha1.js");
 load("src/main/resources/js/isaac.js");
 load("src/main/resources/js/random.js");
 load("src/main/resources/js/thinbus-srp6client.js");
 
 // import script under test
-load("src/main/resources/js/thinbus-srp6a-config-sha1n256.js");
+load("src/main/resources/js/thinbus-srp6a-config-sha1n1024.js");
 
 var salt = "132ce4591a29220827c6198169ea4320";
 var username = "tom@arcot.com";
 var password = "password1234";
 
-// we test the javascript client verifier generation against work-alike test java
-var javaMockClient = Packages.com.bitbucket.thinbus.srp6.js.TestDouble_N256_SHA1;
-
 // we test against the java session which uses the same string concat hashing as the javascript client
-var javaServerSession = Packages.com.bitbucket.thinbus.srp6.js.SRP6JavascriptServerSession_N256_SHA1;
+var javaServerSession = Packages.com.bitbucket.thinbus.srp6.js.SRP6JavascriptServerSession_N1024_SHA1;
 
 function fromHex(h) {
 	return new BigInteger(h, 16);
@@ -32,7 +29,7 @@ function fromHex(h) {
 tests({
 
 	saltSanityCheck: function() {
-		var jsClientSession = new SRP6JavascriptClientSession_N256_SHA1();
+		var jsClientSession = new SRP6JavascriptClientSession_N1024_SHA1();
 		var randoms = [];
 		for( var i = 0; i < 10; i++ ) {
 			var r = jsClientSession.generateRandomSalt();
@@ -47,7 +44,7 @@ tests({
 	}, 
 	
 	testVerifierInputs: function() {
-		var jsClientSession = new SRP6JavascriptClientSession_N256_SHA1();
+		var jsClientSession = new SRP6JavascriptClientSession_N1024_SHA1();
 		try {
 			jsClientSession.generateVerifier(null, username, password);
 			fail();
@@ -91,7 +88,7 @@ tests({
 	*/
 	testMutualAuthentiation: function() {
 	
-		var client = new SRP6JavascriptClientSession_N256_SHA1();
+		var client = new SRP6JavascriptClientSession_N1024_SHA1();
 		
 		var v = client.generateVerifier(salt, username, password);
 		client.step1(username,password);

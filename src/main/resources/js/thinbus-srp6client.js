@@ -198,7 +198,7 @@ SRP6JavascriptClientSession.prototype.step1 = function(identity, password) {
 SRP6JavascriptClientSession.prototype.computeU = function(Astr, Bstr) {
  	this.check(Astr);
  	this.check(Bstr);
-	var output = CryptoJS.SHA256(Astr+Bstr);
+	var output = this.H(Astr+Bstr);
 	//console.log("jshashAB:"+output);
 	return new BigInteger(""+output,16);
 }
@@ -258,7 +258,7 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	
 	var AA = this.toHex(this.A);
 	
-	//console.log("jsABS:" + AA+BB+toHex(S));
+	//console.log("jsABS:" + AA+BB+this.toHex(this.S));
 	
 	this.M1str = this.H(AA+BB+this.toHex(this.S));
 	
@@ -266,8 +266,8 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	
 	//console.log("M1 js A:" + AA);
 	//console.log("M1 js B:" + BB);
-	//console.log("M1 js S:" + toHex(S));
-	//console.log("M1 jsM1:" + M1str);
+	//console.log("M1 js S:" + this.toHex(this.S));
+	//console.log("M1 jsM1:" + this.M1str);
 	
 	this.state = this.STEP_2;
 	return { A: AA, M1: this.M1str };
