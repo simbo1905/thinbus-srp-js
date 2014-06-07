@@ -173,6 +173,7 @@
 						<manifest>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							<mainClass>com.bitbucket.thinbus.srp6.js.OpenSSLCryptoConfig</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

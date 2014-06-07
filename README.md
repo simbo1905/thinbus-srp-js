@@ -54,16 +54,23 @@ cd thinbus-srp-js
 mvn package
 ```
 
-License
-----
+## Custom Parameters
+
+You can use openssl to create your own crypo parmeters. This is highly recommended. 
+
+```sh
+openssl dhparam -text 1024 | tee /tmp/my_key.txt
+java -jar srp6a-js-XXXX.jar /tmp/my_key.txt
+```
+
+
+## License
 
 GNU GENERAL PUBLIC LICENSE Version 2, June 1991
 
-TODO
-----
+### TODO
 
 ```
-[] Implement the smaller keysizes as plugable config
 [] Use window.crypo hashing if detected.<br/>
 ```
 
