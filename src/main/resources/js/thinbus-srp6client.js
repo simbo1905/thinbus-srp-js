@@ -258,12 +258,11 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	
 	var AA = this.toHex(this.A);
 	
-	//console.log("jsABS:" + AA+BB+this.toHex(this.S));
-	
 	this.M1str = this.H(AA+BB+this.toHex(this.S));
 	
 	//console.log("M1str:" + this.M1str);
 	
+	//console.log("jsABS:" + AA+BB+this.toHex(this.S));
 	//console.log("M1 js A:" + AA);
 	//console.log("M1 js B:" + BB);
 	//console.log("M1 js S:" + this.toHex(this.S));

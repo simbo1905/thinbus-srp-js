@@ -6,7 +6,6 @@ var test_random16byteHexAdvance = 0;
 
 // import collaborators
 load("src/main/resources/js/biginteger.js");
-//load("src/main/resources/js/sha256.js");
 load("src/main/resources/js/sha1.js");
 load("src/main/resources/js/isaac.js");
 load("src/main/resources/js/random.js");
@@ -28,60 +27,14 @@ function fromHex(h) {
 
 tests({
 
-	saltSanityCheck: function() {
-		var jsClientSession = new SRP6JavascriptClientSession_N1024_SHA1();
-		var randoms = [];
-		for( var i = 0; i < 10; i++ ) {
-			var r = jsClientSession.generateRandomSalt();
-			//console.log(r);
-			assert.assertTrue(r.length > 0);
-			randoms.push(r);
-			for( var j = i - 1; j - 1 > 0; j-- ) {
-				var other = randoms[j];
-				assert.assertTrue(r != other); 
-			}
-		}
+	sanityCheckSha1Hash: function() {
+		var input = "caebd81efad6debf9cd6128dffd66c6ad07666ce09d518c60c5ebf4fcb042b07462e390d7b52d2a4c32d2cba568a2c56b0ab919c9f4f7c79518073fabd8bd345d761c7655d227f8685ac9c065ab86929978fda40b95f5655bfdb436a75292364";
+		var expected = "01e62322acba5b3ede64b4293fcd1a5bcd3a500c";
+		var actual = CryptoJS.SHA1(input);
+		assert.assertEquals(""+expected, ""+actual);
 	}, 
 	
-	testVerifierInputs: function() {
-		var jsClientSession = new SRP6JavascriptClientSession_N1024_SHA1();
-		try {
-			jsClientSession.generateVerifier(null, username, password);
-			fail();
-		} catch(e){}
-		try {
-			jsClientSession.generateVerifier(salt, null, password);
-			fail();
-		} catch(e){}		 
-		try {
-			jsClientSession.generateVerifier(salt, username, null);
-			fail();
-		} catch(e){}	
-		try {
-			jsClientSession.generateVerifier("", username, password);
-			fail();
-		} catch(e){}
-		try {
-			jsClientSession.generateVerifier(salt, "", password);
-			fail();
-		} catch(e){}		 
-		try {
-			jsClientSession.generateVerifier(salt, username, "");
-			fail();
-		} catch(e){}			
-		try {
-			jsClientSession.generateVerifier(salt, username);
-			fail();
-		} catch(e){}
-		try {
-			jsClientSession.generateVerifier(salt);
-			fail();
-		} catch(e){}		 
-		try {
-			jsClientSession.generateVerifier();
-			fail();
-		} catch(e){}					
-	},
+
 	
 	/**
 	Tests the full flow between the Javascript Client Session and the Java Server Session
