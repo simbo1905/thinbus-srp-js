@@ -50,14 +50,6 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- bouncy castle jce for hash algorithms better than SHA256 which is 
-			the best supported by jdk7 & jdk8 -->
-		<dependency>
-			<groupId>bouncycastle</groupId>
-			<artifactId>bcprov-jdk16</artifactId>
-			<version>140</version>
-		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
