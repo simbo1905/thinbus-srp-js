@@ -25,7 +25,11 @@ import com.nimbusds.srp6.URoutine;
  */
 public class SRP6JavascriptServerSession_N1024_SHA1 implements SRP6JavascriptServerSession {
 
-	public static int HASH_HEX_LENGTH = 64;
+	/**
+	 * This must match the expected character length of the sepecified algorithm
+	 * i.e. SHA-1 is 40
+	 */
+	public static int HASH_HEX_LENGTH = 40;
 
 	public static SRP6CryptoParams config = SRP6CryptoParams.getInstance(1024, "SHA-1");
 
@@ -69,6 +73,15 @@ public class SRP6JavascriptServerSession_N1024_SHA1 implements SRP6JavascriptSer
 		System.out.println(String.format("g: %s", config.g.toString(10)));
 		System.out.println(String.format("N: %s", config.N.toString(10)));
 		System.out.println(String.format("k: %s", k));
+
+		BigInteger value = HexHashedRoutines
+				.hashValues(
+						config.getMessageDigestInstance(),
+						"caebd81efad6debf9cd6128dffd66c6ad07666ce09d518c60c5ebf4fcb042b07462e390d7b52d2a4c32d2cba568a2c56b0ab919c9f4f7c79518073fabd8bd345d761c7655d227f8685ac9c065ab86929978fda40b95f5655bfdb436a75292364");
+
+		String raw = value.toString(16);
+
+		System.out.println("value: " + HexHashedRoutines.leadingZerosPad(raw, HASH_HEX_LENGTH));
 	}
 
 	@Override

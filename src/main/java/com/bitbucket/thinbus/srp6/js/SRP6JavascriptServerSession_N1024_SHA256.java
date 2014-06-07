@@ -25,6 +25,10 @@ import com.nimbusds.srp6.URoutine;
  */
 public class SRP6JavascriptServerSession_N1024_SHA256 implements SRP6JavascriptServerSession {
 
+	/**
+	 * This must match the expected character length of the sepecified algorithm
+	 * i.e. SHA-256 is 64
+	 */
 	public static int HASH_HEX_LENGTH = 64;
 
 	public static SRP6CryptoParams config = SRP6CryptoParams.getInstance(1024, "SHA-256");
