@@ -24,7 +24,7 @@ The jar srp6a-js-XXXX.jar contains:
   - **js/thinbus-srp6a-config-sha256n1024.js** An example of a configuration which uses SHA-256 hashing and a 1024 bit prime number. 
   - **com/bitbucket/thinbus/srp6/js/SRP6JavascriptServerSessionSHA256.class** The java class which can interface with the javascript class. 
 
-There is also an example showing the SHA-1 algorithm. Java 1.7+ supports md5, sha1 and sha256 by default and it is recommended that use use sha256 (or better if you can configure a custom JCA).   
+There is also an example showing the SHA-1 algorithm. Java 1.7+ supports MD5, SHA1 and SHA-256 by default and it is recommended that you use SHA-256 (or better if you can configure a custom JCA).   
 
 It is also recommended that you generate your own large prime number using the instructions below and configure both the Java and JavaScript to use this value. 
 
