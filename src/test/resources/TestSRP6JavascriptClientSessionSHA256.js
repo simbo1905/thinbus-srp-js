@@ -23,7 +23,7 @@ var password = "password1234";
 var javaMockClient = Packages.com.bitbucket.thinbus.srp6.js.TestDouble_N1024_SHA256;
 
 // we test against the java session which uses the same string concat hashing as the javascript client
-var javaServerSession = Packages.com.bitbucket.thinbus.srp6.js.SRP6JavascriptServerSession_N1024_SHA256;
+var javaServerSession = Packages.com.bitbucket.thinbus.srp6.js.SRP6JavascriptServerSessionSHA256;
 
 function fromHex(h) {
 	return new BigInteger(h, 16);
@@ -32,7 +32,7 @@ function fromHex(h) {
 tests({
 
 	saltSanityCheck: function() {
-		var jsClientSession = new SRP6JavascriptClientSession_N1024_SHA256();
+		var jsClientSession = new SRP6JavascriptClientSessionSHA256();
 		var randoms = [];
 		for( var i = 0; i < 10; i++ ) {
 			var r = jsClientSession.generateRandomSalt();
@@ -47,7 +47,7 @@ tests({
 	}, 
 	
 	testVerifierInputs: function() {
-		var jsClientSession = new SRP6JavascriptClientSession_N1024_SHA256();
+		var jsClientSession = new SRP6JavascriptClientSessionSHA256();
 		try {
 			jsClientSession.generateVerifier(null, username, password);
 			fail();
@@ -91,7 +91,7 @@ tests({
 	*/
 	testMutualAuthentiation: function() {
 	
-		var client = new SRP6JavascriptClientSession_N1024_SHA256();
+		var client = new SRP6JavascriptClientSessionSHA256();
 		
 		var v = client.generateVerifier(salt, username, password);
 		client.step1(username,password);

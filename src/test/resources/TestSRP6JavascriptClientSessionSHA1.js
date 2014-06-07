@@ -19,29 +19,20 @@ var username = "tom@arcot.com";
 var password = "password1234";
 
 // we test against the java session which uses the same string concat hashing as the javascript client
-var javaServerSession = Packages.com.bitbucket.thinbus.srp6.js.SRP6JavascriptServerSession_N1024_SHA1;
+var javaServerSession = Packages.com.bitbucket.thinbus.srp6.js.SRP6JavascriptServerSessionSHA1;
 
 function fromHex(h) {
 	return new BigInteger(h, 16);
 }
 
 tests({
-
-	sanityCheckSha1Hash: function() {
-		var input = "caebd81efad6debf9cd6128dffd66c6ad07666ce09d518c60c5ebf4fcb042b07462e390d7b52d2a4c32d2cba568a2c56b0ab919c9f4f7c79518073fabd8bd345d761c7655d227f8685ac9c065ab86929978fda40b95f5655bfdb436a75292364";
-		var expected = "01e62322acba5b3ede64b4293fcd1a5bcd3a500c";
-		var actual = CryptoJS.SHA1(input);
-		assert.assertEquals(""+expected, ""+actual);
-	}, 
-	
-
 	
 	/**
 	Tests the full flow between the Javascript Client Session and the Java Server Session
 	*/
 	testMutualAuthentiation: function() {
 	
-		var client = new SRP6JavascriptClientSession_N1024_SHA1();
+		var client = new SRP6JavascriptClientSessionSHA1();
 		
 		var v = client.generateVerifier(salt, username, password);
 		client.step1(username,password);

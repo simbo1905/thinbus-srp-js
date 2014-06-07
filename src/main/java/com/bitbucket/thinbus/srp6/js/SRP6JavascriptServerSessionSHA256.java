@@ -5,12 +5,9 @@ import static com.nimbusds.srp6.BigIntegerUtils.toHex;
 
 import java.math.BigInteger;
 
-import com.nimbusds.srp6.ClientEvidenceRoutine;
 import com.nimbusds.srp6.SRP6CryptoParams;
 import com.nimbusds.srp6.SRP6Routines;
 import com.nimbusds.srp6.SRP6ServerSession;
-import com.nimbusds.srp6.ServerEvidenceRoutine;
-import com.nimbusds.srp6.URoutine;
 
 /**
  * Wrapper of a server session matching the Javascript client session
@@ -23,28 +20,33 @@ import com.nimbusds.srp6.URoutine;
  * 
  * @author Simon Massey
  */
-public class SRP6JavascriptServerSession_N1024_SHA256 implements SRP6JavascriptServerSession {
+public class SRP6JavascriptServerSessionSHA256 implements SRP6JavascriptServerSession {
 
 	/**
-	 * This must match the expected character length of the sepecified algorithm
+	 * This must match the expected character length of the specified algorithm
 	 * i.e. SHA-256 is 64
 	 */
 	public static int HASH_HEX_LENGTH = 64;
 
-	public static SRP6CryptoParams config = SRP6CryptoParams.getInstance(1024, "SHA-256");
+	public final BigInteger N;
+	public final BigInteger g;
+	protected final SRP6CryptoParams config;
+	protected final SRP6ServerSession session;
 
-	protected SRP6ServerSession session = new SRP6ServerSession(config);
-
-	protected final URoutine hexStringHashedKeysRoutine = new HexHashedURoutine();
-	protected final ClientEvidenceRoutine hexStringHashedclientEvidenceRoutine = new HexHashedClientEvidenceRoutine();
-	protected final ServerEvidenceRoutine hexStringHashedServerEvidenceRoutine = new HexHashedServerEvidenceRoutine();
-
-	public SRP6JavascriptServerSession_N1024_SHA256() {
-		session.setHashedKeysRoutine(hexStringHashedKeysRoutine);
-		session.setClientEvidenceRoutine(hexStringHashedclientEvidenceRoutine);
-		session.setServerEvidenceRoutine(hexStringHashedServerEvidenceRoutine);
+	public SRP6JavascriptServerSessionSHA256(String NN, String gg) {
+		N = new BigInteger(NN, 10);
+		g = new BigInteger(gg, 10);
+		config = new SRP6CryptoParams(N, g, "SHA-256");
+		session = new SRP6ServerSession(config);
+		session.setHashedKeysRoutine(new HexHashedURoutine());
+		session.setClientEvidenceRoutine(new HexHashedClientEvidenceRoutine());
+		session.setServerEvidenceRoutine(new HexHashedServerEvidenceRoutine());
 	}
 
+	// some defaults
+	public SRP6JavascriptServerSessionSHA256() {
+		this(defaultN, defaultg);
+	}
 
 	public String step1(final String username, final String salt, final String v) {
 		BigInteger B = session.step1(username, fromHex(salt), fromHex(v));
@@ -62,7 +64,18 @@ public class SRP6JavascriptServerSession_N1024_SHA256 implements SRP6JavascriptS
 	 * k is actually fixed and done with hash padding routine so passed from the
 	 * server than recomputed in every javascript client.
 	 */
-	public static String k = toHex(SRP6Routines.computeK(config.getMessageDigestInstance(), config.N, config.g));
+	public String k() {
+		return toHex(SRP6Routines.computeK(config.getMessageDigestInstance(), config.N, config.g));
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(String.format("g: %s\n", config.g.toString(10)));
+		builder.append(String.format("N: %s\n", config.N.toString(10)));
+		builder.append(String.format("k: %s\n", k()));
+		return builder.toString();
+	}
 
 	/**
 	 * Outputs config for the client scripts.
@@ -70,9 +83,7 @@ public class SRP6JavascriptServerSession_N1024_SHA256 implements SRP6JavascriptS
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println(String.format("g: %s", config.g.toString(10)));
-		System.out.println(String.format("N: %s", config.N.toString(10)));
-		System.out.println(String.format("k: %s", k));
+		System.out.println(new SRP6JavascriptServerSessionSHA256());
 	}
 
 	@Override

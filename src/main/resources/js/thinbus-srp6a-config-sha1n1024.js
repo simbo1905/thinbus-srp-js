@@ -14,28 +14,28 @@ Here we subclass and add the H, N and g for 1024 with SHA1.
 
 On the server use the matching java class: 
 
-	com.nimbusds.srp6.js.SRP6JavascriptServerSession_N1024_SHA1
+	com.nimbusds.srp6.js.SRP6JavascriptServerSessionSHA1
 	
 Running that class as a main outputs the constants. 
 
 Note that 'k' is the output of the servers hashing approach as hex string.  
 */
 
-function SRP6JavascriptClientSession_N1024_SHA1(){ }
+function SRP6JavascriptClientSessionSHA1(){ }
 
-SRP6JavascriptClientSession_N1024_SHA1.prototype = new SRP6JavascriptClientSession();
+SRP6JavascriptClientSessionSHA1.prototype = new SRP6JavascriptClientSession();
 
-SRP6JavascriptClientSession_N1024_SHA1.prototype.N = function() {
-	return new BigInteger("167609434410335061345139523764350090260135525329813904557420930309800865859473551531551523800013916573891864789934747039010546328480848979516637673776605610374669426214776197828492691384519453218253702788022233205683635831626913357154941914129985489522629902540768368409482248290641036967659389658897350067939", 10);
+SRP6JavascriptClientSessionSHA1.prototype.N = function() {
+	return new BigInteger("19502997308733555461855666625958719160994364695757801883048536560804281608617712589335141535572898798222757219122180598766018632900275026915053180353164617230434226106273953899391119864257302295174320915476500215995601482640160424279800690785793808960633891416021244925484141974964367107", 10);
 }
 
-SRP6JavascriptClientSession_N1024_SHA1.prototype.g = function() {
+SRP6JavascriptClientSessionSHA1.prototype.g = function() {
 	return new BigInteger("2", 10);
 }
 
-SRP6JavascriptClientSession_N1024_SHA1.prototype.H = function (x) {
+SRP6JavascriptClientSessionSHA1.prototype.H = function (x) {
 		return CryptoJS.SHA1(x).toString().toLowerCase();
 }
 
-SRP6JavascriptClientSession_N1024_SHA1.prototype.k = new BigInteger("7556aa045aef2cdd07abaf0f665c3e818913186f", 16);
+SRP6JavascriptClientSessionSHA1.prototype.k = new BigInteger("8d7c38a15a345fc1285b7b5a9e704e0587329ed8", 16);
 

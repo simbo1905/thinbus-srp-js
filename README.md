@@ -54,15 +54,33 @@ cd thinbus-srp-js
 mvn package
 ```
 
-## Custom Parameters
+## How To Use Custom Parameters N and g
 
 You can use openssl to create your own crypo parmeters. This is highly recommended. 
 
 ```sh
-openssl dhparam -text 1024 | tee /tmp/my_key.txt
-java -jar srp6a-js-XXXX.jar /tmp/my_key.txt
+# create your parameters set <bit-length> (use a minimum of 1024 bits)
+openssl dhparam -text <bit-length> | tee /tmp/my_key.txt
+
+# build the runnable jar 
+mvn assembly:assembly
+
+# run the jar of version <version> and set <hash> to the name of the algorithm e.g. SHA-256
+java -jar target/srp6a-js-<version>-jar-with-dependencies.jar /tmp/my_key.txt <hash>
 ```
 
+This will output something like: 
+
+```
+bits:1024
+hashing to create 'k' using SHA-256
+computing
+N base10: 19502997308733555461855666625958719160994364695757801883048536560804281608617712589335141535572898798222757219122180598766018632900275026915053180353164617230434226106273953899391119864257302295174320915476500215995601482640160424279800690785793808960633891416021244925484141974964367107
+g base10:2
+k base16:1a3d1769e1d6337af78796f1802f9b14fbc20278fb6e15e4361beb38a8e7cd3a
+```
+
+Configure the Java session class of the correct hash with {N, g} and configure the Javascript session with {N, g, k}. 
 
 ## License
 

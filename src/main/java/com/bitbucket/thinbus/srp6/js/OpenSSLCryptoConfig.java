@@ -1,11 +1,15 @@
 package com.bitbucket.thinbus.srp6.js;
 
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.nimbusds.srp6.SRP6Routines;
 
 public class OpenSSLCryptoConfig {
 	public static void main(String[] args) throws Exception {
@@ -49,8 +53,19 @@ public class OpenSSLCryptoConfig {
 		String primeHex = hexparts.toString().replace(":", "");
 
 		System.out.println("bits:" + bits);
-		System.out.println("g:" + generator);
-		System.out.println("N:" + primeHex);
+
+		BigInteger N = new BigInteger(primeHex, 16);
+		BigInteger g = new BigInteger(generator + "");
+
+		System.out.println("hashing to create 'k' using " + args[1]);
+
+		MessageDigest digest = MessageDigest.getInstance(args[1]);
+		BigInteger k = SRP6Routines.computeK(digest, N, g);
+
+		System.out.println("computing");
+		System.out.println("N base10: " + N.toString(10));
+		System.out.println("g base10:" + g.toString(10));
+		System.out.println("k base16:" + k.toString(16));
 	}
 
 	static Pattern generatorPattern = Pattern.compile(".*generator: (\\d*) \\(.*");
