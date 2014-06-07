@@ -10,9 +10,10 @@ load("src/main/resources/js/sha256.js");
 load("src/main/resources/js/sha1.js");
 load("src/main/resources/js/isaac.js");
 load("src/main/resources/js/random.js");
+load("src/main/resources/js/thinbus-srp6client.js");
 
 // import script under test
-load("src/main/resources/js/thinbus-srp6client.js");
+load("src/main/resources/js/thinbus-srp6a-config-sha1n256.js");
 
 var salt = "132ce4591a29220827c6198169ea4320";
 var username = "tom@arcot.com";
@@ -84,33 +85,6 @@ tests({
 			fail();
 		} catch(e){}					
 	},
-	
-	/**
-	Here check the js verifier code against a java work-alike and sanity check both 
-	have same size hex output as the original nimbus routine. 
-	verifierTest: function() {
-		var javaClientSession = new javaMockClient();
-		var jsClientSession = new SRP6JavascriptClientSession_N256_SHA1();
-
-		// main nimbus client version
-		var javaV = ""+javaClientSession.generateVerifier(salt, username, password);
-		//console.log("javaV:"+javaV);
-
-		// js nimbus client version
-		var jsV = jsClientSession.generateVerifier(salt, username, password);
-		//console.log("jsV  :"+javaV);
-
-		// check that they are same order of magnitude hex		
-		jsAssert.assertIntegerEquals(javaV.length, jsV.length);
-		
-		// actual java work-alike of string concat hash routine in javascript
-		var javaV2 = javaClientSession.generateVerifierJavascriptAlgorithm(salt, username, password);
-		//console.log("javaV2:"+javaV2);
-		
-		// assert that the javascript verifier values is matches the java work-alike 
-		assert.assertEquals(javaV2, jsV);
-	}, 
-    */
 	
 	/**
 	Tests the full flow between the Javascript Client Session and the Java Server Session
