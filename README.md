@@ -77,7 +77,7 @@ g base10: 2
 k base16: 1a3d1769e1d6337...
 ```
 
-Configure the Java session class of the correct hash with {N, g} and configure the Javascript session with {N, g, k}. 
+Configure the Java session class with the correct {N, g} and configure the Javascript session with {N, g, k}. 
 
 ## Javascript Code
 
