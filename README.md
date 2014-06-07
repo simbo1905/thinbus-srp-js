@@ -7,16 +7,16 @@ This package provides a Secure Remote Password (SRP-6a) client session implement
 for Javascript / EMCAScript in a browser talking to Java on the server to perform a zero 
 knowledge proof of password. The only deployment dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
+There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written with SpringMVC. The demo is routinely tested with Firefox, Chrome, Safari and with an iPad. 
+
 Note that if you build on jdk17 the junit-js tests which test the javascript cryptography takes a 
 very long time. Building with jdk18 is ten times faster. 
 
-N.B. Code current code uses Nimbus 1.5.0-SNAPSHOT which has not yet made it to maven central so you should  `git clone` then `mvn install` that locally to use this library today. 
+Code current code uses Nimbus 1.5.0-SNAPSHOT which has not yet made it to maven central so you should  `git clone` then `mvn install` that locally to use this library today. 
 
 ## Using
 
 See the [junit-js](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with-junit/) test method `testMutualAuthentiation` in the test file `TestSRP6JavascriptClientSessionSHA256.js` which shows mutual authentication between Java and Javascript.  
-
-There is a SpringMVC demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). The demo is routinely tested with Firefox, Chrome, Safari and with an iPad. 
 
 The jar srp6a-js-XXXX.jar contains:
 
@@ -24,7 +24,7 @@ The jar srp6a-js-XXXX.jar contains:
   - **js/thinbus-srp6a-config-sha256n1024.js** An example of a configuration which uses SHA-256 hashing and a 1024 bit prime number. 
   - **com/bitbucket/thinbus/srp6/js/SRP6JavascriptServerSessionSHA256.class** The java class which can interface with the javascript class. 
 
-There is also an example showing the SHA-1 algorithm. As Java 1.8 supports md4, sha1 and sha256 by default it is recommended that use use sh256 of better. 
+There is also an example showing the SHA-1 algorithm. Java 1.7+ supports md4, sha1 and sha256 by default it is recommended that use use sha256 (or better).   
 
 It is also recommended that you generate your own large prime number using the instructions below and configure both the Java and JavaScript to use this value. 
 
@@ -36,11 +36,13 @@ jar vxf srp6a-js-XXXX.jar js/thinbus-srp6a-min.js
 
 There will be no support for running old js files against newer java files. 
 
-Other source files in the jar which show the original copyright of the libraries and the un-minified client session: 
+## Code
+
+Other JavaScript source files in the jar show the original copyright of the libraries and the un-minified client session: 
 
   - js/biginteger.js BigInteger math package. 
   - js/isaac.js A random number generator only used if the browser does not have window.crypto secure random number generator. 
-  - js/random.js A class which uses window.crypto but will fall-back to using the Isaac generator. 
+  - js/random.js A random number class which tries to use window.crypto or window.msCrypto random numbers else fall-backs to Isaac generator. 
   - js/sha256.js The Crypto.JS SHA256 hash algorithm. 
   - js/sha1.js The Crypto.JS SHA1 hash algorithm.   
   - js/thinbus-srp6client.js The SRP client session
