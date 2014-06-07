@@ -16,7 +16,7 @@ N.B. Code current code uses Nimbus 1.5.0 which has not yet made it to maven cent
 
 See the [junit-js](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with-junit/) test method `testMutualAuthentiation` in the test file `TestSRP6JavascriptClientSessionSHA256.js` which shows mutual authentication between Java and Javascript.  
 
-There is a SpringMVC demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo).
+There is a SpringMVC demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). The demo is routinely tested with Firefox, Chrome, Safari and with an iPad. 
 
 The jar srp6a-js-XXXX.jar contains:
 

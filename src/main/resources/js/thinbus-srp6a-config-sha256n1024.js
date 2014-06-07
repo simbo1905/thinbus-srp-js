@@ -1,8 +1,9 @@
-
 /**
 This is the recommended class as it uses the strong hash which 
-comes with JDK8 by default and the largest bits which Nimbus SRP
-supports. 
+comes with JDK8 by default. It also uses a 1024 bit prime but 
+you can generate and configure a larger one. You can also 
+do a custom JCA install to your JDK/JRE to get an use a 
+stronger hashing algorithm. 
 
 Here we subclass and add the H, N and g for 1024 with SHA256. 
 On the server use the matching java class: 

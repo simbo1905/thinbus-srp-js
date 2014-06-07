@@ -55,6 +55,12 @@ var random16byteHex = (function() {
     }
     // Last resort - we'll use isaac.js to get a random number. 
     else {
+    	// skip forward an unpredictable amount
+    	var now = Date.now();
+    	var t = now % 10;
+        isaac.prng(1+t);
+        
+        // grab some words
         randomWords = [];
         for (var i = 0; i < wordCount; i++) {
             randomWords.push(isaac.rand());
@@ -86,7 +92,7 @@ var random16byteHex = (function() {
   var crypto = isCrypto();
   
   /**
-  Run this within onkeyup of web inputs as:
+  Run this within onkeyup of html inputs so that user typing makes the random numbers more random:
   random16byteHex.advance(Math.floor(event.keyCode/4));
   */
   function advance(ms) {
@@ -109,7 +115,7 @@ var random16byteHex = (function() {
   };
 })();
 
-// if using isaac in a browser without crypto secure numbers spend 100ms advancing the stream
+// if using isaac in a browser without secure random numbers spend 0.1s advancing the random stream
 var random16byteHexAdvance = 100;
 
 // optional override during unit tests
