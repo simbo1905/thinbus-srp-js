@@ -242,6 +242,7 @@
 								<include>${project.build.directory}/classes/js/isaac.js</include>
 								<include>${project.build.directory}/classes/js/random.js</include>
 								<include>${project.build.directory}/classes/js/sha256.js</include>
+								<include>${project.build.directory}/classes/js/sha1.js</include>
 								<include>${project.build.directory}/classes/js/thinbus-srp6client.js</include>
 							</includes>
 						</aggregation>

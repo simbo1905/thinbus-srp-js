@@ -9,6 +9,6 @@ import uk.co.benjiweber.junitjs.Tests;
  "TestSRP6JavascriptClientSession_N1024_SHA256.js"
 })
 @RunWith(JSRunner.class)
-public class SRP6JavascriptTestSha256 {
+public class TestSRP6JavascriptClientSession_N1024_SHA256 {
 	
 }

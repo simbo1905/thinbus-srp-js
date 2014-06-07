@@ -31,4 +31,5 @@ SRP6JavascriptClientSession_N1024_SHA256.prototype.H = function (x) {
 		return CryptoJS.SHA256(x).toString().toLowerCase();
 }
 
-SRP6JavascriptClientSession_N1024_SHA256.prototype.k = this.fromHex("1a1a4c140cde70ae360c1ec33a33155b1022df951732a476a862eb3ab8206a5c");
+
+SRP6JavascriptClientSession_N1024_SHA256.prototype.k = new BigInteger("1a1a4c140cde70ae360c1ec33a33155b1022df951732a476a862eb3ab8206a5c", 16);

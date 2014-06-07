@@ -37,5 +37,5 @@ SRP6JavascriptClientSession_N1024_SHA1.prototype.H = function (x) {
 		return CryptoJS.SHA1(x).toString().toLowerCase();
 }
 
-SRP6JavascriptClientSession_N1024_SHA1.prototype.k = this.fromHex("7556aa045aef2cdd07abaf0f665c3e818913186f");
+SRP6JavascriptClientSession_N1024_SHA1.prototype.k = new BigInteger("7556aa045aef2cdd07abaf0f665c3e818913186f", 16);
 
