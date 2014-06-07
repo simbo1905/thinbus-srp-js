@@ -31,6 +31,7 @@ It is also recommended that you generate your own large prime number using the i
 If you upgrade versions of the jar you must **always** extract the js from the jar and place the javascript in your webproject: 
 
 ```sh
+# extract minified js file from jar
 jar vxf srp6a-js-XXXX.jar js/thinbus-srp6a-min.js
 ```
 
@@ -41,8 +42,6 @@ There will be no support for running old js files against newer java files.
   - Java Platform (JDK 7+) http://www.oracle.com/technetwork/java/javase/downloads/index.html
   - Maven2 http://maven.apache.org/
 
-It is highly recommended that you build with JDK1.8 or higher as the javascript testing is 10x faster than JDK1.7 due to the new Nashorn EMCAScript engine. 
-
 ## Building
 
 ```sh
@@ -50,6 +49,8 @@ git clone https://bitbucket.org/simon_massey/thinbus-srp-js
 cd thinbus-srp-js
 mvn package
 ```
+
+It is highly recommended that you build with JDK1.8 or higher as the javascript testing is 10x faster than JDK1.7 due to the new Nashorn EMCAScript engine. 
 
 ## How To Use A Custom Large Prime (N)
 
