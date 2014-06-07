@@ -222,13 +222,12 @@ SRP6JavascriptClientSession.prototype.computeU = function(Astr, Bstr) {
  *                               other than {@link State#STEP_1}.
  * @throws SRP6Exception         If the public server value 'B' is invalid.
  */
-SRP6JavascriptClientSession.prototype.step2 = function(s, BB, kk) {
+SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	this.check(s);
 	//console.log("M1 js s:" + s);
 	this.check(BB);
 	//console.log("M1 js BB:" + BB);
-	this.check(kk);
-	//console.log("M1 js kk:" + kk);
+
 	
 	if( this.state != this.STEP_1 ) {
 	  throw new Error("IllegalStateException not in state STEP_1");
@@ -240,8 +239,6 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB, kk) {
 	  throw new Error("SRP6Exception bad server public value 'B'");
 	}
 	
-	//console.log("M1 js B:" + B);
-	this.k = this.fromHex(kk);
 	//console.log("M1 js k:" + k);
 
 	var x = this.generateX(s, this.I, this.P);
@@ -322,7 +319,11 @@ supports.
 
 Here we subclass and add the H, N and g for 1024 with SHA256. 
 On the server use the matching java class: 
+
 	com.nimbusds.srp6.js.SRP6JavascriptServerSession_N1024_SHA256 
+	
+Running that class as a main outputs the constants. Note that 'k' 
+is the output of the servers hashing approach hex string. 
 */
 
 function SRP6JavascriptClientSession_N1024_SHA256(){ }
@@ -341,11 +342,7 @@ SRP6JavascriptClientSession_N1024_SHA256.prototype.H = function (x) {
 		return CryptoJS.SHA256(x).toString().toLowerCase();
 }
 
-/*
-g: 2
-N: eeaf0ab9adb38dd69c33f80afa8fc5e86072618775ff3c0b9ea2314c9c256576d674df7496ea81d3383b4813d692c6e0e0d5d8e250b98be48e495c1d6089dad15dc7d7b46154d6b6ce8ef4ad69b15d4982559b297bcf1885c529f566660e57ec68edbc3c05726cc02fd4cbf4976eaa9afd5138fe8376435b9fc61d2fc0eb06e3
-k: 1a1a4c140cde70ae360c1ec33a33155b1022df951732a476a862eb3ab8206a5c
-*/
+SRP6JavascriptClientSession_N1024_SHA256.prototype.k = this.fromHex("1a1a4c140cde70ae360c1ec33a33155b1022df951732a476a862eb3ab8206a5c");
 
 /**
 This is NOT recommended class as it uses a weaker hash and the 
@@ -361,7 +358,11 @@ javascript class using the best bit length which Nimubs can provide.
 Here we subclass and add the H, N and g for 256 with SHA1. 
 
 On the server use the matching java class: 
+
 	com.nimbusds.srp6.js.SRP6JavascriptServerSession_N256_SHA1
+	
+Running that class as a main outputs the constants. Note that 'k' 
+is the output of the servers hashing approach hex string. 
 
 
 function SRP6JavascriptClientSession_N256_SHA1(){ }
@@ -380,7 +381,5 @@ SRP6JavascriptClientSession_N1024_SHA256.prototype.H = function (x) {
 		return CryptoJS.SHA1(x).toString().toLowerCase();
 }
 
-SRP6JavascriptClientSession_N1024_SHA256.prototype.k = function() {
-	return new BigInteger("dbe5dfe0704fee4c85ff106ecd38117d33bcfe50", 16);
-}
+SRP6JavascriptClientSession_N1024_SHA256.prototype.k = this.fromHex("dbe5dfe0704fee4c85ff106ecd38117d33bcfe50");
 */

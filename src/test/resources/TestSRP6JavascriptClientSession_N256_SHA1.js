@@ -19,10 +19,10 @@ var username = "tom@arcot.com";
 var password = "password1234";
 
 // we test the javascript client verifier generation against work-alike test java
-var javaMockClient = Packages.com.bitbucket.thinbus.srp6.js.TestDouble_N1024_SHA256;
+var javaMockClient = Packages.com.bitbucket.thinbus.srp6.js.TestDouble_N256_SHA1;
 
 // we test against the java session which uses the same string concat hashing as the javascript client
-var javaServerSession = Packages.com.bitbucket.thinbus.srp6.js.SRP6JavascriptServerSession_N1024_SHA256;
+var javaServerSession = Packages.com.bitbucket.thinbus.srp6.js.SRP6JavascriptServerSession_N256_SHA1;
 
 function fromHex(h) {
 	return new BigInteger(h, 16);
@@ -31,7 +31,7 @@ function fromHex(h) {
 tests({
 
 	saltSanityCheck: function() {
-		var jsClientSession = new SRP6JavascriptClientSession_N1024_SHA256();
+		var jsClientSession = new SRP6JavascriptClientSession_N256_SHA1();
 		var randoms = [];
 		for( var i = 0; i < 10; i++ ) {
 			var r = jsClientSession.generateRandomSalt();
@@ -46,7 +46,7 @@ tests({
 	}, 
 	
 	testVerifierInputs: function() {
-		var jsClientSession = new SRP6JavascriptClientSession_N1024_SHA256();
+		var jsClientSession = new SRP6JavascriptClientSession_N256_SHA1();
 		try {
 			jsClientSession.generateVerifier(null, username, password);
 			fail();
@@ -88,10 +88,9 @@ tests({
 	/**
 	Here check the js verifier code against a java work-alike and sanity check both 
 	have same size hex output as the original nimbus routine. 
-    
 	verifierTest: function() {
 		var javaClientSession = new javaMockClient();
-		var jsClientSession = new SRP6JavascriptClientSession_N1024_SHA256();
+		var jsClientSession = new SRP6JavascriptClientSession_N256_SHA1();
 
 		// main nimbus client version
 		var javaV = ""+javaClientSession.generateVerifier(salt, username, password);
@@ -111,14 +110,14 @@ tests({
 		// assert that the javascript verifier values is matches the java work-alike 
 		assert.assertEquals(javaV2, jsV);
 	}, 
-	*/
+    */
 	
 	/**
 	Tests the full flow between the Javascript Client Session and the Java Server Session
 	*/
 	testMutualAuthentiation: function() {
 	
-		var client = new SRP6JavascriptClientSession_N1024_SHA256();
+		var client = new SRP6JavascriptClientSession_N256_SHA1();
 		
 		var v = client.generateVerifier(salt, username, password);
 		client.step1(username,password);

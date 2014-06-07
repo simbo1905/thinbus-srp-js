@@ -12,7 +12,7 @@
 
 	<groupId>org.bitbucket.thinbus</groupId>
 	<artifactId>srp6a-js</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.2.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Thinbus SRP6a</name>
@@ -49,6 +49,14 @@
 			<version>1.5.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+		
+		<!-- bouncy castle jce for hash algorithms better than SHA256 which is the best supported by jdk7 & jdk8 -->
+		<dependency>
+			<groupId>bouncycastle</groupId>
+			<artifactId>bcprov-jdk16</artifactId>
+			<version>140</version>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -206,41 +214,41 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-			
-        <plugin>
-            <groupId>net.alchim31.maven</groupId>
-            <artifactId>yuicompressor-maven-plugin</artifactId>
-            <version>1.1</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>compress</goal>
-                    </goals>
-                </execution>
-            </executions>
-            <configuration>
-                <excludes>
-                    <exclude>*/*</exclude>
-                </excludes>
-                <force>true</force>
-                <nosuffix>true</nosuffix>   
-                <removeIncluded>true</removeIncluded>
-                <aggregations>
-                    <aggregation>
-                        <insertNewLine>true</insertNewLine>
-                        <output>${project.build.directory}/classes/js/thinbus-srp6a-min.js</output>
-                        <includes>
-                            <include>${project.build.directory}/classes/js/biginteger.js</include>
-                            <include>${project.build.directory}/classes/js/isaac.js</include>
-                            <include>${project.build.directory}/classes/js/random.js</include>
-                            <include>${project.build.directory}/classes/js/sha256.js</include>
-                            <include>${project.build.directory}/classes/js/thinbus-srp6client.js</include>
-                        </includes>
-                    </aggregation>
-                </aggregations>
-            </configuration>
-        </plugin>
-			
+
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>yuicompressor-maven-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compress</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<excludes>
+						<exclude>*/*</exclude>
+					</excludes>
+					<force>true</force>
+					<nosuffix>true</nosuffix>
+					<removeIncluded>true</removeIncluded>
+					<aggregations>
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
+							<output>${project.build.directory}/classes/js/thinbus-srp6a-min.js</output>
+							<includes>
+								<include>${project.build.directory}/classes/js/biginteger.js</include>
+								<include>${project.build.directory}/classes/js/isaac.js</include>
+								<include>${project.build.directory}/classes/js/random.js</include>
+								<include>${project.build.directory}/classes/js/sha256.js</include>
+								<include>${project.build.directory}/classes/js/thinbus-srp6client.js</include>
+							</includes>
+						</aggregation>
+					</aggregations>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
