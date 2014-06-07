@@ -14,16 +14,21 @@ N.B. Code current code uses Nimbus 1.5.0 which has not yet made it to maven cent
 
 ## Using
 
-See the [junit-js](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with-junit/) test method `testMutualAuthentiation` in the test file `TestSRP6JavascriptClientSession_N1024_SHA256.js` which shows mutual authentication between Java and Javascript.  
+See the [junit-js](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with-junit/) test method `testMutualAuthentiation` in the test file `TestSRP6JavascriptClientSessionSHA256.js` which shows mutual authentication between Java and Javascript.  
 
 There is a SpringMVC demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo).
 
 The jar srp6a-js-XXXX.jar contains:
 
-  - js/thinbus-srp6a-min.js The all in one Javascript client with its dependencies minified. Use this as a preference where possible. 
-  - com/bitbucket/thinbus/srp6/js/SRP6JavascriptServerSession_N1024_SHA256.class The java class which can interface with the javascript class. 
+  - **js/thinbus-srp6a-min.js** The all in one Javascript libraries with all dependencies minified. Use this as a preference where possible.
+  - **js/thinbus-srp6a-config-sha256n1024.js** An example of a configuration which uses SHA-256 hashing and a 1024 bit prime number. 
+  - **com/bitbucket/thinbus/srp6/js/SRP6JavascriptServerSessionSHA256.class** The java class which can interface with the javascript class. 
 
-It is recommended that if you upgrade versions of the jar you *always* extract the js from the jar and place the javascript in your webproject: 
+There is also an example showing the SHA-1 algorithm. As Java 1.8 supports md4, sha1 and sha256 by default it is recommended that use use sh256 of better. 
+
+It is also recommended that you generate your own large prime number using the instructions below and configure both the Java and JavaScript to use this value. 
+
+If you upgrade versions of the jar you must **always** extract the js from the jar and place the javascript in your webproject: 
 
 ```sh
 jar vxf srp6a-js-XXXX.jar js/thinbus-srp6a-min.js
@@ -37,6 +42,7 @@ Other source files in the jar which show the original copyright of the libraries
   - js/isaac.js A random number generator only used if the browser does not have window.crypto secure random number generator. 
   - js/random.js A class which uses window.crypto but will fall-back to using the Isaac generator. 
   - js/sha256.js The Crypto.JS SHA256 hash algorithm. 
+  - js/sha1.js The Crypto.JS SHA1 hash algorithm.   
   - js/thinbus-srp6client.js The SRP client session
 
 ## Build Prerequisites
@@ -44,7 +50,7 @@ Other source files in the jar which show the original copyright of the libraries
   - Java Platform (JDK 7+) http://www.oracle.com/technetwork/java/javase/downloads/index.html
   - Maven2 http://maven.apache.org/
 
-It is highly recommended that you build with JDK1.8 or higher as the javascript testing is 10x faster than JDK1.7. 
+It is highly recommended that you build with JDK1.8 or higher as the javascript testing is 10x faster than JDK1.7 due to the new Nashorn EMCAScript engine. 
 
 ## Building
 
@@ -54,7 +60,7 @@ cd thinbus-srp-js
 mvn package
 ```
 
-## How To Use Custom Parameters N and g
+## How To Use A Custom Large Prime (N)
 
 You can use openssl to create your own crypo parmeters. This is highly recommended. 
 
@@ -75,9 +81,9 @@ This will output something like:
 bits:1024
 hashing to create 'k' using SHA-256
 computing
-N base10: 19502997308733555461855666625958719160994364695757801883048536560804281608617712589335141535572898798222757219122180598766018632900275026915053180353164617230434226106273953899391119864257302295174320915476500215995601482640160424279800690785793808960633891416021244925484141974964367107
-g base10:2
-k base16:1a3d1769e1d6337af78796f1802f9b14fbc20278fb6e15e4361beb38a8e7cd3a
+N base10: 19502997308733...
+g base10: 2
+k base16: 1a3d1769e1d6337...
 ```
 
 Configure the Java session class of the correct hash with {N, g} and configure the Javascript session with {N, g, k}. 
@@ -85,11 +91,5 @@ Configure the Java session class of the correct hash with {N, g} and configure t
 ## License
 
 GNU GENERAL PUBLIC LICENSE Version 2, June 1991
-
-### TODO
-
-```
-[] Use window.crypo hashing if detected.<br/>
-```
 
 End.

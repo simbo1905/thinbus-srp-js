@@ -64,8 +64,8 @@ public class OpenSSLCryptoConfig {
 
 		System.out.println("computing");
 		System.out.println("N base10: " + N.toString(10));
-		System.out.println("g base10:" + g.toString(10));
-		System.out.println("k base16:" + k.toString(16));
+		System.out.println("g base10: " + g.toString(10));
+		System.out.println("k base16: " + k.toString(16));
 	}
 
 	static Pattern generatorPattern = Pattern.compile(".*generator: (\\d*) \\(.*");
