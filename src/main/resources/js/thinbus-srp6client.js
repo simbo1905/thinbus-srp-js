@@ -309,4 +309,6 @@ SRP6JavascriptClientSession.prototype.step3 = function(M2) {
 	}
 
 	this.state = this.STEP_3;
+	
+	return true;
 }
