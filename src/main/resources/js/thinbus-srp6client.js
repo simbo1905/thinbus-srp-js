@@ -21,36 +21,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
 /**
-Javascript client which speaks hex strings, users a 1024 bit N, SHA256
-and which speaks hex strings. It uses random 16 byte hex strings as random 
-key 'a'. On the server use the matching java class: 
-	com.nimbusds.srp6.js.SRP6JavascriptServerSession_N1024_SHA256 
+Javascript client which speaks hex strings. 
+It uses random 16 byte hex strings as random key 'a'. 
 */
-var SRP6JavascriptClientSession_N1024_SHA256 = (function(){
-	//  constants for 1024 strength
-	var N_1024 = new BigInteger("167609434410335061345139523764350090260135525329813904557420930309800865859473551531551523800013916573891864789934747039010546328480848979516637673776605610374669426214776197828492691384519453218253702788022233205683635831626913357154941914129985489522629902540768368409482248290641036967659389658897350067939", 10);
-	var g_common = new BigInteger("2", 10);
-	
-	// N, g and H must match server session
-	var N = N_1024;
-	var g = g_common; 
-	var H = function (x) {
-		return CryptoJS.SHA256(x).toString().toLowerCase();
-	}
-  
+function SRP6JavascriptClientSession() {
+
 	/**
 	 * The session is initialised and ready to begin authentication
 	 * by proceeding to {@link #STEP_1}.
 	 */
-	var INIT = 0;
+	this.INIT = 0;
 		
 	/**
 	 * The authenticating user has input their identity 'I' 
 	 * (username) and password 'P'. The session is ready to proceed
 	 * to {@link #STEP_2}.
 	 */
-	var STEP_1 = 1;
+	this.STEP_1 = 1;
 		
 	/**
 	 * The user identity 'I' is submitted to the server which has 
@@ -58,7 +47,7 @@ var SRP6JavascriptClientSession_N1024_SHA256 = (function(){
 	 * based on the user's password verifier 'v'. The session is 
 	 * ready to proceed to {@link #STEP_3}.
 	 */
-	var STEP_2 = 2;
+	this.STEP_2 = 2;
 		
 	/**
 	 * The client public key 'A' and evidence message 'M1' are
@@ -66,40 +55,24 @@ var SRP6JavascriptClientSession_N1024_SHA256 = (function(){
 	 * message 'M2'. The session is finished (authentication was 
 	 * successful or failed).
 	 */
-	var STEP_3 = 3;
+	this.STEP_3 = 3;
   
-  	// public helper
-	function toHex(n) {
-		return n.toString(16);
-	}
+	this.state = this.INIT;
 	
-	// public helper
-	function fromHex(s) {
-		var ss = ""+s; // jdk1.7 rhino requires string concat
-		return new BigInteger(ss, 16);
-	}
-	
-	var state = INIT;
-	
-	// public initializer
-	function init(_state) {
-		state = _state;
-	}
-	
-	// public getter
-	function getState() {
-		return state;
-	}
-	
-    // public
-	function generateRandomSalt() {
-		return random16byteHex.random();
-	}
-	
-	var x, v, I, P;
+	this.x = null;
+	this.v = null;
+	this.I = null;
+	this.P = null;
+	this.B = null;
+	this.A = null;
+	this.a = null;
+	this.k = null;
+	this.u = null;
+	this.S = null;
+	this.M1str = null;
 	
 	// private
-	function check(v, name) {
+	this.check = function(v, name) {
 		if( typeof v == 'undefined' || v == null || v == "" || v == "0" ) {
 			throw new Error(name+" must not be null, empty or zero");
 		}
@@ -116,78 +89,17 @@ var SRP6JavascriptClientSession_N1024_SHA256 = (function(){
 	 * @param password The user password 'P'. Must not be null or empty
 	 * @return The resulting 'x' value as BigInteger.
 	 */
-	function generateX(salt, identity, password) {
-		check(salt, "salt");
-		check(identity, "identity");
-		check(password, "password");
-		var hash1 = H(identity+':'+password);
-		var hashStr = salt+hash1;
-		var hash = H(hashStr.toUpperCase());
-		x = fromHex(hash).mod(N);
-		return x;
+	this.generateX = function(salt, identity, password) {
+		this.check(salt, "salt");
+		this.check(identity, "identity");
+		this.check(password, "password");
+		var hash1 = this.H(identity+':'+password);
+		var hashStr = salt+this.hash1;
+		var hash = this.H(hashStr.toUpperCase());
+		this.x = this.fromHex(hash).mod(this.N());
+		return this.x;
 	}
-	
-	/* public<p>
-	 * 
-	 * Generates a new verifier 'v' from the specified parameters.
-	 * <p>The verifier is computed as v = g^x (mod N). 
-	 * <p> Specification RFC 2945
-	 *
-	 * @param salt     The salt 's'. Must not be null or empty.
-	 * @param identity The user identity/email 'I'. Must not be null or empty.
-	 * @param password The user password 'P'. Must not be null or empty
-	 * @return The resulting verifier 'v' as a hex string
-	 */
-	function generateVerifier(salt, identity, password) {
-		var x = generateX(salt, identity, password);
-		v = g.modPow(x, N);
-		return toHex(v);
-	}
-	
-	/**
-	 * Records the identity 'I' and password 'P' of the authenticating user.
-	 * The session is incremented to {@link State#STEP_1}.
-	 * <p>Argument origin:
-	 * <ul>
-	 *     <li>From user: user identity 'I' and password 'P'.
-	 * </ul>
-	 * @param userID   The identity 'I' of the authenticating user, UTF-8
-	 *                 encoded. Must not be {@code null} or empty.
-	 * @param password The user password 'P', UTF-8 encoded. Must not be
-	 *                 {@code null}.
-	 * @throws IllegalStateException If the method is invoked in a state 
-	 *                               other than {@link State#INIT}.
-	 */
-	function step1(identity, password) {
-		check(identity, "identity");
-		check(password, "password");
-		I = identity;
-		P = password;
-		if( state != INIT ) {
-		  throw new Error("IllegalStateException not in state INIT");
-		}
-		state = STEP_1;
-	}
-	
-	var B, A, a, k, u, S, M1str;
-	
-	/**
-	 * Computes the random scrambling parameter u = H(A | B)
-	 * <p> Specification RFC 2945
-	 *
-	 * @param A      The public client value 'A'. Must not be {@code null}.
-	 * @param B      The public server value 'B'. Must not be {@code null}.
-	 *
-	 * @return The resulting 'u' value.
-	 */
-	 function computeU(Astr, Bstr) {
-	 	check(Astr);
-	 	check(Bstr);
-		var output = CryptoJS.SHA256(Astr+Bstr);
-		//console.log("jshashAB:"+output);
-		return new BigInteger(""+output,16);
-	}
-	
+
 	/**
 	 * Computes the session key S = (B - k * g^x) ^ (a + u * x) (mod N)
 	 * from client-side parameters.
@@ -206,135 +118,269 @@ var SRP6JavascriptClientSession_N1024_SHA256 = (function(){
 	 *
 	 * @return The resulting session key 'S'.
 	 */
-	function computeSessionKey(k, x, u, a, B) {
+	this.computeSessionKey = function(k, x, u, a, B) {
 		var exp = u.multiply(x).add(a);
-		var tmp = g.modPow(x, N).multiply(k);
-		return B.subtract(tmp).modPow(exp, N);
+		var tmp = this.g().modPow(x, this.N()).multiply(k);
+		return B.subtract(tmp).modPow(exp, this.N());
+	}
+}
+
+// public helper
+SRP6JavascriptClientSession.prototype.toHex = function(n) {
+	return n.toString(16);
+}
+
+// public helper
+SRP6JavascriptClientSession.prototype.fromHex = function(s) {
+	var ss = ""+s; // jdk1.7 rhino requires string concat
+	return new BigInteger(ss, 16);
+}
+
+// public getter
+SRP6JavascriptClientSession.prototype.getState = function() {
+	return this.state;
+}
+
+SRP6JavascriptClientSession.prototype.generateRandomSalt = function() {
+	return random16byteHex.random();
+}
+
+/* 
+ * Generates a new verifier 'v' from the specified parameters.
+ * <p>The verifier is computed as v = g^x (mod N). 
+ * <p> Specification RFC 2945
+ *
+ * @param salt     The salt 's'. Must not be null or empty.
+ * @param identity The user identity/email 'I'. Must not be null or empty.
+ * @param password The user password 'P'. Must not be null or empty
+ * @return The resulting verifier 'v' as a hex string
+ */
+SRP6JavascriptClientSession.prototype.generateVerifier = function(salt, identity, password) {
+	var x = this.generateX(salt, identity, password);
+	this.v = this.g().modPow(x, this.N());
+	return this.toHex(this.v);
+}
+
+/**
+ * Records the identity 'I' and password 'P' of the authenticating user.
+ * The session is incremented to {@link State#STEP_1}.
+ * <p>Argument origin:
+ * <ul>
+ *     <li>From user: user identity 'I' and password 'P'.
+ * </ul>
+ * @param userID   The identity 'I' of the authenticating user, UTF-8
+ *                 encoded. Must not be {@code null} or empty.
+ * @param password The user password 'P', UTF-8 encoded. Must not be
+ *                 {@code null}.
+ * @throws IllegalStateException If the method is invoked in a state 
+ *                               other than {@link State#INIT}.
+ */
+SRP6JavascriptClientSession.prototype.step1 = function(identity, password) {
+	this.check(identity, "identity");
+	this.check(password, "password");
+	this.I = identity;
+	this.P = password;
+	if( this.state != this.INIT ) {
+	  throw new Error("IllegalStateException not in state INIT");
+	}
+	this.state = this.STEP_1;
+}
+
+/**
+ * Computes the random scrambling parameter u = H(A | B)
+ * <p> Specification RFC 2945
+ *
+ * @param A      The public client value 'A'. Must not be {@code null}.
+ * @param B      The public server value 'B'. Must not be {@code null}.
+ *
+ * @return The resulting 'u' value.
+ */
+SRP6JavascriptClientSession.prototype.computeU = function(Astr, Bstr) {
+ 	this.check(Astr);
+ 	this.check(Bstr);
+	var output = CryptoJS.SHA256(Astr+Bstr);
+	//console.log("jshashAB:"+output);
+	return new BigInteger(""+output,16);
+}
+
+/**
+ * Receives the password salt 's' and public value 'B' from the server.
+ * The SRP-6a crypto parameters are also set. The session is incremented
+ * to {@link State#STEP_2}.
+ * <p>Argument origin:
+ * <ul>
+ *     <li>From server: password salt 's', public value 'B'.
+ *     <li>Pre-agreed: crypto parameters prime 'N', 
+ *         generator 'g' and hash function 'H'.
+ * </ul>
+ * @param s      The password salt 's' as a hex string. Must not be {@code null}.
+ * @param B      The public server value 'B' as a hex string. Must not be {@code null}.
+ * @param k      k is H(N,g) with padding by the server. Must not be {@code null}.
+ * @return The client credentials consisting of the client public key 
+ *         'A' and the client evidence message 'M1'.
+ * @throws IllegalStateException If the method is invoked in a state 
+ *                               other than {@link State#STEP_1}.
+ * @throws SRP6Exception         If the public server value 'B' is invalid.
+ */
+SRP6JavascriptClientSession.prototype.step2 = function(s, BB, kk) {
+	this.check(s);
+	//console.log("M1 js s:" + s);
+	this.check(BB);
+	//console.log("M1 js BB:" + BB);
+	this.check(kk);
+	//console.log("M1 js kk:" + kk);
+	
+	if( this.state != this.STEP_1 ) {
+	  throw new Error("IllegalStateException not in state STEP_1");
 	}
 	
-	/**
-	 * Receives the password salt 's' and public value 'B' from the server.
-	 * The SRP-6a crypto parameters are also set. The session is incremented
-	 * to {@link State#STEP_2}.
-	 * <p>Argument origin:
-	 * <ul>
-	 *     <li>From server: password salt 's', public value 'B'.
-	 *     <li>Pre-agreed: crypto parameters prime 'N', 
-	 *         generator 'g' and hash function 'H'.
-	 * </ul>
-	 * @param s      The password salt 's' as a hex string. Must not be {@code null}.
-	 * @param B      The public server value 'B' as a hex string. Must not be {@code null}.
-	 * @param k      k is H(N,g) with padding by the server. Must not be {@code null}.
-	 * @return The client credentials consisting of the client public key 
-	 *         'A' and the client evidence message 'M1'.
-	 * @throws IllegalStateException If the method is invoked in a state 
-	 *                               other than {@link State#STEP_1}.
-	 * @throws SRP6Exception         If the public server value 'B' is invalid.
-	 */
-	function step2(s, BB, kk) {
-		check(s);
-		//console.log("M1 js s:" + s);
-		check(BB);
-		//console.log("M1 js BB:" + BB);
-		check(kk);
-		//console.log("M1 js kk:" + kk);
-		
-		if( state != STEP_1 ) {
-		  throw new Error("IllegalStateException not in state STEP_1");
-		}
-		
-		B = fromHex(BB); 
-		
-		if (B.mod(N).equals(BigInteger.ZERO)) {
-		  throw new Error("SRP6Exception dad server public value 'B'");
-		}
-		
-		//console.log("M1 js B:" + B);
-		k = fromHex(kk);
-		//console.log("M1 js k:" + k);
-
-		var x = generateX(s, I, P);
-		//console.log("M1 js x:" + x);
-		// 1024 bit N implies 512 bit key implies 2 x 16byte random implies twice salt generation
-		var aStr = generateRandomSalt() + generateRandomSalt();
-		a = fromHex(aStr);
-		//console.log("M1 js a:" + a);
-		A = g.modPow(a, N);
-		//console.log("M1 js A:" + A);
-		u = computeU(A.toString(16),BB);
-		//console.log("M1 js u:" + u);
-		S = computeSessionKey(k, x, u, a, B);
-		
-		//console.log("jsU:" + toHex(u));
-		//console.log("jsS:" + toHex(S));
-		
-		var AA = toHex(A);
-		
-		//console.log("jsABS:" + AA+BB+toHex(S));
-		
-		M1str = H(AA+BB+toHex(S));
-		
-		//console.log("M1str:" + M1str);
-		
-		//console.log("M1 js A:" + AA);
-		//console.log("M1 js B:" + BB);
-		//console.log("M1 js S:" + toHex(S));
-		//console.log("M1 jsM1:" + M1str);
-		
-		state = STEP_2;
-		return { A: AA, M1: M1str };
+	this.B = this.fromHex(BB); 
+	
+	if (this.B.mod(this.N()).equals(BigInteger.ZERO)) {
+	  throw new Error("SRP6Exception bad server public value 'B'");
 	}
 	
-	/**
-	 * Receives the server evidence message 'M1'. The session is incremented
-	 * to {@link State#STEP_3}.
-	 *
-	 * <p>Argument origin:
-	 * <ul>
-	 *     <li>From server: evidence message 'M2'.
-	 * </ul>
-	 * @param serverM2 The server evidence message 'M2' as string. Must not be {@code null}.
-	 * @throws IllegalStateException If the method is invoked in a state 
-	 *                               other than {@link State#STEP_2}.
-	 * @throws SRP6Exception         If the session has timed out or the 
-	 *                               server evidence message 'M2' is 
-	 *                               invalid.
-	 */
-	function step3(M2) {
-		check(M2);
-		
-		// Check current state
-		if (state != STEP_2)
-			throw new Error("IllegalStateException State violation: Session must be in STEP_2 state");
+	//console.log("M1 js B:" + B);
+	this.k = this.fromHex(kk);
+	//console.log("M1 js k:" + k);
 
-		//console.log("M2 js A:" + toHex(A));
-		//console.log("M2 jsM1:" + M1str);
-		//console.log("M2 js S:" + toHex(S));
-		
-		var computedM2 = H(toHex(A)+M1str+toHex(S));
-		
-		//console.log("M2 jsServerM2:" + M2);
-		//console.log("M2 jsClientM2:" + computedM2);
-		
-		if ( ""+computedM2 != ""+M2) {
-			console.log("server  M2:"+M2+"\ncomputedM2:"+computedM2);
-			throw new Error("SRP6Exception Bad server credentials");
-		}
-
-		state = STEP_3;
-	}
+	var x = this.generateX(s, this.I, this.P);
+	//console.log("M1 js x:" + x);
+	// 1024 bit N implies 512 bit key implies 2 x 16byte random implies twice salt generation
+	var aStr = this.generateRandomSalt() + this.generateRandomSalt();
+	this.a = this.fromHex(aStr);
+	//console.log("M1 js a:" + a);
+	this.A = this.g().modPow(this.a, this.N());
+	//console.log("M1 js A:" + A);
+	this.u = this.computeU(this.A.toString(16),BB);
+	//console.log("M1 js u:" + u);
+	this.S = this.computeSessionKey(this.k, x, this.u, this.a, this.B);
 	
-	// exported api
-	return {
-		'toHex': toHex,
-		'fromHex': fromHex,
-		'init': init,
-		'getState': getState,
-		'generateRandomSalt': generateRandomSalt,
-		'generateVerifier': generateVerifier,
-		'computeU': computeU,
-		'step1': step1,
-		'step2': step2,
-		'step3': step3
-	};
-});
+	//console.log("jsU:" + toHex(u));
+	//console.log("jsS:" + toHex(S));
+	
+	var AA = this.toHex(this.A);
+	
+	//console.log("jsABS:" + AA+BB+toHex(S));
+	
+	this.M1str = this.H(AA+BB+this.toHex(this.S));
+	
+	//console.log("M1str:" + this.M1str);
+	
+	//console.log("M1 js A:" + AA);
+	//console.log("M1 js B:" + BB);
+	//console.log("M1 js S:" + toHex(S));
+	//console.log("M1 jsM1:" + M1str);
+	
+	this.state = this.STEP_2;
+	return { A: AA, M1: this.M1str };
+}
+
+/**
+ * Receives the server evidence message 'M1'. The session is incremented
+ * to {@link State#STEP_3}.
+ *
+ * <p>Argument origin:
+ * <ul>
+ *     <li>From server: evidence message 'M2'.
+ * </ul>
+ * @param serverM2 The server evidence message 'M2' as string. Must not be {@code null}.
+ * @throws IllegalStateException If the method is invoked in a state 
+ *                               other than {@link State#STEP_2}.
+ * @throws SRP6Exception         If the session has timed out or the 
+ *                               server evidence message 'M2' is 
+ *                               invalid.
+ */
+SRP6JavascriptClientSession.prototype.step3 = function(M2) {
+	this.check(M2);
+	
+	// Check current state
+	if (this.state != this.STEP_2)
+		throw new Error("IllegalStateException State violation: Session must be in STEP_2 state");
+
+	//console.log("M2 js A:" + toHex(A));
+	//console.log("M2 jsM1:" + M1str);
+	//console.log("M2 js S:" + toHex(S));
+	
+	var computedM2 = this.H(this.toHex(this.A)+this.M1str+this.toHex(this.S));
+	
+	//console.log("M2 jsServerM2:" + M2);
+	//console.log("M2 jsClientM2:" + computedM2);
+	
+	if ( ""+computedM2 != ""+M2) {
+		console.log("server  M2:"+M2+"\ncomputedM2:"+computedM2);
+		throw new Error("SRP6Exception Bad server credentials");
+	}
+
+	this.state = this.STEP_3;
+}
+
+/**
+This is the recommended class as it uses the strong hash which 
+comes with JDK8 by default and the largest bits which Nimbus SRP
+supports. 
+
+Here we subclass and add the H, N and g for 1024 with SHA256. 
+On the server use the matching java class: 
+	com.nimbusds.srp6.js.SRP6JavascriptServerSession_N1024_SHA256 
+*/
+
+function SRP6JavascriptClientSession_N1024_SHA256(){ }
+
+SRP6JavascriptClientSession_N1024_SHA256.prototype = new SRP6JavascriptClientSession();
+
+SRP6JavascriptClientSession_N1024_SHA256.prototype.N = function() {
+	return new BigInteger("167609434410335061345139523764350090260135525329813904557420930309800865859473551531551523800013916573891864789934747039010546328480848979516637673776605610374669426214776197828492691384519453218253702788022233205683635831626913357154941914129985489522629902540768368409482248290641036967659389658897350067939", 10);
+}
+
+SRP6JavascriptClientSession_N1024_SHA256.prototype.g = function() {
+	return new BigInteger("2", 10);
+}
+
+SRP6JavascriptClientSession_N1024_SHA256.prototype.H = function (x) {
+		return CryptoJS.SHA256(x).toString().toLowerCase();
+}
+
+/*
+g: 2
+N: eeaf0ab9adb38dd69c33f80afa8fc5e86072618775ff3c0b9ea2314c9c256576d674df7496ea81d3383b4813d692c6e0e0d5d8e250b98be48e495c1d6089dad15dc7d7b46154d6b6ce8ef4ad69b15d4982559b297bcf1885c529f566660e57ec68edbc3c05726cc02fd4cbf4976eaa9afd5138fe8376435b9fc61d2fc0eb06e3
+k: 1a1a4c140cde70ae360c1ec33a33155b1022df951732a476a862eb3ab8206a5c
+*/
+
+/**
+This is NOT recommended class as it uses a weaker hash and the 
+least bits which Nimbus SRP supports. It is provided just as 
+a test case to show the we can configure other algorithms and 
+bit sizes. 
+
+It is HIGHLY recommended that you use the stronger class else look at the 
+strongest hash your server will support (or can be upgraded to 
+support with a custom JCA digest provider) and configure a matching
+javascript class using the best bit length which Nimubs can provide. 
+
+Here we subclass and add the H, N and g for 256 with SHA1. 
+
+On the server use the matching java class: 
+	com.nimbusds.srp6.js.SRP6JavascriptServerSession_N256_SHA1
+
+
+function SRP6JavascriptClientSession_N256_SHA1(){ }
+
+SRP6JavascriptClientSession_N256_SHA1.prototype = new SRP6JavascriptClientSession();
+
+SRP6JavascriptClientSession_N256_SHA1.prototype.N = function() {
+	return new BigInteger("115b8b692e0e045692cf280b436735c77a5a9e8a9e7ed56c965f87db5b2a2ece3", 16);
+}
+
+SRP6JavascriptClientSession_N256_SHA1.prototype.g = function() {
+	return new BigInteger("2", 10);
+}
+
+SRP6JavascriptClientSession_N1024_SHA256.prototype.H = function (x) {
+		return CryptoJS.SHA1(x).toString().toLowerCase();
+}
+
+SRP6JavascriptClientSession_N1024_SHA256.prototype.k = function() {
+	return new BigInteger("dbe5dfe0704fee4c85ff106ecd38117d33bcfe50", 16);
+}
+*/
