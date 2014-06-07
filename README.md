@@ -10,7 +10,7 @@ knowledge proof of password. The only deployment dependency is the [Nimbus SRP6a
 Note that if you build on jdk17 the junit-js tests which test the javascript cryptography takes a 
 very long time. Building with jdk18 is ten times faster. 
 
-N.B. Code current code uses Nimbus 1.5.0 which has not yet made it to maven central so you should  `git clone` then `mvn install` that locally to use this library today. 
+N.B. Code current code uses Nimbus 1.5.0-SNAPSHOT which has not yet made it to maven central so you should  `git clone` then `mvn install` that locally to use this library today. 
 
 ## Using
 
