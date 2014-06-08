@@ -7,7 +7,8 @@ This package provides a [Secure Remote Password](http://srp.stanford.edu/) [SRP-
 client implementation for Javascript / EMCAScript in a browser talking to a Java server implementation to perform a zero 
 knowledge proof of password. The only deployment dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
-There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written with SpringMVC. The demo is routinely tested with Firefox, Chrome, Safari and with an iPad. 
+There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written using JAX RS RESTful webservices.  
+The demo is routinely tested with Firefox, Chrome, Safari and with an iPad. 
 
 Note that if you build on jdk17 the junit-js tests which test the javascript cryptography takes a 
 very long time. Building with jdk18 is ten times faster. 
