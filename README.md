@@ -13,7 +13,7 @@ The demo is routinely tested with Firefox, Chrome, Safari and with an iPad.
 Note that if you build on jdk17 the junit-js tests which test the javascript cryptography takes a 
 very long time. Building with jdk18 is ten times faster. 
 
-Code current code uses Nimbus 1.5.0-SNAPSHOT which has not yet made it to maven central so you should  `git clone` then `mvn install` that locally to use this library today. 
+Code current code uses Nimbus 1.5.1-SNAPSHOT from my fork which has not yet made it to maven central so you should  `git clone` then `mvn install` that locally to use this library today. 
 
 ## Using
 

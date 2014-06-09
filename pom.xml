@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>com.nimbusds</groupId>
 			<artifactId>srp6a</artifactId>
-			<version>1.5.0-SNAPSHOT</version>
+			<version>1.5.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 
