@@ -24,6 +24,7 @@ var javaMockClient = Packages.com.bitbucket.thinbus.srp6.js.TestDouble_N1024_SHA
 
 // we test against the java session which uses the same string concat hashing as the javascript client
 var javaServerSession = Packages.com.bitbucket.thinbus.srp6.js.SRP6JavascriptServerSessionSHA256;
+var javaTestNumbers = Packages.com.bitbucket.thinbus.srp6.js.TestNumbers;
 
 function fromHex(h) {
 	return new BigInteger(h, 16);
@@ -96,7 +97,7 @@ tests({
 		var v = client.generateVerifier(salt, username, password);
 		client.step1(username,password);
 		
-		var server = new javaServerSession();
+		var server = new javaServerSession(javaTestNumbers.N, javaTestNumbers.g)
 		var B = server.step1(username, salt, v);
 		
 		var credentials = client.step2(salt, B);

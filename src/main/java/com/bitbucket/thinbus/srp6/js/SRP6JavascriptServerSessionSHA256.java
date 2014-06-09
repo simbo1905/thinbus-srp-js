@@ -7,7 +7,6 @@ import java.math.BigInteger;
 
 import com.nimbusds.srp6.SRP6CryptoParams;
 import com.nimbusds.srp6.SRP6Routines;
-import com.nimbusds.srp6.SRP6ServerSession;
 
 /**
  * Wrapper of a server session matching the Javascript client session
@@ -20,7 +19,7 @@ import com.nimbusds.srp6.SRP6ServerSession;
  * 
  * @author Simon Massey
  */
-public class SRP6JavascriptServerSessionSHA256 implements SRP6JavascriptServerSession {
+public class SRP6JavascriptServerSessionSHA256 extends SRP6JavascriptServerSession {
 
 	/**
 	 * This must match the expected character length of the specified algorithm
@@ -28,24 +27,9 @@ public class SRP6JavascriptServerSessionSHA256 implements SRP6JavascriptServerSe
 	 */
 	public static int HASH_HEX_LENGTH = 64;
 
-	public final BigInteger N;
-	public final BigInteger g;
-	protected final SRP6CryptoParams config;
-	protected final SRP6ServerSession session;
-
-	public SRP6JavascriptServerSessionSHA256(String NN, String gg) {
-		N = new BigInteger(NN, 10);
-		g = new BigInteger(gg, 10);
-		config = new SRP6CryptoParams(N, g, "SHA-256");
-		session = new SRP6ServerSession(config);
-		session.setHashedKeysRoutine(new HexHashedURoutine());
-		session.setClientEvidenceRoutine(new HexHashedClientEvidenceRoutine());
-		session.setServerEvidenceRoutine(new HexHashedServerEvidenceRoutine());
-	}
-
 	// some defaults
-	public SRP6JavascriptServerSessionSHA256() {
-		this(defaultN, defaultg);
+	public SRP6JavascriptServerSessionSHA256(String N, String g) {
+		super(new SRP6CryptoParams(fromDecimal(N), fromDecimal(g), "SHA-256"));
 	}
 
 	public String step1(final String username, final String salt, final String v) {
@@ -75,15 +59,6 @@ public class SRP6JavascriptServerSessionSHA256 implements SRP6JavascriptServerSe
 		builder.append(String.format("N: %s\n", config.N.toString(10)));
 		builder.append(String.format("k: %s\n", k()));
 		return builder.toString();
-	}
-
-	/**
-	 * Outputs config for the client scripts.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		System.out.println(new SRP6JavascriptServerSessionSHA256());
 	}
 
 	@Override

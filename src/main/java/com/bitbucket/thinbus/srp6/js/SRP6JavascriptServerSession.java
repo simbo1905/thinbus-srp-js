@@ -1,12 +1,13 @@
 package com.bitbucket.thinbus.srp6.js;
 
+import java.math.BigInteger;
+
+import com.nimbusds.srp6.SRP6CryptoParams;
 import com.nimbusds.srp6.SRP6Exception;
+import com.nimbusds.srp6.SRP6ServerSession;
 import com.nimbusds.srp6.SRP6ServerSession.State;
 
-public interface SRP6JavascriptServerSession {
-
-	public static String defaultN = "19502997308733555461855666625958719160994364695757801883048536560804281608617712589335141535572898798222757219122180598766018632900275026915053180353164617230434226106273953899391119864257302295174320915476500215995601482640160424279800690785793808960633891416021244925484141974964367107";
-	public static String defaultg = "2";
+abstract class SRP6JavascriptServerSession {
 
 	/**
 	 * Increments this SRP-6a authentication session to {@link State#STEP_1}.
@@ -25,7 +26,7 @@ public interface SRP6JavascriptServerSession {
 	 *             If the mehod is invoked in a state other than
 	 *             {@link State#INIT}.
 	 */
-	public String step1(final String username, final String salt, final String v);
+	public abstract String step1(final String username, final String salt, final String v);
 
 	/**
 	 * Increments this SRP-6a authentication session to {@link State#STEP_2}.
@@ -46,7 +47,22 @@ public interface SRP6JavascriptServerSession {
 	 *             If the mehod is invoked in a state other than
 	 *             {@link State#STEP_1}.
 	 */
-	public String step2(final String A, final String M1) throws Exception;
+	public abstract String step2(final String A, final String M1) throws Exception;
 
-	public String getState();
+	public abstract String getState();
+
+	protected final SRP6CryptoParams config;
+	protected final SRP6ServerSession session;
+	
+	public SRP6JavascriptServerSession(SRP6CryptoParams srp6CryptoParams) {
+		this.config = srp6CryptoParams;
+		session = new SRP6ServerSession(config);
+		session.setHashedKeysRoutine(new HexHashedURoutine());
+		session.setClientEvidenceRoutine(new HexHashedClientEvidenceRoutine());
+		session.setServerEvidenceRoutine(new HexHashedServerEvidenceRoutine());
+	}
+
+	public static BigInteger fromDecimal(String base10) {
+		return new BigInteger(base10, 10);
+	}
 }
