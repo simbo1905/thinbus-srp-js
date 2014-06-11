@@ -13,8 +13,8 @@ The code current code uses Nimbus 1.5.0-SNAPSHOT from my fork which has not yet 
 
 The jar `srp6a-js-XXXX.jar` contains:
 
-  - **js/thinbus-srp6a-min.js** The all in one Javascript libraries with all dependencies minified. 
-  - **js/thinbus-srp6a-config-XXX.js** Multiple example configurations. 
+  - `js/thinbus-srp6a-min.js` The all in one Javascript libraries with all dependencies minified. 
+  - `js/thinbus-srp6a-config-XXX.js` Multiple example configurations. 
 
 Extract the js files from the jar with any zip tool or with: 
 
@@ -73,18 +73,19 @@ Using 1024 bit primes on my four year old mac the browser takes between 0.05s an
 
 Other JavaScript source files in the jar show the original copyright of the libraries and the un-minified client session: 
 
-  - **js/biginteger.js** BigInteger math package. 
-  - **js/isaac.js** A random number generator only used if the browser does not have window.crypto secure random number generator. 
-  - **js/random.js** A random number class which tries to use window.crypto or window.msCrypto random numbers else fall-backs to Isaac generator. 
-  - **js/sha256.js** The Crypto.JS SHA256 hash algorithm. 
-  - **js/sha1.js** The Crypto.JS SHA1 hash algorithm.   
-  - **js/thinbus-srp6client.js** The SRP client session
+  - `js/biginteger.js` BigInteger math package. 
+  - `js/isaac.js` A random number generator only used if the browser does not have window.crypto secure random number generator. 
+  - `js/random.js` A random number class which tries to use window.crypto or window.msCrypto random numbers else fall-backs to Isaac generator. 
+  - `js/sha256.js` The Crypto.JS SHA256 hash algorithm. 
+  - `js/sha1.js` The Crypto.JS SHA1 hash algorithm.   
+  - `js/thinbus-srp6client.js` The SRP client session
 
 ## Secure Random Numbers
 
 The file `js/random.js` attempts to use the the WebCryptoAPI secure random number generator provided by the browsers  as IE11, Chrome, Firefox and Safari. If it does not find this API it then falls back to using the `js/isaac.js` random number generator. You may wish to disallow either registration, or login, or both from browsers which don't have the secure random number WebCryptoAPI. This can be checked by calling `random16byteHex.isWebCryptoAPI()`. If you do allow isaac be used with older browsers then it is recommended that you add the following 'onkeyup' to all input fields: 
 
 ```Javascript
+// inside an onkeyup event handler
 random16byteHex.advance(Math.floor(event.keyCode/4));  
 ```
 
