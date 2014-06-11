@@ -173,11 +173,9 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>yuicompressor-maven-plugin</artifactId>
-				<version>1.1</version>
 				<executions>
 					<execution>
 						<goals>
@@ -186,29 +184,22 @@
 					</execution>
 				</executions>
 				<configuration>
-					<excludes>
-						<exclude>*/*</exclude>
-					</excludes>
-					<force>true</force>
-					<nosuffix>true</nosuffix>
-					<removeIncluded>true</removeIncluded>
 					<aggregations>
 						<aggregation>
 							<insertNewLine>true</insertNewLine>
 							<output>${project.build.directory}/classes/js/thinbus-srp6a-min.js</output>
 							<includes>
-								<include>${project.build.directory}/classes/js/biginteger.js</include>
-								<include>${project.build.directory}/classes/js/isaac.js</include>
-								<include>${project.build.directory}/classes/js/random.js</include>
-								<include>${project.build.directory}/classes/js/sha256.js</include>
-								<include>${project.build.directory}/classes/js/sha1.js</include>
-								<include>${project.build.directory}/classes/js/thinbus-srp6client.js</include>
+								<include>${project.build.directory}/classes/js/biginteger-min.js</include>
+								<include>${project.build.directory}/classes/js/isaac-min.js</include>
+								<include>${project.build.directory}/classes/js/random-min.js</include>
+								<include>${project.build.directory}/classes/js/sha256-min.js</include>
+								<include>${project.build.directory}/classes/js/sha1-min.js</include>
+								<include>${project.build.directory}/classes/js/thinbus-srp6client-min.js</include>
 							</includes>
 						</aggregation>
 					</aggregations>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>

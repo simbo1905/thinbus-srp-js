@@ -7,7 +7,7 @@ import com.nimbusds.srp6.SRP6Exception;
 import com.nimbusds.srp6.SRP6ServerSession;
 import com.nimbusds.srp6.SRP6ServerSession.State;
 
-abstract class SRP6JavascriptServerSession {
+abstract public class SRP6JavascriptServerSession {
 
 	/**
 	 * Increments this SRP-6a authentication session to {@link State#STEP_1}.
