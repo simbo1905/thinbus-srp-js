@@ -1,6 +1,6 @@
 /**
  * Browser aligned tools for Secure Remote Password (SRP-6a) authentication. 
- * Provides SRP6Sesssion class(es) which matches the Javascript implementation
+ * Provides SRP6Sesssion classes which matches the Javascript implementation
  *
  * @author Simon Massey
  */

@@ -27,15 +27,33 @@ public class SRP6JavascriptServerSessionSHA1 extends SRP6JavascriptServerSession
 	 */
 	public static int HASH_HEX_LENGTH = 40;
 
+	/**
+	 * Create a SHA1 server session compatible with a JavaScript client session.
+	 * 
+	 * You can generate your own with openssl see {@link OpenSSLCryptoConfig}
+	 * 
+	 * @param N
+	 *            The large safe prime in radix10
+	 * @param g
+	 *            The safe prime generator in radix10
+	 */
 	public SRP6JavascriptServerSessionSHA1(String N, String g) {
 		super(new SRP6CryptoParams(fromDecimal(N), fromDecimal(g), "SHA-1"));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String step1(final String username, final String salt, final String v) {
 		BigInteger B = session.step1(username, fromHex(salt), fromHex(v));
 		return toHex(B);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String step2(final String A, final String M1) throws Exception {
 		BigInteger M2 = session.step2(fromHex(A), fromHex(M1));
 		String M2str = toHex(M2);
@@ -44,15 +62,22 @@ public class SRP6JavascriptServerSessionSHA1 extends SRP6JavascriptServerSession
 	}
 
 	/**
-	 * k is actually fixed and done with hash padding routine so passed from the
-	 * server than recomputed in every javascript client.
-	 * 
-	 * @return 'k' calculated as H( N, g )
+	 * {@inheritDoc}
 	 */
+	@Override
 	public String k() {
 		return toHex(SRP6Routines.computeK(config.getMessageDigestInstance(), config.N, config.g));
 	}
 
+	/**
+	 * Outputs the configuration in the way which can be used to configure
+	 * JavaScript.
+	 * 
+	 * Note that 'k' is fixed but uses the byte array constructor of BigInteger
+	 * which is not available in JavaScript to you must set it as configuration.
+	 * 
+	 * @return Parameters required by JavaScript client.
+	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -62,6 +87,9 @@ public class SRP6JavascriptServerSessionSHA1 extends SRP6JavascriptServerSession
 		return builder.toString();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getState() {
 		return session.getState().name();

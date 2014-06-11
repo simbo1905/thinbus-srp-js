@@ -49,11 +49,35 @@ abstract class SRP6JavascriptServerSession {
 	 */
 	public abstract String step2(final String A, final String M1) throws Exception;
 
+	/**
+	 * Returns the underlying session state as a String for JavaScript testing.
+	 * 
+	 * @return The current state.
+	 */
 	public abstract String getState();
 
+	/**
+	 * The crypto parameters for the SRP-6a protocol. These must be agreed
+	 * between client and server before authentication and consist of a large
+	 * safe prime 'N', a corresponding generator 'g' and a hash function
+	 * algorithm 'H'. You can generate your own with openssl using
+	 * {@link OpenSSLCryptoConfig}
+	 * 
+	 */
 	protected final SRP6CryptoParams config;
+
+	/**
+	 * The underlying Nimbus session which will be configure for JavaScript
+	 * interactions
+	 */
 	protected final SRP6ServerSession session;
 	
+	/**
+	 * Constructs a JavaScript compatible server session which configures an
+	 * underlying Nimbus SRP6ServerSession.
+	 * 
+	 * @param srp6CryptoParams
+	 */
 	public SRP6JavascriptServerSession(SRP6CryptoParams srp6CryptoParams) {
 		this.config = srp6CryptoParams;
 		session = new SRP6ServerSession(config);
@@ -62,6 +86,22 @@ abstract class SRP6JavascriptServerSession {
 		session.setServerEvidenceRoutine(new HexHashedServerEvidenceRoutine());
 	}
 
+	/**
+	 * k is actually fixed and done with hash padding routine which uses
+	 * java.net.BigInteger byte array constructor so this is a convenience
+	 * method to get at the Java generated value to use in the configurage of
+	 * the Javascript
+	 * 
+	 * @return 'k' calculated as H( N, g )
+	 */
+	public abstract String k();
+
+	/**
+	 * Turn a radix10 string into a java.net.BigInteger
+	 * 
+	 * @param base10
+	 * @return
+	 */
 	public static BigInteger fromDecimal(String base10) {
 		return new BigInteger(base10, 10);
 	}
