@@ -46,6 +46,8 @@ public class SRP6JavascriptServerSessionSHA1 extends SRP6JavascriptServerSession
 	/**
 	 * k is actually fixed and done with hash padding routine so passed from the
 	 * server than recomputed in every javascript client.
+	 * 
+	 * @return 'k' calculated as H( N, g )
 	 */
 	public String k() {
 		return toHex(SRP6Routines.computeK(config.getMessageDigestInstance(), config.N, config.g));

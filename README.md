@@ -98,4 +98,12 @@ Note that if you build on jdk17 the junit-js tests which test the javascript cry
 
 GNU GENERAL PUBLIC LICENSE Version 2, June 1991
 
+
+## TODO
+
+```
+[ ] Calculate custom K as hash-hex-bigint rather than configuring the hash-bigint java version. 
+[ ] Provide RFC2945 byte to int conversion routines and upgrade to that. 
+```
+
 End.
