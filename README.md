@@ -23,9 +23,9 @@ Extract the js files from the jar with any zip tool or with:
 jar vxf srp6a-js-XXXX.jar js/thinbus-srp6a-min.js
 ```
 
-If you upgrade versions of the jar then you must **always** extract the js from the jar and replace the script(s) your web pages use. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against newer Java release. 
+If you upgrade versions of the jar then you must **always** extract the js from the jar and replace the script(s) your webapp uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against newer Java release. 
 
-Choose the hashing algorithm to use then configure the Javascript and the Java SRP session to use the same safe prime values `N` and `g`. You **should** use your own safe prime numbers see below. SHA-256 is the strongest hash algorithm Java 1.7 or 1.8 support out of the box so it is recommended. (I have yet to try a custom JCA to use SHA3). The Javascript SHA-256 client session configuration is in `thinbus-srp6a-config-sha256.js`. The corresponding Java server SRP session class is `SRPJavascriptServerSessionSHA256`. The Java code is configured via constructor parameters. The JavaScript codde is configured by defining an `SRP6CryptoParams` object literal before you include the `thinbus-srp6a-config-XXX.js` configuration file: 
+Choose the hashing algorithm you wish to use and then configure matching Javascript and Java SRP session objects. You **should** use your own safe prime numbers `N` and `g` as outlined below. SHA-256 is the strongest hash algorithm Java 1.7 or 1.8 support out of the box so it is recommended. (I have yet to try a custom JCA to enable SHA3). The Javascript SHA-256 client session configuration is in `thinbus-srp6a-config-sha256.js`. The corresponding Java server SRP session class is `SRPJavascriptServerSessionSHA256`. The Java code is configured via constructor parameters. The JavaScript code is configured by defining an `SRP6CryptoParams` object literal before you include the `thinbus-srp6a-config-sha256.js` file: 
 
 ```Javascript
 var SRP6CryptoParams= {
@@ -35,22 +35,21 @@ var SRP6CryptoParams= {
 }
 ``` 
 
-See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript session then tests them against each other. You could even edit that test to add your own safe prime to confirm it works before trying it out wiht a web server and browser. See below for instructions how to generate your own safe prime. 
+An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct format to configure the Javascript session. 
 
-An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that the Nimbus uses the `java.net.BigInteger` byte array constructor to generate `k` in its algorithm. This byte array constructor is not available in JavaScript. This requires that you get the Java code to show you its idea of `k` then provide it as configuration to JavaScript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the format which the Javascript configuration needs. Also the instructions below to generate your own safe prime will print out the correct configuration parameters. 
+## Creating A Custom Large Safe Prime
 
-## Configuration With A Custom Large Prime `N`
-
-It is **strongly** recommended you use openssl to create your own large safe prime. To help with this there is a class which parses the output of the openssl safe prime generation command to prints out the values in the correct string encoding: 
+It is **strongly** recommended you use openssl to create your own large safe prime. To help with this there is a class which parses the output of the openssl safe prime generation command: 
 
 ```sh
 # create your parameters set <bit-length> (use a minimum of 1024 bits)
 openssl dhparam -text <bit-length> | tee /tmp/my_key.txt
 
-# build the runnable jar 
+# build the runnable jar look at the output to see the full jar name
 mvn assembly:assembly
 
-# run the jar of version <version> and set <hash> to the name of the algorithm e.g.pass "SHA-256"
+# run the jar of version <version> in the jar name to math output of build command above 
+# set <hash> to the name of the algorithm e.g. "SHA-256"
 java -jar target/srp6a-js-<version>-jar-with-dependencies.jar /tmp/my_key.txt <hash>
 ```
 
@@ -65,9 +64,9 @@ g base10: 2
 k base16: 1a3d1769e1d6337...
 ```
 
-See `TestSRP6JavascriptClientSessionSHA256.js` which configures both Java and Javascript then tests them against each other. You could even edit that test to add your parameters and then run the test to confirm your safe prime configuration works before attempting to use it with a browser. 
+You then use the `N` and `g` value to configure the Java session and use the `N`, `g` and `k` values to configure the Javascript session as outlined above. Also see `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript session and tests them against each other. You could even edit that test to use your own safe prime to confirm it works before trying it out with a web server and browser. 
 
-Using 1024 bit primes on my four year old mac the browser takes between 0.05s and 0.10s to run the main srp work. The timings depend on which of Firefox, Chrome or Safari I am using. YMMV but this would suggest that you can probably use a prime bigger than 1024 bits.  
+Using 1024 bit primes on my four year old mac the browser takes between 0.05s and 0.10s to run the main srp work. The timings depend on which of Firefox, Chrome or Safari I am using. YMMV but this would suggest that you can probably use a prime larger than 1024 bits.  
 
 ## Javascript Code
 
@@ -82,7 +81,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
 ## Secure Random Numbers
 
-The file `js/random.js` attempts to use the the WebCryptoAPI secure random number generator provided by the browsers  as IE11, Chrome, Firefox and Safari. If it does not find this API it then falls back to using the `js/isaac.js` random number generator. You may wish to disallow either registration, or login, or both from browsers which don't have the secure random number WebCryptoAPI. This can be checked by calling `random16byteHex.isWebCryptoAPI()`. If you do allow isaac be used with older browsers then it is recommended that you add the following 'onkeyup' to all input fields: 
+The file `js/random.js` attempts to use the the WebCryptoAPI secure random number generator provided by modern browsers such as IE11, Chrome, Firefox and Safari. If it does not find this API it then falls back to using the `js/isaac.js` random number generator. You may wish to disallow either registration, or login, or both from browsers which don't have the secure random number WebCryptoAPI. This can be checked by calling `random16byteHex.isWebCryptoAPI()`. If you do allow isaac be used with older browsers then it is recommended that you add the following 'onkeyup' to all input fields: 
 
 ```Javascript
 // inside an onkeyup event handler
@@ -111,7 +110,3 @@ Note that if you build on jdk17 the junit-js tests which test the javascript cry
 GNU GENERAL PUBLIC LICENSE Version 2, June 1991
 
 End.
-
-
-
-Instead use either the `OpenSSLCryptoConfig` commandline which outputs each of `N`, `g` and `k` else use the `toString()` of the Java session which will print out the values which the JavaScript must be configured with. Configuration of the Java is via the constructor. Configure the JavaScript by creating a SRP6CryptoParams before importing one and only one of the `thinbus-srp6a-config-*.js` files. 
