@@ -100,7 +100,8 @@ abstract class SRP6JavascriptServerSession {
 	 * Turn a radix10 string into a java.net.BigInteger
 	 * 
 	 * @param base10
-	 * @return
+	 *            the radix10 string
+	 * @return the BigInteger representation of the number
 	 */
 	public static BigInteger fromDecimal(String base10) {
 		return new BigInteger(base10, 10);

@@ -12,11 +12,12 @@ import java.util.regex.Pattern;
 import com.nimbusds.srp6.SRP6Routines;
 
 /**
- * A class to parse the output of 'openssl dhparam -text <bit-length>'. Will
- * output 'N', 'g', 'k' in bases 10, 10, 16 respectively. Note that k is derived
- * from 'N' and 'g' but Nimbus 1.4.x currently uses a the byte array constructor
- * of BigInteger to computes 'k' which is not available in Javascript so the
- * value genenerated by Java needs to be configure in the Javascript.
+ * A class to parse the output of 'openssl dhparam -text bits' where bits is the
+ * prime number bit length. Will output 'N', 'g', 'k' in bases 10, 10, 16
+ * respectively. Note that k is derived from 'N' and 'g' but Nimbus 1.4.x
+ * currently uses a the byte array constructor of BigInteger to computes 'k'
+ * which is not available in Javascript so the value genenerated by Java needs
+ * to be configure in the Javascript.
  */
 public class OpenSSLCryptoConfig {
 	public static void main(String[] args) throws Exception {

@@ -78,7 +78,7 @@ var random16byteHex = (function() {
     return string;
   };
   	
-  function isCrypto() {
+  function isWebCryptoAPI() {
     if (typeof(window) != 'undefined' && window.crypto && window.crypto.getRandomValues) {
       return true;
     }
@@ -89,7 +89,7 @@ var random16byteHex = (function() {
     }
   };
   
-  var crypto = isCrypto();
+  var crypto = isWebCryptoAPI();
   
   /**
   Run this within onkeyup of html inputs so that user typing makes the random numbers more random:
@@ -101,7 +101,7 @@ var random16byteHex = (function() {
       var end = start + ms;
       var now = Date.now();
       while( now < end ) {
-          var t = now % 2;
+          var t = now % 5;
           isaac.prng(1+t);
           now = Date.now();
       }
@@ -110,7 +110,7 @@ var random16byteHex = (function() {
   
   return {
     'random' : random,
-    'isCrypto' : crypto,
+    'isWebCryptoAPI' : crypto,
     'advance' : advance 
   };
 })();
