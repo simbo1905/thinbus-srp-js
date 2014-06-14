@@ -107,7 +107,7 @@ function (event) {
 * Make the salt column in the database `not null` and add a uniqueness constraint.  
 * Use Thinbus SRP over HTTPS. HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS alone cannot protected against leaking passwords into error messages on your webserver or database server logs. SRP over HTTPS is better than either used alone. 
 * Create a custom large safe prime number `N` of greater than 1024 bits. **Tip:** This requires some testing on the browsers and hardware you are targeting to check that the math runs fast enough for a good user experience.
-* Use symmetric encryption with a key only visible at the webserver to encypt the verifier `v` value in the database. This protects against off site database backups being exposed allowing for dictionary attacks against `v`. 
+* Use symmetric encryption with a key only visible at the webserver to encypt the verifier `v` value in the database. This protects against off site database backups being exposed with risks a dictionary attack against `v` if that value is not encrypted with something like AES. 
 
 ## License
 
