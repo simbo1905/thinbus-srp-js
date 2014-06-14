@@ -77,7 +77,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
 ## Secure Random Numbers
 
-Thinbus tries to use the browsers `window.crypto` or `window.msCrypto` secure random number generator. If that is not available it falls back to an isaac random number generator. Typically if you are deploying outside of a corporate network you cannot control the browser environment; so even if the browser has the secure random API it might be faulty and return pseudo randoms or even a constant value. To counter this risk Thinbus hashes the browser generated random with other values to avoid the risk of repeated values being used for successive user logins attempts made from the same browser. This is discussed in detail below. 
+Thinbus tries to use the browsers `window.crypto` or `window.msCrypto` secure random number generator. If that is not available it falls back to an isaac random number generator. Typically if you are deploying outside of a corporate network you cannot control the browser environment; so even if the browser has the draft standard WebCryptoAPI secure random API it might be faulty and return pseudo randoms or even a constant value. To counter this risk Thinbus hashes the browser generated random with other values to avoid the risk of repeated values being used for successive user logins attempts made from the same browser. This is discussed in detail below. 
 
 An SRP proof of password uses three numbers `s`, `a`, `b` which are specified to be random: 
 
@@ -89,15 +89,16 @@ The salt `s` is a public value in the protocol which is fixed per user and is st
 
 The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information and that `a` must be generated at the browser. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes the username into `x` (and therefore `M1`) making this attack less easy should `a` not be perfectly random. To counter any future bugs that their may be with `window.crypto` implementations returning a constant or pseudorandom number Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts if the browser random number generator is faulty.  
 
-Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus users an Isaac generator with a drop algorithm which discards random numbers in a busy loop for 0.1s at page load. As noted above steps are taken to guard against pseudorandom or constant values being generated at the browser. IMHO this makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. You can disallow the use of Isaac by checking `random16byteHex.isWebCryptoAPI()`. If you do use Isaac you can spin it forward using an 'onkeyup' event handler on the username and password fields with an event handler: 
+Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus users an Isaac generator with a drop algorithm which discards random numbers in a busy loop for 0.1s at page load. As noted above steps are taken to guard against pseudorandom or constant values being generated at the browser. IMHO this makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. You can detected the use of Isaac by checking `random16byteHex.isWebCryptoAPI()` should you wish to abort and tell the user to register with a better browser. If you do use Isaac you can spin it forward using an 'onkeyup' event handler on the username and password fields: 
 
 ```Javascript
 function (event) {
-  // drops randoms in a loop for less than 0.1s defined by use key pressed
+  /* drops randoms in a loop for some millesconds computed from which key is pressed */
   random16byteHex.advance(Math.floor(event.keyCode/4));
 }
+```
 
-The use of `Date.now()` in the generated `a` mitigates the risk of the user reloading the page and having Isaac come up with the same set of random numbers and `Date.now()` is also mixed into the `advance` method to further reduce the probability of any repeated values between multiple login attempts. 
+`Date.now()` is  mixed into the `advance` method to reduce the probability of any repeated values different login attempts or page loads. Also as outlined above `Date.now()` is hashed into the `a` to further reduce the probability of a duplicated value been seen for subsequent login sessions if the randomness is less than perfect. 
 
 ## Build Prerequisites
 
@@ -116,8 +117,10 @@ Note that if you build on jdk17 the junit-js tests which test the javascript cry
 
 ## Recommendations 
 
-* Use Thinbus SRP over HTTPS. HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS may be perfect for your site but in the future may leak passwords into error messages in the logs which malicious people can get at. So SRP over HTTPS is better than either used alone. 
-* Create a custom large safe prime number `N` of greater than 1024 bits. Tip: This requires some testing on the browsers and hardware you are targeting to check that the math runs fast enough for a good user experience. 
+* Make the salt column in the database 'not null' and add a uniqueness constraint.  
+* Use Thinbus SRP over HTTPS. HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS alone cannot protected against leaking passwords into error messages on your webserver or database server logs. So SRP over HTTPS is better than either used alone. 
+* Create a custom large safe prime number `N` of greater than 1024 bits. **Tip**: This requires some testing on the browsers and hardware you are targeting to check that the math runs fast enough for a good user experience.
+* Use symmetric encryption with a key only visible at the webserver to encypt the verifier `v` value in the database. This protects against off site database backups being exposed allowing for dictionary attacks against `v`. 
 
 ## License
 
