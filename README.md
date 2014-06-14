@@ -29,7 +29,7 @@ var SRP6CryptoParams= {
 
 It is recommended that after you have a working setup that you investigate the performance of a custom large safe prime number `N` of greater than 1024 bits for increased security. How to create and configure your own large prime is outlined below.  
 
-An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the value computed by the Java must be added to the configuration fo the Javascript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct format to configure the Javascript session. 
+An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the value computed by the Java must be added to the configuration of the Javascript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct format to configure the Javascript session. 
 
 **Note** If you upgrade versions of the jar then you must **always** extract the js file from the jar and replace the script(s) your webapp uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against newer Java release. 
 
@@ -70,37 +70,48 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
   - `js/biginteger.js` BigInteger math package. 
   - `js/isaac.js` A random number generator which aims to be secure. 
-  - `js/random.js` A random number class which tries to use window.crypto or window.msCrypto random numbers else fall-backs to the `isaac.js` generator. 
+  - `js/random.js` A random number class which tries to use `window.crypto` or `window.msCrypto` random numbers else fall-backs to the `isaac.js` generator. 
   - `js/sha256.js` The Crypto.JS SHA256 hash algorithm. 
   - `js/sha1.js` The Crypto.JS SHA1 hash algorithm.   
   - `js/thinbus-srp6client.js` The SRP client session
 
 ## Secure Random Numbers
 
-Thinbus tries to use the browsers `window.crypto` or `window.msCrypto` secure random number generator. If that is not available it falls back to an isaac random number generator. Typically if you are deploying outside of a corporate network you cannot control the browser environment; so even if the browser has the draft standard WebCryptoAPI secure random API it might be faulty and return pseudo randoms or even a constant value. To counter this risk Thinbus hashes the browser generated random with other values to avoid the risk of repeated values being used for successive user logins attempts made from the same browser. This is discussed in detail below. 
+Thinbus tries to use the browsers `window.crypto` or `window.msCrypto` secure random number generator. If that is not available it falls back to an isaac random number generator. Typically if you are deploying outside of a corporate network you cannot control the browser environment; so even if the browser has the draft standard `WebCryptoAPI` secure random generator it might be faulty and return pseudo randoms or a constant value. To counter this risk Thinbus hashes the browser generated random with other values to avoid the risk of repeated values being seen for successive user logins attempts made from the same browser. This is discussed in detail below. 
 
-An SRP proof of password uses three numbers `s`, `a`, `b` which are specified to be random: 
+An SRP6a proof of password uses three numbers `s`, `a`, `b` which are specified to be random: 
 
-1. The value `b` is the server ephemeral one time key. This is used to compute `B` which is sent from server to browser as the unique challenge per login attempt. Thinbus uses the Java secure random number generator for this value. 
-1. The salt `s` is created at user registration then stored on the server. Thinbus provides an optional salt generation method to use at the browser. You don't have to use this method. You can choose to use a salt entirely generated entirely at the server, a salt which is generated entirely at the browser, else a hybrid salt which is a server generated random hashed into a browser generated random. These options are described below.  
+1. The value `b` is the server ephemeral one time key. This is used to compute `B` which is sent from server to browser as the unique challenge per login attempt. Thinbus uses Nimbus which uses the Java secure random number generator for this value. 
+1. The salt `s` is created at user registration then stored on the server. This is a public value as anyone claiming to be the user is given the salt to perform the proof of password. Thinbus provides an optional salt generation method to use at the browser. You don't have to use this method. You can choose to use a salt entirely generated entirely at the server, a salt which is generated entirely at the browser, else a hybrid salt which is a server generated random hashed into a browser generated random. These options are described below.  
 1. The value `a` is created by the browser as the client ephemeral one time key for a single login attempt. This is then used to compute `A` which is sent from the browser to the server. There are no options here and the approach taken by Thinbus is detailed below. 
 
-The salt `s` is a public value in the protocol which is fixed per user and is stored in the database. The desired property is that it is unique for every user in your system. This can be ensured by adding a uniqueness constraint to the not null salt column within the database which is **strongly recommended**. Then it matters not whether this public value has been generated by the server using a secure random number with a low risk of collision or at the browser with a pseudo random number generator with a higher risk of a collision. 
+The salt `s` is a public value in the protocol which is fixed per user and is stored in the database. The desired property is that it is unique for every user in your system. This can be ensured by adding a uniqueness constraint to a `not null` salt column within the database which is **strongly recommended**. Then it does not matter whether this public value has been generated using a good secure random number at the server or using a weaker random number generator at the browser. You simply reduce the probability of database constraint exceptions if you use a better random number. 
 
-Thinbus provides a method `generateRandomSalt` to run at the browser to create `s` which can be invoked with, or without, passing a sever generated secure random number. It hashes `Date.now()` with a browser random and the optional server random. You may choose to generate the salt solely on the server and bypass this method entirely. The use of `Date.now()` and the hashing algorithm should avoid a total failure to come up with a random value at the browser. Yet you should still add a unique constraint to the not null salt column in the database to counter the risk of any bugs saving the salt into the database. 
+Thinbus provides a method `generateRandomSalt` to run at the browser to create `s` which can be invoked with, or without, passing a sever generated secure random number. It hashes `Date.now()` with a browser random and the optional server random. You may choose to generate the salt solely on the server to bypass this browser method entirely. The use of `Date.now()` and the hashing algorithm should avoid a total failure to come up with values which does not repeat between user registrations. You should still add a unique constraint to the `not null` salt column in the database to counter the risk of any bugs saving the salt into the database. 
 
-The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information and that `a` must be generated at the browser. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes the username into `x` (and therefore `M1`) making this attack less easy should `a` not be perfectly random. To counter any future bugs that their may be with `window.crypto` implementations returning a constant or pseudorandom number Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts if the browser random number generator is faulty.  
+The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information and that `a` must be generated at the browser. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes the username into `x` (and therefore `M1`) making this attack less easy should `a` not be perfectly random. To counter any future bugs that their may be with `window.crypto` implementations returning a constant or pseudorandom number Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts using a faulty browser.  
 
-Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus users an Isaac generator with a drop algorithm which discards random numbers in a busy loop for 0.1s at page load. As noted above steps are taken to guard against pseudorandom or constant values being generated at the browser. IMHO this makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. You can detected the use of Isaac by checking `random16byteHex.isWebCryptoAPI()` should you wish to abort and tell the user to register with a better browser. If you do use Isaac you can spin it forward using an 'onkeyup' event handler on the username and password fields: 
+Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus users an Isaac generator with a drop algorithm. The drop discards random numbers in a busy loop for 0.1s at page load. As noted above steps are taken to guard against pseudorandom or constant values being generated at the browser. IMHO this makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. You can detected the use of Isaac by checking `random16byteHex.isWebCryptoAPI()` should you wish to abort and tell the user to register with a better browser. If you do allow the user of Isaac it is **recommended** that you can spin it forward using an 'onkeyup' event handler attached to the username and password input fields: 
 
 ```Javascript
 function (event) {
-  /* drops randoms in a loop for some millesconds computed from which key is pressed */
+  /* drops randoms in a loop for some millesconds based on the key being pressed */
   random16byteHex.advance(Math.floor(event.keyCode/4));
 }
 ```
 
-`Date.now()` is  mixed into the `advance` method to reduce the probability of any repeated values different login attempts or page loads. Also as outlined above `Date.now()` is hashed into the `a` to further reduce the probability of a duplicated value been seen for subsequent login sessions if the randomness is less than perfect. 
+`Date.now()` is mixed into the `advance` method to reduce the probability of any repeated values different login attempts and between page reloads. Also as outlined above `Date.now()` is also hashed into the `a` regardless of the random generator used to further reduce the probability of a duplicated `A` or `M1` value been seen for subsequent login attempts. 
+
+## Recommendations 
+
+* Make the salt column in the database `not null` and add a uniqueness constraint.  
+* Use Thinbus SRP over HTTPS. HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS alone cannot protected against leaking passwords into error messages on your webserver or database server logs. SRP over HTTPS is better than either used alone. 
+* Create a custom large safe prime number `N` of greater than 1024 bits. **Tip:** This requires some testing on the browsers and hardware you are targeting to check that the math runs fast enough for a good user experience.
+* Use symmetric encryption with a key only visible at the webserver to encypt the verifier `v` value in the database. This protects against off site database backups being exposed allowing for dictionary attacks against `v`. 
+
+## License
+
+GNU GENERAL PUBLIC LICENSE Version 2, June 1991
 
 ## Build Prerequisites
 
@@ -116,16 +127,5 @@ mvn package
 ```
 
 Note that if you build on jdk17 the junit-js tests which test the javascript cryptography take a long while to run. It is highly recommended that you build with JDK1.8 or higher as the Javascript testing is 10x faster than JDK1.7 due to the new Nashorn EMCAScript engine in Java1.8. 
-
-## Recommendations 
-
-* Make the salt column in the database 'not null' and add a uniqueness constraint.  
-* Use Thinbus SRP over HTTPS. HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS alone cannot protected against leaking passwords into error messages on your webserver or database server logs. SRP over HTTPS is better than either used alone. 
-* Create a custom large safe prime number `N` of greater than 1024 bits. **Tip**: This requires some testing on the browsers and hardware you are targeting to check that the math runs fast enough for a good user experience.
-* Use symmetric encryption with a key only visible at the webserver to encypt the verifier `v` value in the database. This protects against off site database backups being exposed allowing for dictionary attacks against `v`. 
-
-## License
-
-GNU GENERAL PUBLIC LICENSE Version 2, June 1991
 
 End.
