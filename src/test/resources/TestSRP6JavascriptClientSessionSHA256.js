@@ -22,7 +22,6 @@ var SRP6CryptoParams= {
 // import script under test
 load("src/main/resources/js/thinbus-srp6a-config-sha256.js");
 
-var salt = "132ce4591a29220827c6198169ea4320";
 var username = "tom@arcot.com";
 var password = "password1234";
 
@@ -39,11 +38,26 @@ function fromHex(h) {
 
 tests({
 
-	saltSanityCheck: function() {
+	saltNoOptionalSanityCheck: function() {
 		var jsClientSession = new SRP6JavascriptClientSessionSHA256();
 		var randoms = [];
 		for( var i = 0; i < 10; i++ ) {
 			var r = jsClientSession.generateRandomSalt();
+			//console.log(r);
+			assert.assertTrue(r.length > 0);
+			randoms.push(r);
+			for( var j = i - 1; j - 1 > 0; j-- ) {
+				var other = randoms[j];
+				assert.assertTrue(r != other); 
+			}
+		}
+	}, 
+	
+	saltWithOptionalSanityCheck: function() {
+		var jsClientSession = new SRP6JavascriptClientSessionSHA256();
+		var randoms = [];
+		for( var i = 0; i < 10; i++ ) {
+			var r = jsClientSession.generateRandomSalt(Math.random());
 			//console.log(r);
 			assert.assertTrue(r.length > 0);
 			randoms.push(r);
@@ -100,6 +114,8 @@ tests({
 	testMutualAuthentiation: function() {
 	
 		var client = new SRP6JavascriptClientSessionSHA256();
+		
+		var salt = client.generateRandomSalt(); // consider passing server secure random to this method
 		
 		var v = client.generateVerifier(salt, username, password);
 		client.step1(username,password);

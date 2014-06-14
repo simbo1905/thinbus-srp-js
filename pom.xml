@@ -6,7 +6,7 @@
 
 	<groupId>org.bitbucket.thinbus</groupId>
 	<artifactId>srp6a-js</artifactId>
-	<version>0.3.0-SNAPSHOT</version>
+	<version>0.4.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Thinbus SRP6a</name>
@@ -192,8 +192,6 @@
 								<include>${project.build.directory}/classes/js/biginteger-min.js</include>
 								<include>${project.build.directory}/classes/js/isaac-min.js</include>
 								<include>${project.build.directory}/classes/js/random-min.js</include>
-								<include>${project.build.directory}/classes/js/sha256-min.js</include>
-								<include>${project.build.directory}/classes/js/sha1-min.js</include>
 								<include>${project.build.directory}/classes/js/thinbus-srp6client-min.js</include>
 							</includes>
 						</aggregation>

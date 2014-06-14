@@ -141,8 +141,19 @@ SRP6JavascriptClientSession.prototype.getState = function() {
 	return this.state;
 }
 
-SRP6JavascriptClientSession.prototype.generateRandomSalt = function() {
-	return random16byteHex.random();
+/* 
+ * Generates a new salt 's' using a pure browser random value else by hashing it with a server specified random value. 
+ * <p>
+ * Always add a unique constraint to where you store this in your database to force that all users on the system have a unique salt. 
+ *
+ * @param opionalServerSalt An optional server salt which is hashed into a locally generated random number. Can be left undefined when calling this function.
+ * @return 's' Salt as a hex string of length driven by the bit size of the hash algorithm 'H'. 
+ */
+SRP6JavascriptClientSession.prototype.generateRandomSalt = function(opionalServerSalt) {
+	var s = random16byteHex.random();
+	// if you invoke without passing the parameter the string then the '+' operator uses 'undefined' so no nullpointer risk here
+	s = this.H(Date.now()+':'+opionalServerSalt+':'+s);
+	return s;
 }
 
 /* 
@@ -243,8 +254,9 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 
 	var x = this.generateX(s, this.I, this.P);
 	//console.log("M1 js x:" + x);
-	// 1024 bit N implies 512 bit key implies 2 x 16byte random implies twice salt generation
-	var aStr = this.generateRandomSalt() + this.generateRandomSalt();
+	// 1024 bit N implies 512 bit key implies 32byte random means two 16 byte values. 
+	// we use Date.now() to prevent the same 'a' being returned for multiple login attempts if `window.crypto` is faulty
+	var aStr = this.H(Date.now()+':'+random16byteHex.random()+':'+random16byteHex.random());
 	this.a = this.fromHex(aStr);
 	//console.log("M1 js a:" + a);
 	this.A = this.g().modPow(this.a, this.N());

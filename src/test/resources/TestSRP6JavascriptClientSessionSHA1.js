@@ -21,7 +21,6 @@ var SRP6CryptoParams= {
 // import script under test
 load("src/main/resources/js/thinbus-srp6a-config-sha1.js");
 
-var salt = "132ce4591a29220827c6198169ea4320";
 var username = "tom@arcot.com";
 var password = "password1234";
 
@@ -41,6 +40,8 @@ tests({
 	testMutualAuthentiation: function() {
 	
 		var client = new SRP6JavascriptClientSessionSHA1();
+		
+		var salt = client.generateRandomSalt(); // consider passing server secure random to this method
 		
 		var v = client.generateVerifier(salt, username, password);
 		client.step1(username,password);
