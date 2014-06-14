@@ -14,10 +14,10 @@ The code current code uses Nimbus 1.5.0-SNAPSHOT from my fork which has not yet 
 The jar `srp6a-js-XXXX.jar` contains:
 
   - `js/thinbus-srp6a-min.js` All the required dependencies minified. 
-  - `js/js/shaXXX-min.js` Hashing algorithms. You must pick and include one. The recommended one is sha256. 
-  - `js/thinbus-srp6a-config-XXX.js` Multiple example configurations. You must include one which matches the chosen hashing algorithm. The recommended one is sha256. 
+  - `js/js/shaXXX-min.js` Hashing algorithms. You must choose one. The recommendation is to use sha256 or better. 
+  - `js/thinbus-srp6a-config-XXX.js` Multiple example configurations. You must include one which matches the chosen hashing algorithm. The recommended one is sha256. You may edit this file to use a custom safe prime which is larger than 1024bits. 
 
-Choose the hashing algorithm you wish to use and then configure matching Javascript and Java SRP session objects. SHA-256 is the strongest hash algorithm Java 1.7/1.8 support out of the box so it is recommended. The Javascript SHA-256 client session configuration is in `thinbus-srp6a-config-sha256.js`. The corresponding Java server SRP session class is `SRPJavascriptServerSessionSHA256`. The Java code is configured via constructor parameters. The JavaScript code is configured by defining an `SRP6CryptoParams` object literal before you include the `thinbus-srp6a-config-sha256.js` file: 
+Extract the js files from the jar with any zip tool. Choose the hashing algorithm you wish to use and then configure matching Javascript and Java SRP session objects. SHA-256 is the strongest hash algorithm Java 1.7/1.8 supports out of the box so it is recommended. The Javascript SHA-256 client session configuration is in `thinbus-srp6a-config-sha256.js`. The corresponding Java server SRP session class is `SRPJavascriptServerSessionSHA256`. The Java code is configured via constructor parameters. The JavaScript code is configured by defining an `SRP6CryptoParams` object literal before you include the `thinbus-srp6a-config-sha256.js` file: 
 
 ```Javascript
 var SRP6CryptoParams= {
@@ -27,18 +27,11 @@ var SRP6CryptoParams= {
 }
 ``` 
 
-It is recommended that after you have a working setup that you investigate the performance of custom large safe prime numbers `N` and `g`. How to create and configure your own large prime is outlined below. Consider using a safe prime larger than 1024 bits for increased security. This requires some testing the browsers and hardware you are targeting to check that the math runs fast enough for a good user experience.  
-
-Extract the js files from the jar with any zip tool e.g.: 
-
-```sh
-# extract minified js file from jar
-jar vxf srp6a-js-XXXX.jar js/thinbus-srp6a-min.js
-```
-
-If you upgrade versions of the jar then you must **always** extract the js file from the jar and replace the script(s) your webapp uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against newer Java release. 
+It is recommended that after you have a working setup that you investigate the performance of a custom large safe prime number `N` of greater than 1024 bits for increased security. How to create and configure your own large prime is outlined below.  
 
 An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the value computed by the Java must be added to the configuration fo the Javascript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct format to configure the Javascript session. 
+
+**Note** If you upgrade versions of the jar then you must **always** extract the js file from the jar and replace the script(s) your webapp uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against newer Java release. 
 
 ## Creating A Custom Large Safe Prime
 
@@ -67,9 +60,9 @@ g base10: 2
 k base16: 1a3d1769e1d6337...
 ```
 
-You then use the `N` and `g` value to configure the Java session and use the `N`, `g` and `k` values to configure the Javascript session as outlined above. Also see `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript session and tests them against each other. You could even edit that test to use your own safe prime to confirm it the test passes before trying it out with a web server and browser. 
+You then use the `N` and `g` value to configure the Java session and use the `N`, `g` and `k` values to configure the Javascript session as outlined above. Also see `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript session and tests them against each other. You could even edit that test to use your own safe prime the confirm it passes that test before trying it out with a web server and browser. 
 
-Using 1024 bit primes on my four year old mac the browser takes between 0.05s and 0.10s to run the main srp work. The timings depend on which of Firefox, Chrome or Safari I am using. YMMV as Javascript runtimes and mobile hardware may vary considerably so you should test comprehensively even if you are sticking with the provided default `N`. 
+Using 1024 bit primes on my four year old mac the browser takes between 0.05s and 0.10s to run the main srp work. The timings depend on which of Firefox, Chrome or Safari I am using. YMMV as Javascript runtimes and mobile hardware may vary considerably so you should test comprehensively even if you are using the provided `N`. 
 
 ## Javascript Code
 
@@ -77,7 +70,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
   - `js/biginteger.js` BigInteger math package. 
   - `js/isaac.js` A random number generator which aims to be secure. 
-  - `js/random.js` A random number class which tries to use window.crypto or window.msCrypto random numbers else fall-backs to Isaac generator. 
+  - `js/random.js` A random number class which tries to use window.crypto or window.msCrypto random numbers else fall-backs to the `isaac.js` generator. 
   - `js/sha256.js` The Crypto.JS SHA256 hash algorithm. 
   - `js/sha1.js` The Crypto.JS SHA1 hash algorithm.   
   - `js/thinbus-srp6client.js` The SRP client session
@@ -94,15 +87,17 @@ An SRP proof of password uses three numbers `s`, `a`, `b` which are specified to
 
 The salt `s` is a public value in the protocol which is fixed per user and is stored in the database. The desired property is that it is unique for every user in your system. This can be ensured by adding a uniqueness constraint to the salt column within the database which is **strongly recommended** (it should also be a 'NOT NULL' column). Then in my view (YMMV) it matters not whether this public value has been generated by the server using a secure random number with a very low risk of collision or at the browser with a pseudo random number generator with a much higher risk of a collision. Thinbus therefore provides a method `generateRandomSalt` to run at the browser which can be invoked with or without passing a sever generated secure random number. It hashes `Date.now()` with a browser random and the optional server random. You may choose to generate the salt solely on the server and bypass this method entirely. The use of `Date.now()` and the hashing algorithm should avoid a total failure to come up with or get a random value to the browser. Yet you should still add a unique constraint to the not null salt column in the database to counter the risk of any bugs in saving the salt into the database. 
 
-The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information and that `a` must be generated at the browser. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes the username into `x` (and therefore `M1`) making this attack less easy should `a` not be perfectly random. To counter any future bugs that their may be with `window.crypto` implementations returning a constant or pseudorandom number Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts if the browser randon number generator is faulty.  
+The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information and that `a` must be generated at the browser. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes the username into `x` (and therefore `M1`) making this attack less easy should `a` not be perfectly random. To counter any future bugs that their may be with `window.crypto` implementations returning a constant or pseudorandom number Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts if the browser random number generator is faulty.  
 
-Note that if `window.crypto` or `window.msCrypto` is not detected Thinbus users an Isaac generator with a drop algorithm which discards the random numbers in a busy loop for 0.1s. As noted above steps are taken to guard against pseudorandom or constant values being generated at the browser making (IMHO/YMMV) Issac a reasonable option. You can disallow the use of Isaac by checking `random16byteHex.isWebCryptoAPI()`. If you do use Isaac you can spin it forward using an 'onkeyup' event handler on the username and password fields with an event handler like: 
+Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus users an Isaac generator with a drop algorithm which discards random numbers in a busy loop for 0.1s at page load. As noted above steps are taken to guard against pseudorandom or constant values being generated at the browser. IMHO this makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. You can disallow the use of Isaac by checking `random16byteHex.isWebCryptoAPI()`. If you do use Isaac you can spin it forward using an 'onkeyup' event handler on the username and password fields with an event handler: 
 
 ```Javascript
 function (event) {
   // drops randoms in a loop for less than 0.1s defined by use key pressed
   random16byteHex.advance(Math.floor(event.keyCode/4));
 }
+
+The use of `Date.now()` in the generated `a` mitigates the risk of the user reloading the page and having Isaac come up with the same set of random numbers and `Date.now()` is also mixed into the `advance` method to further reduce the probability of any repeated values between multiple login attempts. 
 
 ## Build Prerequisites
 
@@ -122,8 +117,7 @@ Note that if you build on jdk17 the junit-js tests which test the javascript cry
 ## Recommendations 
 
 * Use Thinbus SRP over HTTPS. HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS may be perfect for your site but in the future may leak passwords into error messages in the logs which malicious people can get at. So SRP over HTTPS is better than either used alone. 
-* blah blah
-* Consider using Thinbus SRP with two factor authentication. Two factor authentication is at risk of social engineering attacks as described in the book (The Art Of Deception)[http://en.wikipedia.org/wiki/The_Art_of_Deception]. So SRP with two factor authentication is better than two factor authentication used alone. 
+* Create a custom large safe prime number `N` of greater than 1024 bits. Tip: This requires some testing on the browsers and hardware you are targeting to check that the math runs fast enough for a good user experience. 
 
 ## License
 
