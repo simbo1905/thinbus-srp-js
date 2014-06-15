@@ -60,7 +60,7 @@ g base10: 2
 k base16: 1a3d1769e1d6337...
 ```
 
-You then use the `N` and `g` value to configure the Java session and use the `N`, `g` and `k` values to configure the Javascript session as outlined above. Also see `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript session and tests them against each other. You could even edit that test to use your own safe prime the confirm it passes that test before trying it out with a web server and browser. 
+You then use the `N` and `g` value to configure the Java session and use the `N`, `g` and `k` values to configure the Javascript session as outlined above. Also see `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript session and tests them against each other. You could even edit that test to use your own safe prime and confirm the test passes before trying it out with a web server. 
 
 Using 1024 bit primes on my four year old mac the browser takes between 0.05s and 0.10s to run the main srp work. The timings depend on which of Firefox, Chrome or Safari I am using. YMMV as Javascript runtimes and mobile hardware may vary considerably so you should test comprehensively even if you are using the provided `N`. 
 
