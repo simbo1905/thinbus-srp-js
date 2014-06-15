@@ -75,7 +75,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
   - `js/sha1.js` The Crypto.JS SHA1 hash algorithm.   
   - `js/thinbus-srp6client.js` The SRP client session
 
-## Secure Random Numbers
+## Random Numbers At The Browser
 
 Thinbus tries to use the browsers `window.crypto` or `window.msCrypto` secure random number generator. If that is not available it falls back to an isaac random number generator. Typically if you are deploying outside of a corporate network you cannot control the browser environment; so even if the browser has the draft standard `WebCryptoAPI` secure random generator it might be faulty and return pseudo randoms or a constant value. To counter this risk Thinbus hashes the browser generated random with other values to avoid the risk of repeated values being seen for successive user logins attempts made from the same browser. This is discussed in detail below. 
 
@@ -91,7 +91,7 @@ Thinbus provides a method `generateRandomSalt` to run at the browser to create `
 
 The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information and that `a` must be generated at the browser. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes the username into `x` (and therefore `M1`) making this attack less easy should `a` not be perfectly random. To counter any future bugs that their may be with `window.crypto` implementations returning a constant or pseudorandom number Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts using a faulty browser.  
 
-Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus users an Isaac generator with a drop algorithm. The drop discards random numbers in a busy loop for 0.1s at page load. As noted above steps are taken to guard against pseudorandom or constant values being generated at the browser. IMHO this makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. You can detected the use of Isaac by checking `random16byteHex.isWebCryptoAPI()` should you wish to abort and tell the user to register with a better browser. If you do allow the user of Isaac it is **recommended** that you can spin it forward using an 'onkeyup' event handler attached to the username and password input fields: 
+Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus users an Isaac generator with a drop algorithm. The drop discards random numbers in a busy loop for 0.1s at page load. As noted above steps are taken to guard against pseudorandom or constant values being generated at the browser. IMHO this makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. You can detected the use of Isaac by checking `random16byteHex.isWebCryptoAPI()` should you wish to abort and tell the user to register with a better browser. If you do allow the user of Isaac it is **recommended** that you can spin it forward using an `onkeyup` event handler attached to the username and password input fields: 
 
 ```Javascript
 function (event) {
@@ -105,9 +105,10 @@ function (event) {
 ## Recommendations 
 
 * Make the salt column in the database `not null` and add a uniqueness constraint.  
+* Use symmetric encryption with a key only visible at the webserver to encypt the verifier `v` value in the database. This protects against off site database backups being exposed with risks a dictionary attack against `v` if that value is not encrypted with something like AES. 
+* If you allow the default use of issac as a fallback random number generator add `onkeyup` event handlers which advance the random stream as documented above. 
 * Use Thinbus SRP over HTTPS. HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS alone cannot protected against leaking passwords into error messages on your webserver or database server logs. SRP over HTTPS is better than either used alone. 
 * Create a custom large safe prime number `N` of greater than 1024 bits. **Tip:** This requires some testing on the browsers and hardware you are targeting to check that the math runs fast enough for a good user experience.
-* Use symmetric encryption with a key only visible at the webserver to encypt the verifier `v` value in the database. This protects against off site database backups being exposed with risks a dictionary attack against `v` if that value is not encrypted with something like AES. 
 
 ## License
 
