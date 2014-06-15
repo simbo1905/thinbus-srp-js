@@ -41,10 +41,10 @@ It is recommended you use openssl to create your own large safe prime which is l
 # create your parameters set <bit-length> (use a minimum of 1024 bits)
 openssl dhparam -text <bit-length> | tee /tmp/my_key.txt
 
-# build the runnable jar look at the output to see the full jar name
+# build the runnable jar-with-dependencies 
 mvn assembly:assembly
 
-# run the jar of version <version> in the jar name to math output of build command above 
+# run the jar of version <version> in the jar name to match the build command above 
 # set <hash> to the name of the algorithm e.g. "SHA-256"
 java -jar target/srp6a-js-<version>-jar-with-dependencies.jar /tmp/my_key.txt <hash>
 ```
