@@ -256,7 +256,7 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	//console.log("M1 js x:" + x);
 	// 1024 bit N implies 512 bit key implies 32byte random means two 16 byte values. 
 	// we use Date.now() to prevent the same 'a' being returned for multiple login attempts if `window.crypto` is faulty
-	var aStr = this.H(Date.now()+':'+random16byteHex.random()+':'+random16byteHex.random());
+	var aStr = this.H(Date.now()+':'+this.I+':'+random16byteHex.random()+':'+random16byteHex.random());
 	this.a = this.fromHex(aStr);
 	//console.log("M1 js a:" + a);
 	this.A = this.g().modPow(this.a, this.N());
