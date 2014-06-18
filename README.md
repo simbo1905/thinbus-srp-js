@@ -7,8 +7,6 @@ This package provides a [Secure Remote Password](http://srp.stanford.edu/) [SRP-
 
 There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written as a JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). 
 
-The code current code uses Nimbus 1.5.0-SNAPSHOT from my fork which has not yet made it to maven central. So you have to `git clone` then `mvn install` my fork of Nimbus SRP to use this library today. The javascript algorithms are tested using the java scripting runtime.  
-
 ## Using
 
 The jar `srp6a-js-XXXX.jar` contains:
