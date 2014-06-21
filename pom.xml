@@ -32,7 +32,7 @@
 	<scm>
 		<connection>scm:git:https://bitbucket.org/simon_massey/thinbus-srp.git</connection>
 		<developerConnection>scm:git:git@bitbucket.org:simon_massey/thinbus-srp.git</developerConnection>
-		<url>https://bitbucket.org/simon_massey/thinbus-srp.git</url>
+		<url>https://bitbucket.org/simon_massey/thinbus-srp-js</url>
 	</scm>
 
 	<properties>
