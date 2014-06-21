@@ -89,7 +89,7 @@ Thinbus provides a method `generateRandomSalt` to run at the browser to create `
 
 The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information and that `a` must be generated at the browser. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes the username into `x` (and therefore `M1`) making this attack less easy should `a` not be perfectly random. To counter any future bugs that their may be with `window.crypto` implementations returning a constant or pseudorandom number Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts using a faulty browser.  
 
-Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus users an Isaac generator with a drop algorithm. The drop discards random numbers in a busy loop for 0.1s at page load. As noted above steps are taken to guard against pseudorandom or constant values being generated at the browser. IMHO this makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. You can detected the use of Isaac by checking `random16byteHex.isWebCryptoAPI()` should you wish to abort and tell the user to register with a better browser. If you do allow the user of Isaac it is **recommended** that you can spin it forward using an `onkeyup` event handler attached to the username and password input fields: 
+Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus users an Isaac generator with a drop algorithm. The drop discards random numbers in a busy loop for 0.1s at page load. As noted above steps are taken to guard against pseudorandom or constant values being generated at the browser. IMHO this makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. You can detected the use of Isaac by checking `random16byteHex.isWebCryptoAPI()` should you wish to abort and tell the user to use a better browser. If you do allow the use of Isaac it is **recommended** that you spin it forward using an `onkeyup` event handler attached to the username and password input fields: 
 
 ```Javascript
 function (event) {
@@ -98,7 +98,7 @@ function (event) {
 }
 ```
 
-`Date.now()` is mixed into the `advance` method to reduce the probability of any repeated values different login attempts and between page reloads. Also as outlined above `Date.now()` is also hashed into the `a` regardless of the random generator used to further reduce the probability of a duplicated `A` or `M1` value been seen for subsequent login attempts. 
+Also as outlined above `Date.now()` is hashed into `a` regardless of the random generator used to further reduce the possibility of a duplicated `A` value been used for different login attempts. 
 
 ## Recommendations 
 
@@ -110,7 +110,21 @@ function (event) {
 
 ## License
 
-GNU GENERAL PUBLIC LICENSE Version 2, June 1991
+```
+   Copyright 2014 Simon Massey
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+```   
 
 ## Build Prerequisites
 
