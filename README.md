@@ -9,7 +9,7 @@ There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org
 
 ## Using
 
-The jar `srp6a-js-XXXX.jar` contains:
+The file [srp6a-js-1.0.0.jar](http://search.maven.org/#search|ga|1|a%3A%22srp6a-js%22) contains:
 
   - `js/thinbus-srp6a-min.js` All the required dependencies minified. 
   - `js/js/shaXXX-min.js` Hashing algorithms. You must choose one. The recommendation is to use sha256 or better. 
@@ -30,6 +30,17 @@ It is recommended that after you have a working setup that you investigate the p
 An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the value computed by the Java must be added to the configuration of the Javascript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct format to configure the Javascript session. 
 
 **Note** If you upgrade versions of the jar then you must **always** extract the js file from the jar and replace the script(s) your webapp uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against newer Java release. 
+
+## Maven Dependency
+
+```
+	<!-- Thinbus SRP -->
+	<dependency>
+		<groupId>org.bitbucket.simon_massey</groupId>
+		<artifactId>srp6a-js</artifactId>
+		<version>1.0.0</version>
+	</dependency>
+```
 
 ## Creating A Custom Large Safe Prime
 
@@ -87,7 +98,7 @@ The salt `s` is a public value in the protocol which is fixed per user and is st
 
 Thinbus provides a method `generateRandomSalt` to run at the browser to create `s` which can be invoked with, or without, passing a sever generated secure random number. It hashes `Date.now()` with a browser random and the optional server random. You may choose to generate the salt solely on the server to bypass this browser method entirely. The use of `Date.now()` and the hashing algorithm should avoid a total failure to come up with values which does not repeat between user registrations. You should still add a unique constraint to the `not null` salt column in the database to counter the risk of any bugs saving the salt into the database. 
 
-The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information and that `a` must be generated at the browser. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes the username into `x` (and therefore `M1`) making this attack less easy should `a` not be perfectly random. To counter any future bugs that their may be with `window.crypto` implementations returning a constant or pseudorandom number Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts using a faulty browser.  
+The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information and that `a` must be generated at the browser. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes the username into `x` (and therefore `M1`) making this attack less easy should `a` not be perfectly random. To counter any future bugs that there may be with `window.crypto` implementations returning a constant or pseudorandom number Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts using a faulty browser.  
 
 Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus users an Isaac generator with a drop algorithm. The drop discards random numbers in a busy loop for 0.1s at page load. As noted above steps are taken to guard against pseudorandom or constant values being generated at the browser. IMHO this makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. You can detected the use of Isaac by checking `random16byteHex.isWebCryptoAPI()` should you wish to abort and tell the user to use a better browser. If you do allow the use of Isaac it is **recommended** that you spin it forward using an `onkeyup` event handler attached to the username and password input fields: 
 
