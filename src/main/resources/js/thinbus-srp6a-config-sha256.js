@@ -5,7 +5,6 @@ On the server use the matching java class:
 
 	com.nimbusds.srp6.js.SRP6JavascriptServerSessionSHA256 
 	
-Note that 'k' must be output of the servers hashing approach hex string. 
 */
 
 function SRP6JavascriptClientSessionSHA256(){ }

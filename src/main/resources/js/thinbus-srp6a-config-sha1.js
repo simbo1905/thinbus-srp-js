@@ -1,13 +1,10 @@
-
 /**
-This is NOT recommended class as it uses a weaker hash and the 
-least bits which Nimbus SRP supports. 
+This is NOT recommended as it uses a weaker hash. 
 
 On the server use the matching java class: 
 
 	com.nimbusds.srp6.js.SRP6JavascriptServerSessionSHA1
 	
-Note that 'k' must be output of the servers hashing approach hex string. 
 */
 
 function SRP6JavascriptClientSessionSHA1(){ }
