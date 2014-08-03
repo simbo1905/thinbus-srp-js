@@ -9,7 +9,7 @@ There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org
 
 ## Using
 
-The file [srp6a-js-1.0.0.jar](http://search.maven.org/#search|ga|1|a%3A%22srp6a-js%22) contains:
+The file [srp6a-js-1.0.1.jar](http://search.maven.org/#search|ga|1|a%3A%22srp6a-js%22) contains:
 
   - `js/thinbus-srp6a-min.js` All the required dependencies minified. 
   - `js/shaXXX-min.js` Hashing algorithms. You must choose one. The recommendation is to use sha256 or better. 
@@ -40,7 +40,7 @@ An extra implementation detail is that the JavaScript must be configure with `k`
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>srp6a-js</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</dependency>
 ```
 
@@ -153,5 +153,9 @@ mvn package
 ```
 
 Note that if you build on jdk17 the junit-js tests which test the javascript cryptography take a long while to run. It is highly recommended that you build with JDK1.8 or higher as the Javascript testing is 10x faster than JDK1.7 due to the new Nashorn EMCAScript engine in Java1.8. 
+
+## Release Notes
+
+Version 1.0.0 had a major defect in the js code upgrade to 1.0.1 immediately.
 
 End.
