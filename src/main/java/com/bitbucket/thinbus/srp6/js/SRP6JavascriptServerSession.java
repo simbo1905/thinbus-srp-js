@@ -1,9 +1,13 @@
 package com.bitbucket.thinbus.srp6.js;
 
+import static com.nimbusds.srp6.BigIntegerUtils.fromHex;
+import static com.nimbusds.srp6.BigIntegerUtils.toHex;
+
 import java.math.BigInteger;
 
 import com.nimbusds.srp6.SRP6CryptoParams;
 import com.nimbusds.srp6.SRP6Exception;
+import com.nimbusds.srp6.SRP6Routines;
 import com.nimbusds.srp6.SRP6ServerSession;
 import com.nimbusds.srp6.SRP6ServerSession.State;
 
@@ -26,7 +30,10 @@ abstract public class SRP6JavascriptServerSession {
 	 *             If the mehod is invoked in a state other than
 	 *             {@link State#INIT}.
 	 */
-	public abstract String step1(final String username, final String salt, final String v);
+	public String step1(final String username, final String salt, final String v) {
+		BigInteger B = session.step1(username, fromHex(salt), fromHex(v));
+		return toHex(B);
+	}
 
 	/**
 	 * Increments this SRP-6a authentication session to {@link State#STEP_2}.
@@ -47,14 +54,21 @@ abstract public class SRP6JavascriptServerSession {
 	 *             If the mehod is invoked in a state other than
 	 *             {@link State#STEP_1}.
 	 */
-	public abstract String step2(final String A, final String M1) throws Exception;
+	public String step2(final String A, final String M1) throws Exception {
+		BigInteger M2 = session.step2(fromHex(A), fromHex(M1));
+		String M2str = toHex(M2);
+		M2str = HexHashedRoutines.leadingZerosPad(M2str, HASH_HEX_LENGTH);
+		return M2str;
+	}
 
 	/**
 	 * Returns the underlying session state as a String for JavaScript testing.
 	 * 
 	 * @return The current state.
 	 */
-	public abstract String getState();
+	public String getState() {
+		return session.getState().name();
+	}
 
 	/**
 	 * The crypto parameters for the SRP-6a protocol. These must be agreed
@@ -89,12 +103,14 @@ abstract public class SRP6JavascriptServerSession {
 	/**
 	 * k is actually fixed and done with hash padding routine which uses
 	 * java.net.BigInteger byte array constructor so this is a convenience
-	 * method to get at the Java generated value to use in the configurage of
+	 * method to get at the Java generated value to use in the configuration of
 	 * the Javascript
 	 * 
 	 * @return 'k' calculated as H( N, g )
 	 */
-	public abstract String k();
+	public String k() {
+		return toHex(SRP6Routines.computeK(config.getMessageDigestInstance(), config.N, config.g));
+	}
 
 	/**
 	 * Turn a radix10 string into a java.net.BigInteger
@@ -105,5 +121,28 @@ abstract public class SRP6JavascriptServerSession {
 	 */
 	public static BigInteger fromDecimal(String base10) {
 		return new BigInteger(base10, 10);
+	}
+
+	/**
+	 * This must match the expected character length of the specified algorithm
+	 */
+	public static int HASH_HEX_LENGTH;
+
+	/**
+	 * Outputs the configuration in the way which can be used to configure
+	 * JavaScript.
+	 * 
+	 * Note that 'k' is fixed but uses the byte array constructor of BigInteger
+	 * which is not available in JavaScript to you must set it as configuration.
+	 * 
+	 * @return Parameters required by JavaScript client.
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(String.format("g: %s\n", config.g.toString(10)));
+		builder.append(String.format("N: %s\n", config.N.toString(10)));
+		builder.append(String.format("k: %s\n", k()));
+		return builder.toString();
 	}
 }
