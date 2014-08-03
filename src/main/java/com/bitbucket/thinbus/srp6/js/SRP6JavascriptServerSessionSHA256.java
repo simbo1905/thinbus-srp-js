@@ -15,7 +15,7 @@ import com.nimbusds.srp6.SRP6CryptoParams;
  */
 public class SRP6JavascriptServerSessionSHA256 extends SRP6JavascriptServerSession {
 
-	private static final String SHA_256 = "SHA-256";
+	public static final String SHA_256 = "SHA-256";
 
 	/**
 	 * This must match the expected character length of the specified algorithm

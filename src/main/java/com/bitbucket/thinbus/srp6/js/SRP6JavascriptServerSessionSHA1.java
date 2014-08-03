@@ -15,7 +15,7 @@ import com.nimbusds.srp6.SRP6CryptoParams;
  */
 public class SRP6JavascriptServerSessionSHA1 extends SRP6JavascriptServerSession {
 
-	private static final String SHA_1 = "SHA-1";
+	public static final String SHA_1 = "SHA-1";
 
 	/**
 	 * This must match the expected character length of the specified algorithm
