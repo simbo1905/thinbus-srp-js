@@ -12,7 +12,7 @@ There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org
 The file [srp6a-js-1.0.0.jar](http://search.maven.org/#search|ga|1|a%3A%22srp6a-js%22) contains:
 
   - `js/thinbus-srp6a-min.js` All the required dependencies minified. 
-  - `js/js/shaXXX-min.js` Hashing algorithms. You must choose one. The recommendation is to use sha256 or better. 
+  - `js/shaXXX-min.js` Hashing algorithms. You must choose one. The recommendation is to use sha256 or better. 
   - `js/thinbus-srp6a-config-XXX.js` Multiple example configurations. You must include one which matches the chosen hashing algorithm. The recommended one is sha256.  
 
 Extract the js files from the jar with any zip tool. Choose the hashing algorithm you wish to use and then configure matching Javascript and Java SRP session objects. SHA-256 is the strongest hash algorithm Java 1.7/1.8 supports out of the box so it is recommended. The Javascript SHA-256 client session configuration is in `thinbus-srp6a-config-sha256.js`. The corresponding Java server SRP session class is `SRPJavascriptServerSessionSHA256`. The Java code is configured via constructor parameters. The JavaScript code is configured by defining an `SRP6CryptoParams` object literal before you include the `thinbus-srp6a-config-sha256.js` file: 
