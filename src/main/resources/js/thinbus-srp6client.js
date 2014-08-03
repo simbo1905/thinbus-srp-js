@@ -81,7 +81,7 @@ function SRP6JavascriptClientSession() {
 	/** private<p>
 	 * 
 	 * Computes x = H(s | H(I | ":" | P))
-	 * <p> Uses string concatination before hashing. 
+	 * <p> Uses string concatenation before hashing. 
 	 * <p> Specification RFC 2945
 	 *
 	 * @param salt     The salt 's'. Must not be null or empty.
@@ -94,7 +94,7 @@ function SRP6JavascriptClientSession() {
 		this.check(identity, "identity");
 		this.check(password, "password");
 		var hash1 = this.H(identity+':'+password);
-		var hashStr = salt+this.hash1;
+		var hashStr = salt+hash1;
 		var hash = this.H(hashStr.toUpperCase());
 		this.x = this.fromHex(hash).mod(this.N());
 		return this.x;
@@ -119,6 +119,12 @@ function SRP6JavascriptClientSession() {
 	 * @return The resulting session key 'S'.
 	 */
 	this.computeSessionKey = function(k, x, u, a, B) {
+		this.check(k, "k");
+		this.check(x, "x");
+		this.check(u, "u");
+		this.check(a, "a");
+		this.check(B, "B");
+	
 		var exp = u.multiply(x).add(a);
 		var tmp = this.g().modPow(x, this.N()).multiply(k);
 		return B.subtract(tmp).modPow(exp, this.N());
@@ -151,7 +157,7 @@ SRP6JavascriptClientSession.prototype.getState = function() {
  */
 SRP6JavascriptClientSession.prototype.generateRandomSalt = function(opionalServerSalt) {
 	var s = random16byteHex.random();
-	// if you invoke without passing the parameter the string then the '+' operator uses 'undefined' so no nullpointer risk here
+	// if you invoke without passing the string parameter the '+' operator uses 'undefined' so no nullpointer risk here
 	s = this.H(Date.now()+':'+opionalServerSalt+':'+s);
 	return s;
 }
@@ -167,6 +173,7 @@ SRP6JavascriptClientSession.prototype.generateRandomSalt = function(opionalServe
  * @return The resulting verifier 'v' as a hex string
  */
 SRP6JavascriptClientSession.prototype.generateVerifier = function(salt, identity, password) {
+	// no need to check the parameters as generateX will do this
 	var x = this.generateX(salt, identity, password);
 	this.v = this.g().modPow(x, this.N());
 	return this.toHex(this.v);
@@ -207,8 +214,8 @@ SRP6JavascriptClientSession.prototype.step1 = function(identity, password) {
  * @return The resulting 'u' value.
  */
 SRP6JavascriptClientSession.prototype.computeU = function(Astr, Bstr) {
- 	this.check(Astr);
- 	this.check(Bstr);
+ 	this.check(Astr, "Astr");
+ 	this.check(Bstr, "Bstr");
 	var output = this.H(Astr+Bstr);
 	//console.log("jshashAB:"+output);
 	return new BigInteger(""+output,16);
@@ -234,16 +241,16 @@ SRP6JavascriptClientSession.prototype.computeU = function(Astr, Bstr) {
  * @throws SRP6Exception         If the public server value 'B' is invalid.
  */
 SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
-	this.check(s);
+	this.check(s, "s");
 	//console.log("M1 js s:" + s);
-	this.check(BB);
+	this.check(BB, "BB");
 	//console.log("M1 js BB:" + BB);
-
 	
 	if( this.state != this.STEP_1 ) {
 	  throw new Error("IllegalStateException not in state STEP_1");
 	}
 	
+	// this is checked when passed to computeSessionKey
 	this.B = this.fromHex(BB); 
 	
 	if (this.B.mod(this.N()).equals(BigInteger.ZERO)) {
@@ -252,18 +259,26 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	
 	//console.log("M1 js k:" + k);
 
+	// this is checked when passed to computeSessionKey
 	var x = this.generateX(s, this.I, this.P);
 	//console.log("M1 js x:" + x);
+	
 	// 1024 bit N implies 512 bit key implies 32byte random means two 16 byte values. 
 	// we use Date.now() to prevent the same 'a' being returned for multiple login attempts if `window.crypto` is faulty
 	var aStr = this.H(Date.now()+':'+this.I+':'+random16byteHex.random()+':'+random16byteHex.random());
+	// this is checked when passed to computeSessionKey
 	this.a = this.fromHex(aStr);
 	//console.log("M1 js a:" + a);
+	
 	this.A = this.g().modPow(this.a, this.N());
 	//console.log("M1 js A:" + A);
+	this.check(this.A, "A");
+	
 	this.u = this.computeU(this.A.toString(16),BB);
 	//console.log("M1 js u:" + u);
+	
 	this.S = this.computeSessionKey(this.k, x, this.u, this.a, this.B);
+	this.check(this.S, "S");
 	
 	//console.log("jsU:" + toHex(u));
 	//console.log("jsS:" + toHex(S));
@@ -271,7 +286,7 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	var AA = this.toHex(this.A);
 	
 	this.M1str = this.H(AA+BB+this.toHex(this.S));
-	
+	this.check(this.M1str, "M1str");
 	//console.log("M1str:" + this.M1str);
 	
 	//console.log("jsABS:" + AA+BB+this.toHex(this.S));
