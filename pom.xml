@@ -205,6 +205,21 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>ro.isdc.wro4j</groupId>
+				<artifactId>wro4j-maven-plugin</artifactId>
+				<version>1.7.6</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jshint</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<options>devel,noarg,latedef,undef,unused,strict,browser</options>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>

@@ -27,7 +27,8 @@ Javascript client which speaks hex strings.
 It uses random 16 byte hex strings as random key 'a'. 
 */
 function SRP6JavascriptClientSession() {
-
+	"use strict";
+	
 	/**
 	 * The session is initialised and ready to begin authentication
 	 * by proceeding to {@link #STEP_1}.
@@ -73,10 +74,10 @@ function SRP6JavascriptClientSession() {
 	
 	// private
 	this.check = function(v, name) {
-		if( typeof v == 'undefined' || v == null || v == "" || v == "0" ) {
+		if( typeof v == 'undefined' || v === null || v === "" || v == "0" ) {
 			throw new Error(name+" must not be null, empty or zero");
 		}
-	}
+	};
 	
 	/** private<p>
 	 * 
@@ -98,7 +99,7 @@ function SRP6JavascriptClientSession() {
 		var hash = this.H(hashStr.toUpperCase());
 		this.x = this.fromHex(hash).mod(this.N());
 		return this.x;
-	}
+	};
 
 	/**
 	 * Computes the session key S = (B - k * g^x) ^ (a + u * x) (mod N)
@@ -128,24 +129,28 @@ function SRP6JavascriptClientSession() {
 		var exp = u.multiply(x).add(a);
 		var tmp = this.g().modPow(x, this.N()).multiply(k);
 		return B.subtract(tmp).modPow(exp, this.N());
-	}
+	};
 }
 
 // public helper
 SRP6JavascriptClientSession.prototype.toHex = function(n) {
+	"use strict";
 	return n.toString(16);
-}
+};
 
 // public helper
+/* jshint ignore:start */
 SRP6JavascriptClientSession.prototype.fromHex = function(s) {
-	var ss = ""+s; // jdk1.7 rhino requires string concat
-	return new BigInteger(ss, 16);
-}
+	"use strict";
+	return new BigInteger(""+s, 16); // jdk1.7 rhino requires string concat
+};
+/* jshint ignore:end */
 
 // public getter
 SRP6JavascriptClientSession.prototype.getState = function() {
+	"use strict";
 	return this.state;
-}
+};
 
 /* 
  * Generates a new salt 's' using a pure browser random value else by hashing it with a server specified random value. 
@@ -156,11 +161,17 @@ SRP6JavascriptClientSession.prototype.getState = function() {
  * @return 's' Salt as a hex string of length driven by the bit size of the hash algorithm 'H'. 
  */
 SRP6JavascriptClientSession.prototype.generateRandomSalt = function(opionalServerSalt) {
-	var s = random16byteHex.random();
+	"use strict";
+	var s = null;
+	
+	/* jshint ignore:start */
+	s = random16byteHex.random();
+	/* jshint ignore:end */
+
 	// if you invoke without passing the string parameter the '+' operator uses 'undefined' so no nullpointer risk here
-	s = this.H(Date.now()+':'+opionalServerSalt+':'+s);
-	return s;
-}
+	var ss = this.H(Date.now()+':'+opionalServerSalt+':'+s);
+	return ss;
+};
 
 /* 
  * Generates a new verifier 'v' from the specified parameters.
@@ -173,11 +184,12 @@ SRP6JavascriptClientSession.prototype.generateRandomSalt = function(opionalServe
  * @return The resulting verifier 'v' as a hex string
  */
 SRP6JavascriptClientSession.prototype.generateVerifier = function(salt, identity, password) {
+	"use strict";
 	// no need to check the parameters as generateX will do this
 	var x = this.generateX(salt, identity, password);
 	this.v = this.g().modPow(x, this.N());
 	return this.toHex(this.v);
-}
+};
 
 /**
  * Records the identity 'I' and password 'P' of the authenticating user.
@@ -194,15 +206,16 @@ SRP6JavascriptClientSession.prototype.generateVerifier = function(salt, identity
  *                               other than {@link State#INIT}.
  */
 SRP6JavascriptClientSession.prototype.step1 = function(identity, password) {
+	"use strict";
 	this.check(identity, "identity");
 	this.check(password, "password");
 	this.I = identity;
 	this.P = password;
 	if( this.state != this.INIT ) {
-	  throw new Error("IllegalStateException not in state INIT");
+		throw new Error("IllegalStateException not in state INIT");
 	}
 	this.state = this.STEP_1;
-}
+};
 
 /**
  * Computes the random scrambling parameter u = H(A | B)
@@ -214,12 +227,15 @@ SRP6JavascriptClientSession.prototype.step1 = function(identity, password) {
  * @return The resulting 'u' value.
  */
 SRP6JavascriptClientSession.prototype.computeU = function(Astr, Bstr) {
- 	this.check(Astr, "Astr");
- 	this.check(Bstr, "Bstr");
+	"use strict";
+	this.check(Astr, "Astr");
+	this.check(Bstr, "Bstr");
+	/* jshint ignore:start */
 	var output = this.H(Astr+Bstr);
 	//console.log("jshashAB:"+output);
 	return new BigInteger(""+output,16);
-}
+	/* jshint ignore:end */
+};
 
 /**
  * Receives the password salt 's' and public value 'B' from the server.
@@ -241,20 +257,27 @@ SRP6JavascriptClientSession.prototype.computeU = function(Astr, Bstr) {
  * @throws SRP6Exception         If the public server value 'B' is invalid.
  */
 SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
+	"use strict";
 	this.check(s, "s");
 	//console.log("M1 js s:" + s);
 	this.check(BB, "BB");
 	//console.log("M1 js BB:" + BB);
 	
 	if( this.state != this.STEP_1 ) {
-	  throw new Error("IllegalStateException not in state STEP_1");
+		throw new Error("IllegalStateException not in state STEP_1");
 	}
 	
 	// this is checked when passed to computeSessionKey
 	this.B = this.fromHex(BB); 
+
+	var ZERO = null;
 	
-	if (this.B.mod(this.N()).equals(BigInteger.ZERO)) {
-	  throw new Error("SRP6Exception bad server public value 'B'");
+	/* jshint ignore:start */
+	ZERO = BigInteger.ZERO;
+	/* jshint ignore:end */
+	
+	if (this.B.mod(this.N()).equals(ZERO)) {
+		throw new Error("SRP6Exception bad server public value 'B'");
 	}
 	
 	//console.log("M1 js k:" + k);
@@ -263,9 +286,17 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	var x = this.generateX(s, this.I, this.P);
 	//console.log("M1 js x:" + x);
 	
+	var r1 = null;
+	var r2 = null;
+	
+	/* jshint ignore:start */
+	r1 = random16byteHex.random();
+	r2 = random16byteHex.random();
+	/* jshint ignore:end */
+	
 	// 1024 bit N implies 512 bit key implies 32byte random means two 16 byte values. 
 	// we use Date.now() to prevent the same 'a' being returned for multiple login attempts if `window.crypto` is faulty
-	var aStr = this.H(Date.now()+':'+this.I+':'+random16byteHex.random()+':'+random16byteHex.random());
+	var aStr = this.H(Date.now()+':'+this.I+':'+r1+':'+r2);
 	// this is checked when passed to computeSessionKey
 	this.a = this.fromHex(aStr);
 	//console.log("M1 js a:" + a);
@@ -297,7 +328,7 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	
 	this.state = this.STEP_2;
 	return { A: AA, M1: this.M1str };
-}
+};
 
 /**
  * Receives the server evidence message 'M1'. The session is incremented
@@ -315,6 +346,7 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
  *                               invalid.
  */
 SRP6JavascriptClientSession.prototype.step3 = function(M2) {
+	"use strict";
 	this.check(M2);
 	
 	// Check current state
@@ -338,4 +370,4 @@ SRP6JavascriptClientSession.prototype.step3 = function(M2) {
 	this.state = this.STEP_3;
 	
 	return true;
-}
+};

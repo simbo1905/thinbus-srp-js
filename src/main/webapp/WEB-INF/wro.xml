@@ -1,0 +1,5 @@
+<groups xmlns="http://www.isdc.ro/wro">
+  <group name="thinbus-srp6a-min.js">
+    <js>classpath:js/thinbus-srp6client.js</js>
+  </group>
+</groups>
