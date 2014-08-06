@@ -154,6 +154,6 @@ Note that if you build on jdk17 the junit-js tests which test the javascript cry
 
 Version 1.0.1
 
-A critical defect was foudn in the 1.0.0 js logic. Please upgrade to 1.0.1 immediately. To prevent a regression a test has been added which tests the javascript password algorithm against identical logic implemented in java. The project has also now been configured to use [JsHint](http://www.jshint.com/docs/). This fails the build for the sort of bug which javascript is silent about but a java compiler would notice. 
+A critical defect was found in the 1.0.0 js logic. Please upgrade to 1.0.1 immediately. To prevent a regression a test has been added which tests the javascript password algorithm against identical logic implemented in java. The project has also now been configured to use [JsHint](http://www.jshint.com/docs/). This fails the build for the sort of bug which javascript is silent about but a java compiler would notice. 
 
 End.

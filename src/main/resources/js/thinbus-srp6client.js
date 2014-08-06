@@ -74,7 +74,7 @@ function SRP6JavascriptClientSession() {
 	
 	// private
 	this.check = function(v, name) {
-		if( typeof v == 'undefined' || v === null || v === "" || v == "0" ) {
+		if( typeof v === 'undefined' || v === null || v === "" || v === "0" ) {
 			throw new Error(name+" must not be null, empty or zero");
 		}
 	};
@@ -211,7 +211,7 @@ SRP6JavascriptClientSession.prototype.step1 = function(identity, password) {
 	this.check(password, "password");
 	this.I = identity;
 	this.P = password;
-	if( this.state != this.INIT ) {
+	if( this.state !== this.INIT ) {
 		throw new Error("IllegalStateException not in state INIT");
 	}
 	this.state = this.STEP_1;
@@ -263,7 +263,7 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	this.check(BB, "BB");
 	//console.log("M1 js BB:" + BB);
 	
-	if( this.state != this.STEP_1 ) {
+	if( this.state !== this.STEP_1 ) {
 		throw new Error("IllegalStateException not in state STEP_1");
 	}
 	
@@ -350,7 +350,7 @@ SRP6JavascriptClientSession.prototype.step3 = function(M2) {
 	this.check(M2);
 	
 	// Check current state
-	if (this.state != this.STEP_2)
+	if (this.state !== this.STEP_2)
 		throw new Error("IllegalStateException State violation: Session must be in STEP_2 state");
 
 	//console.log("M2 js A:" + toHex(A));
@@ -362,7 +362,7 @@ SRP6JavascriptClientSession.prototype.step3 = function(M2) {
 	//console.log("M2 jsServerM2:" + M2);
 	//console.log("M2 jsClientM2:" + computedM2);
 	
-	if ( ""+computedM2 != ""+M2) {
+	if ( ""+computedM2 !== ""+M2) {
 		console.log("server  M2:"+M2+"\ncomputedM2:"+computedM2);
 		throw new Error("SRP6Exception Bad server credentials");
 	}
