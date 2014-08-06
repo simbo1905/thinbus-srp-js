@@ -7,32 +7,6 @@ This package provides a [Secure Remote Password](http://srp.stanford.edu/) [SRP-
 
 There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written as a JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). 
 
-## Using
-
-The file [srp6a-js-1.0.1.jar](http://search.maven.org/#search|ga|1|a%3A%22srp6a-js%22) contains:
-
-  - `js/thinbus-srp6a-min.js` All the required dependencies minified. 
-  - `js/shaXXX-min.js` Hashing algorithms. You must choose one. The recommendation is to use sha256 or better. 
-  - `js/thinbus-srp6a-config-XXX.js` Multiple example configurations. You must include one which matches the chosen hashing algorithm. The recommended one is sha256.  
-
-Extract the js files from the jar with any zip tool. Choose the hashing algorithm you wish to use and then configure matching Javascript and Java SRP session objects. SHA-256 is the strongest hash algorithm Java 1.7/1.8 supports out of the box so it is recommended. The Javascript SHA-256 client session configuration is in `thinbus-srp6a-config-sha256.js`. The corresponding Java server SRP session class is `SRPJavascriptServerSessionSHA256`. The Java code is configured via constructor parameters. The JavaScript code is configured by defining an `SRP6CryptoParams` object literal before you include the `thinbus-srp6a-config-sha256.js` file: 
-
-```Javascript
-var SRP6CryptoParams= {
-	N_base10: "19502997308733...
-	g_base10: "2", 
-	k_base16: "1a3d1769e1d6337....
-}
-``` 
-
-See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript sessions.  
-
-It is recommended that after you have a working setup that you investigate the performance of a custom large safe prime number `N` of greater than 1024 bits for increased security. How to create and configure your own large safe prime is outlined below.  
-
-An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the value computed by the Java must be added to the configuration of the Javascript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct format to configure the Javascript session. 
-
-**Note** If you upgrade versions of the jar then you must **always** extract the js file from the jar and replace the script(s) your webapp uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against newer Java release. 
-
 ## Maven Dependency
 
 ```
@@ -43,6 +17,32 @@ An extra implementation detail is that the JavaScript must be configure with `k`
 		<version>1.0.1</version>
 	</dependency>
 ```
+
+## Using
+
+Check the `src/main/webapp/lib/*.js` files in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). That demo app is using file extracted from [srp6a-js-1.0.1.jar](http://search.maven.org/#search|ga|1|a%3A%22srp6a-js%22) which contains:
+
+  - `js/thinbus-srp6a-min.js` All the required dependencies minified. 
+  - `js/shaXXX-min.js` Hashing algorithms. You must choose one. The recommendation is to use sha256 or better. 
+  - `js/thinbus-srp6a-config-XXX.js` Multiple example configurations. You must include one which matches the chosen hashing algorithm. The recommended one is sha256.  
+
+You can extract the js files from the jar with any zip tool else just use the ones in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). **Note** If you upgrade versions of the jar then you must **always** extract the js file from the jar and replace the script(s) your webapp uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against newer Java release. 
+
+## Custom Configuration
+
+SHA-256 is the strongest hash algorithm Java 1.7/1.8 supports out of the box so it is recommended. The Javascript SHA-256 client session configuration is in `thinbus-srp6a-config-sha256.js`. The corresponding Java server SRP session class is `SRPJavascriptServerSessionSHA256`. The Java code is configured via constructor parameters. The JavaScript code is configured by defining an `SRP6CryptoParams` object literal before you include the `thinbus-srp6a-config-sha256.js` file: 
+
+```Javascript
+var SRP6CryptoParams= {
+	N_base10: "19502997308733...
+	g_base10: "2", 
+	k_base16: "1a3d1769e1d6337....
+}
+``` 
+
+See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript sessions. It is recommended that after you have a working setup that you investigate the performance of a custom large safe prime number `N` of greater than 1024 bits for increased security. How to create and configure your own large safe prime is outlined below.  
+
+An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the value computed by the Java must be added to the configuration of the Javascript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct format to configure the Javascript session. 
 
 ## Creating A Custom Large Safe Prime
 
