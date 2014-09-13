@@ -91,6 +91,8 @@ abstract public class SRP6JavascriptServerSession {
 	 * underlying Nimbus SRP6ServerSession.
 	 * 
 	 * @param srp6CryptoParams
+	 *            cryptographic constants which must match those being used by
+	 *            the client.
 	 */
 	public SRP6JavascriptServerSession(SRP6CryptoParams srp6CryptoParams) {
 		this.config = srp6CryptoParams;

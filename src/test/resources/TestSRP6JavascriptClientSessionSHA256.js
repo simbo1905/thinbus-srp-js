@@ -7,12 +7,11 @@ var test_random16byteHexAdvance = 0;
 // import collaborators
 load("src/main/resources/js/biginteger.js");
 load("src/main/resources/js/sha256.js");
-load("src/main/resources/js/sha1.js");
 load("src/main/resources/js/isaac.js");
 load("src/main/resources/js/random.js");
 load("src/main/resources/js/thinbus-srp6client.js");
 
-// ** you must define crypo params before importing the particular conifuration thinbus-srp6a-config*.js and they must match the java server config **
+// ** you must define crypo params before importing the particular configuration thinbus-srp6a-config*.js and they must match the java server config **
 var SRP6CryptoParams= {
 	N_base10: "19502997308733555461855666625958719160994364695757801883048536560804281608617712589335141535572898798222757219122180598766018632900275026915053180353164617230434226106273953899391119864257302295174320915476500215995601482640160424279800690785793808960633891416021244925484141974964367107",
 	g_base10: "2", 
