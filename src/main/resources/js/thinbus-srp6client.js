@@ -323,6 +323,13 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	
 	this.M1str = this.H(AA+BB+this.toHex(this.S));
 	this.check(this.M1str, "M1str");
+	
+	// server BigInteger math will trim leading zeros so we must do likewise to get a match
+	while (this.M1str.substring(0, 1) === '0') { 
+		console.log("stripping leading zero from M1");
+		this.M1str = this.M1str.substring(1);
+	}
+	
 	//console.log("M1str:" + this.M1str);
 	
 	//console.log("jsABS:" + AA+BB+this.toHex(this.S));
@@ -367,8 +374,14 @@ SRP6JavascriptClientSession.prototype.step3 = function(M2) {
 	//console.log("M2 jsServerM2:" + M2);
 	//console.log("M2 jsClientM2:" + computedM2);
 	
+	// server BigInteger math will trim leading zeros so we must do likewise to get a match
+	while (computedM2.substring(0, 1) === '0') { 
+		console.log("stripping leading zero from computedM2");
+		computedM2 = computedM2.substring(1);
+	}
+	
+	console.log("server  M2:"+M2+"\ncomputedM2:"+computedM2);
 	if ( ""+computedM2 !== ""+M2) {
-		console.log("server  M2:"+M2+"\ncomputedM2:"+computedM2);
 		throw new Error("SRP6Exception Bad server credentials");
 	}
 
