@@ -61,6 +61,13 @@
 		</dependency>
 	</dependencies>
 
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<build>
 		<resources>
 			<resource>
@@ -237,7 +244,7 @@
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.2</version>
+				<version>1.6.3</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
