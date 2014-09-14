@@ -220,6 +220,7 @@ SRP6JavascriptClientSession.prototype.step1 = function(identity, password) {
 /**
  * Computes the random scrambling parameter u = H(A | B)
  * <p> Specification RFC 2945
+ * Will throw an error if 
  *
  * @param A      The public client value 'A'. Must not be {@code null}.
  * @param B      The public server value 'B'. Must not be {@code null}.
@@ -233,7 +234,11 @@ SRP6JavascriptClientSession.prototype.computeU = function(Astr, Bstr) {
 	/* jshint ignore:start */
 	var output = this.H(Astr+Bstr);
 	//console.log("jshashAB:"+output);
-	return new BigInteger(""+output,16);
+	var u = new BigInteger(""+output,16);
+	if( BigInteger.ZERO.equals(u) ) {
+	   throw new Error("SRP6Exception bad shared public value 'u' as u==0");
+	}
+	return u;
 	/* jshint ignore:end */
 };
 
@@ -277,7 +282,7 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	/* jshint ignore:end */
 	
 	if (this.B.mod(this.N()).equals(ZERO)) {
-		throw new Error("SRP6Exception bad server public value 'B'");
+		throw new Error("SRP6Exception bad server public value 'B' as B == 0 (mod N)");
 	}
 	
 	//console.log("M1 js k:" + k);
