@@ -155,11 +155,11 @@ Note that if you build on jdk17 the junit-js tests which test the javascript cry
 Version 1.0.2
 
 1. Javascript client now aborts on u==0. 
-2. Strips off leading zeros in hash results in js which caused match errors comparing with server BigInteger hex values.  
+2. Javascript strips off leading zeros in hashed values which caused login failures comparing with server hex values as the Java BigInteger class strips leading zeros.  
 
 Version 1.0.1
 
-A critical defect was found in the 1.0.0 js logic. Please upgrade to &gt;=1.0.1 immediately. To prevent a regression a test has been added which tests the javascript password algorithm against identical logic implemented in java. The project has also now been configured to use [JsHint](http://www.jshint.com/docs/). This fails the build for the sort of bug which javascript is silent about but a java compiler would notice. 
+A critical defect was found in the 1.0.0 js logic. Please upgrade to >=1.0.1 immediately. To prevent a regression a test has been added which tests the javascript password algorithm against identical logic implemented in java. The project has also now been configured to use [JsHint](http://www.jshint.com/docs/). This fails the build for the sort of bug which javascript is silent about but a java compiler would notice and which fails the build for critical bug. 
 
 
 End.
