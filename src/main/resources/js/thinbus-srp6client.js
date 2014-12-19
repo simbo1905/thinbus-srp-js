@@ -94,9 +94,15 @@ function SRP6JavascriptClientSession() {
 		this.check(salt, "salt");
 		this.check(identity, "identity");
 		this.check(password, "password");
+		//console.log("js salt:"+salt+",i:"+identity+",p:"+password);
 		var hash1 = this.H(identity+':'+password);
+		//console.log("js hash1:"+hash1);
+		//console.log("js salt:"+salt);
 		var hashStr = salt+hash1;
+		//console.log("js toUpper:"+hashStr.toUpperCase())
 		var hash = this.H(hashStr.toUpperCase());
+		//console.log("js hash:"+hash)
+		//console.log("js x before modN "+this.fromHex(hash));
 		this.x = this.fromHex(hash).mod(this.N());
 		return this.x;
 	};
@@ -289,7 +295,7 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 
 	// this is checked when passed to computeSessionKey
 	var x = this.generateX(s, this.I, this.P);
-	//console.log("M1 js x:" + x);
+	console.log("M1 js x:" + x);
 	
 	var r1 = null;
 	var r2 = null;

@@ -1,6 +1,5 @@
 package com.bitbucket.thinbus.srp6.js;
 
-import static com.bitbucket.thinbus.srp6.js.HexHashedRoutines.utf8;
 import static com.nimbusds.srp6.BigIntegerUtils.fromHex;
 import static com.nimbusds.srp6.BigIntegerUtils.toHex;
 
@@ -8,18 +7,19 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 
 import com.nimbusds.srp6.SRP6CryptoParams;
+
 /**
  * We compare the javascript client with the java logic exposed using this test
  * double.
  */
-public class JavaVerifierGenerator {
-	private final SRP6CryptoParams config;
+public class HexHashedVerifierGenerator {
+	protected final SRP6CryptoParams config;
 
-	public JavaVerifierGenerator(String N, String g){
-		config = new SRP6CryptoParams(SRP6JavascriptServerSession.fromDecimal(N), SRP6JavascriptServerSession.fromDecimal(g),
-				SRP6JavascriptServerSessionSHA1.SHA_1);
+	public HexHashedVerifierGenerator(String N, String g, String hashName) {
+		config = new SRP6CryptoParams(
+				SRP6JavascriptServerSession.fromDecimal(N),
+				SRP6JavascriptServerSession.fromDecimal(g), hashName);
 	}
-
 
 	/**
 	 * Browser does string concat version of x = H(salt || H(username || ":" ||
@@ -28,21 +28,8 @@ public class JavaVerifierGenerator {
 	 */
 	public String hashCredentials(String salt, String identity, String password) {
 		MessageDigest digest = config.getMessageDigestInstance();
-		digest.reset();
-
-		String concat = identity + ":" + password;
-
-		digest.update(concat.getBytes(utf8));
-		byte[] output = digest.digest();
-		digest.reset();
-
-		final String hash1 = toHex(new BigInteger(1, output));
-		concat = (salt + hash1).toUpperCase();
-
-		digest.update(concat.getBytes(utf8));
-		output = digest.digest();
-
-		return toHex(new BigInteger(1, output));
+		return HexHashedRoutines.hashCredentials(digest, salt,
+				identity, password);
 	}
 
 	private BigInteger generateX(String salt, String identity, String password) {

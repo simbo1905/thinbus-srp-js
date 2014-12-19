@@ -155,7 +155,7 @@ Note that if you build on jdk17 the junit-js tests which test the javascript cry
 Version 1.0.2
 
 1. Javascript client now aborts on u==0. 
-2. Javascript strips off leading zeros in hashed values which caused login failures comparing with server hex values as the Java BigInteger class strips leading zeros.  
+2. Javascript now strips off leading zeros in hashed values which caused login failures comparing with server hex values as the Java BigInteger class strips leading zeros.  
 
 Version 1.0.1
 
