@@ -110,7 +110,8 @@ tests({
 	},
 	
 	/**
-	Tests the Javascript Client Verifier against Java code
+	Tests the Javascript verifier generator against the Java version. 
+	Note: See the comment on the java class that you should really choose to only ever use the Javascript version. 
 	*/
 	testVerifier: function() {
 	

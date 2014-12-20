@@ -77,8 +77,6 @@ abstract public class SRP6JavaClientSession {
 	 * and hash function 'H'.
 	 * </ul>
 	 *
-	 * @param config
-	 *            The SRP-6a crypto parameters. Must not be {@code null}.
 	 * @param s
 	 *            The password salt 's'. Must not be {@code null}.
 	 * @param B
