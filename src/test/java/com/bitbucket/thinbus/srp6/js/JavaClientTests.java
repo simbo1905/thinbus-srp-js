@@ -63,4 +63,53 @@ public class JavaClientTests {
 		
 		client.step3(M2);
 	}
+
+	@Test
+	public void testMutualAuthenticationSHA256() throws Exception {
+		SRP6JavaClientSessionSHA256 client = new SRP6JavaClientSessionSHA256(
+				N_base10, g_base10);
+
+		String salt = client
+				.generateRandomSalt(SRP6JavascriptServerSessionSHA256.HASH_HEX_LENGTH);
+
+		HexHashedVerifierGenerator generator = new HexHashedVerifierGenerator(
+				N_base10, g_base10, SRP6JavascriptServerSessionSHA256.SHA_256);
+
+		String v = generator.generateVerifier(salt, username, password);
+
+		client.step1(username, password);
+
+		SRP6JavascriptServerSession server = new SRP6JavascriptServerSessionSHA256(
+				N_base10, g_base10);
+
+		String B = server.step1(username, salt, v);
+
+		SRP6ClientCredentials credentials = client.step2(salt, B);
+
+		String M2 = server.step2(toHex(credentials.A), toHex(credentials.M1));
+
+		client.step3(M2);
+	}
+
+	public static void main(String[] args) throws Exception {
+		JavaClientTests ct = new JavaClientTests();
+		System.out.println("SHA1:");
+		for (int i = 0; i < 1000; i++) {
+			long start = System.currentTimeMillis();
+			for (int j = 0; j < 1000; j++) {
+				ct.testMutualAuthenticationSHA1();
+			}
+			long end = System.currentTimeMillis();
+			System.out.print(" " + (end - start) / 1000);
+		}
+		System.out.println("SHA256:");
+		for (int i = 0; i < 1000; i++) {
+			long start = System.currentTimeMillis();
+			for (int j = 0; j < 1000; j++) {
+				ct.testMutualAuthenticationSHA256();
+			}
+			long end = System.currentTimeMillis();
+			System.out.print(" " + (end - start) / 1000);
+		}
+	}
 }

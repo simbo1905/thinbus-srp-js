@@ -14,7 +14,7 @@ import com.nimbusds.srp6.SRP6Routines;
 
 /**
  * If you want to have both Java clients and JavaScript clients authenticate to
- * the same Java server then this class is a work-alike to the JavaScript client
+ * the same Java server then this class is a workalike to the JavaScript client
  * session.
  */
 abstract public class SRP6JavaClientSession {
