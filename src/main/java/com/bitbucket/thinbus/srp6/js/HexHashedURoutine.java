@@ -4,13 +4,14 @@ import static com.nimbusds.srp6.BigIntegerUtils.toHex;
 
 import java.math.BigInteger;
 
-import com.nimbusds.srp6.URoutine;
 import com.nimbusds.srp6.SRP6CryptoParams;
+import com.nimbusds.srp6.URoutine;
 import com.nimbusds.srp6.URoutineContext;
 
 /**
  * Custom routine interface for computing the hashed keys 'u'. Compatible with
- * browser implementations by using hashing of string concatenated hex strings.
+ * browser implementations by using hashing of string concatenated hex strings
+ * 'H( HEX(A) | HEX(B) )'.
  * 
  * <p>
  * Specification RFC 2945

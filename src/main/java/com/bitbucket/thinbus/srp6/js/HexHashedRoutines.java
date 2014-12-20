@@ -64,47 +64,28 @@ public class HexHashedRoutines {
 		output = digest.digest();
 
 		return toHexString(output);
-		// return toHex(new BigInteger(1, output));
 	}
 
-	/**
-	 * Lower case Hex Digits.
-	 */
-	static final String HEX_DIGITS = "0123456789abcdef";
+	final private static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
 	/**
-	 * Byte mask.
-	 */
-	static final int BYTE_MSK = 0xFF;
-
-	/**
-	 * Hex digit mask.
-	 */
-	static final int HEX_DIGIT_MASK = 0xF;
-
-	/**
-	 * Number of bits per Hex digit (4).
-	 */
-	static final int HEX_DIGIT_BITS = 4;
-
-	/**
-	 * https://raw.githubusercontent.com/stivlo/obliquid-lib/master/src/main/
-	 * java/org/obliquid/helpers/StringHelper.java
+	 * http://stackoverflow.com/a/9855338
 	 * 
-	 * Compute a String in HexDigit from the input.
+	 * Compute a String in HexDigit from the input. Note that this string may
+	 * have leading zeros but hex strings created by toString(16) of BigInteger
+	 * would strip leading zeros.
 	 * 
-	 * @param byteArray
-	 *            a row byte array
-	 * @return a hex String
+	 * @param bytes
+	 *            Raw byte array
+	 * @return Hex encoding of the input
 	 */
-	public static String toHexString(final byte[] byteArray) {
-		StringBuilder sb = new StringBuilder(byteArray.length * 2);
-		for (int i = 0; i < byteArray.length; i++) {
-			int b = byteArray[i] & BYTE_MSK;
-			sb.append(HEX_DIGITS.charAt(b >>> HEX_DIGIT_BITS)).append(
-					HEX_DIGITS.charAt(b & HEX_DIGIT_MASK));
+	public static String toHexString(final byte[] bytes) {
+		char[] hexChars = new char[bytes.length * 2];
+		for (int j = 0; j < bytes.length; j++) {
+			int v = bytes[j] & 0xFF;
+			hexChars[j * 2] = hexArray[v >>> 4];
+			hexChars[j * 2 + 1] = hexArray[v & 0x0F];
 		}
-		return sb.toString();
+		return new String(hexChars);
 	}
-
 }

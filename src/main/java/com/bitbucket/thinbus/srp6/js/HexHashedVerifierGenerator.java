@@ -23,6 +23,14 @@ import com.nimbusds.srp6.SRP6CryptoParams;
 public class HexHashedVerifierGenerator {
 	protected final SRP6CryptoParams config;
 
+	/**
+	 * @param N
+	 *            The large safe prime in radix10
+	 * @param g
+	 *            The safe prime generator in radix10
+	 * @param hashName
+	 *            The name of the hashing algorithm e.g. SHA256
+	 */
 	public HexHashedVerifierGenerator(String N, String g, String hashName) {
 		config = new SRP6CryptoParams(
 				SRP6JavascriptServerSession.fromDecimal(N),
@@ -35,15 +43,16 @@ public class HexHashedVerifierGenerator {
 				identity, password);
 	}
 
+	// matches javascript client library does which is H(s | H(i | ":" | p))
 	private BigInteger generateX(String salt, String identity, String password) {
 		String hash = hashCredentials(salt, identity, password);
 		return fromHex(hash).mod(config.N);
 	}
 
 	/**
-	 * Browser does string concat version of x = H(salt || H(username || ":" ||
-	 * password))" Specification is RFC 5054 Which we repeat here to be able to
-	 * reset the password in a java client.
+	 * Browser does string concat version of x = H(s | H(i | ":" | p)).
+	 * Specification is RFC 5054 Which we repeat here to be able to reset the
+	 * password in a java client.
 	 * 
 	 * @param salt
 	 *            The random salt stored at user registration

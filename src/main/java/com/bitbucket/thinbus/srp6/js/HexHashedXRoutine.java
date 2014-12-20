@@ -12,27 +12,16 @@ public class HexHashedXRoutine implements XRoutine {
 	/**
 	 * Computes the password key 'x'.
 	 *
-	 * <p>
-	 * Tip: To convert a string to a byte array you can use
-	 * {@code String.getBytes()} or
-	 * {@code String.getBytes(java.nio.charset.Charset)}. To convert a big
-	 * integer to a byte array you can use {@code BigInteger.toByteArray()}.
-	 *
 	 * @param digest
-	 *            The hash function 'H'. To enforce a particular hash algorithm,
-	 *            e.g. "SHA-1", you may perform a check that throws an
-	 *            {@code IllegalArgumentException} or ignore this argument
-	 *            altogether.
+	 *            The hash function 'H'.
 	 * @param salt
 	 *            The salt 's'. This is considered a mandatory argument in
-	 *            computation of 'x'.
+	 *            computation of 'x'. Must not be {@code null} or empty.
 	 * @param username
-	 *            The user identity 'I'. It may be ignored if the username is
-	 *            allowed to change or if a user may authenticate with multiple
-	 *            alternate identities, such as name and email address.
+	 *            The user identity 'I'. Must not be {@code null} or empty.
 	 * @param password
 	 *            The user password 'P'. This is considered a mandatory argument
-	 *            in the computation of 'x'.
+	 *            in the computation of 'x'. Must not be {@code null} or empty.
 	 *
 	 * @return The resulting 'x' value.
 	 */
@@ -42,6 +31,19 @@ public class HexHashedXRoutine implements XRoutine {
 		final String i = new String(username, HexHashedRoutines.utf8);
 		final String p = new String(password, HexHashedRoutines.utf8);
 		final String s = toHex(new BigInteger(1, salt));
+
+		if (i == null || i.trim().isEmpty())
+			throw new IllegalArgumentException(
+					"The user identity 'I' must not be null or empty");
+
+		if (p == null || p.trim().isEmpty())
+			throw new IllegalArgumentException(
+					"The user password 'P' must not be null or empty");
+
+		if (s == null || s.trim().isEmpty())
+			throw new IllegalArgumentException(
+					"The user salt 's' must not be null or empty");
+
 		final String x = HexHashedRoutines.hashCredentials(digest, s, i, p);
 		final BigInteger X = fromHex(x);
 		return X;

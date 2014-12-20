@@ -3,32 +3,7 @@ package com.nimbusds.srp6;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 
-/**
- * Stateful client-side Secure Remote Password (SRP-6a) authentication session.
- * Handles the computing and storing of SRP-6a variables between the protocol
- * steps as well as timeouts.
- *
- * <p>
- * Usage:
- *
- * <ul>
- * <li>Create a new SRP-6a client session for each authentication attempt.
- * <li>If you wish to use custom routines for the password key 'x', the server
- * evidence message 'M1', and / or the client evidence message 'M2' specify them
- * at this point.
- * <li>Proceed to {@link #step1 step one} by recording the input user identity
- * 'I' (submitted to the server) and password 'P'.
- * <li>Proceed to {@link #step2 step two} on receiving the password salt 's' and
- * the public server value 'B' from the server. At this point the SRP-6a crypto
- * parameters 'N', 'g' and 'H' must also be specified. These can either be
- * agreed in advance between server and client or suggested by the server in its
- * step one response.
- * <li>Proceed to {@link #step3 step three} on receiving the server evidence
- * message 'M2'.
- * </ul>
- *
- * @author Vladimir Dzhuvinov
- */
+// FIXME must be patched into Nimbus and deleted before merge of feature to trunk!
 public class SRP6ClientSession extends SRP6Session {
 
 	/**

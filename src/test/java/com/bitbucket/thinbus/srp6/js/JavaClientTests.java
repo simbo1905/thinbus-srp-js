@@ -94,7 +94,7 @@ public class JavaClientTests {
 	public static void main(String[] args) throws Exception {
 		JavaClientTests ct = new JavaClientTests();
 		System.out.println("SHA1:");
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 10; i++) {
 			long start = System.currentTimeMillis();
 			for (int j = 0; j < 1000; j++) {
 				ct.testMutualAuthenticationSHA1();
@@ -103,7 +103,7 @@ public class JavaClientTests {
 			System.out.print(" " + (end - start) / 1000);
 		}
 		System.out.println("SHA256:");
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 10; i++) {
 			long start = System.currentTimeMillis();
 			for (int j = 0; j < 1000; j++) {
 				ct.testMutualAuthenticationSHA256();

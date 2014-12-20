@@ -74,7 +74,7 @@ abstract public class SRP6JavaClientSession {
 	 * <ul>
 	 * <li>From server: password salt 's', public value 'B'.
 	 * <li>From server or pre-agreed: crypto parameters prime 'N', generator 'g'
-	 * and hash function 'H'.
+	 * <li>Pre-agreed: crypto parameters prime 'H'
 	 * </ul>
 	 *
 	 * @param s
@@ -138,6 +138,29 @@ abstract public class SRP6JavaClientSession {
 		session.setXRoutine(new HexHashedXRoutine());
 	}
 
+	/**
+	 * Generates a salt value 's'. The salt s is a public value in the protocol
+	 * which is fixed per user and would be stored in the user database. The
+	 * desired property is that it is unique for every user in your system. This
+	 * can be ensured by adding a uniqueness constraint to a not null salt
+	 * column within the database which is strongly recommended. Then it does
+	 * not matter whether this public value has been generated using a good
+	 * secure random number at the server or using a weaker random number
+	 * generator at the browser. You simply reduce the probability of database
+	 * constraint exceptions if you use a better random number. The Thinbus
+	 * Javascript client session provides a method generateRandomSalt to run at
+	 * the browser to create 's' which can be invoked with, or without, passing
+	 * a sever generated secure random number or avoided entirely by generating
+	 * the salt at the server. This method is the server version which you can
+	 * use exclusively else mix with a client generated value.
+	 * 
+	 * @param numBytes
+	 *            Number of random bytes. Recommended is greater than the bit
+	 *            length of the chosen hash e.g. HASH_HEX_LENGTH constant of
+	 *            server session is x2 hash length so a reasonable choice.
+	 * 
+	 * @return A hex encoded random salt value.
+	 */
 	public String generateRandomSalt(final int numBytes) {
 		byte[] bytes = SRP6Routines.generateRandomSalt(numBytes);
 		MessageDigest digest = config.getMessageDigestInstance();

@@ -11,7 +11,7 @@ import com.nimbusds.srp6.ServerEvidenceRoutine;
 /**
  * Custom routine interface for computing the server evidence message 'M1'.
  * Compatible with browser implementations by using hashing of string
- * concatenated hex strings.
+ * concatenated hex strings 'H( HEX(A) | HEX(M1) | HEX(S)'.
  * 
  * <p>
  * Specification RFC 2945
