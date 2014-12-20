@@ -152,6 +152,10 @@ Note that if you build on jdk17 the junit-js tests which test the javascript cry
 
 ## Release Notes
 
+Version 1.0.3
+
+Added a Java client session which matches the Java server session. This allows for users to verify via either a Java client or a Javascript client with the same verifier. Includes a 
+
 Version 1.0.2
 
 1. Javascript client now aborts on u==0. 
@@ -160,6 +164,5 @@ Version 1.0.2
 Version 1.0.1
 
 A critical defect was found in the 1.0.0 js logic. Please upgrade to >=1.0.1 immediately. To prevent a regression a test has been added which tests the javascript password algorithm against identical logic implemented in java. The project has also now been configured to use [JsHint](http://www.jshint.com/docs/). This fails the build for the sort of bug which javascript is silent about but a java compiler would notice and which fails the build for critical bug. 
-
 
 End.

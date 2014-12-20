@@ -9,8 +9,15 @@ import java.security.MessageDigest;
 import com.nimbusds.srp6.SRP6CryptoParams;
 
 /**
- * We compare the javascript client with the java logic exposed using this test
- * double.
+ * Generates a SRP6 verifier. Note you should use the JavaScript client not the
+ * Java client for password resets from the browser. This class is only for
+ * systems which let users login from java clients in addition to JavaScript
+ * clients who additionally wish to implement password reset logic in their Java
+ * clients. It is probably easier to implement password rest logic only via the
+ * browser and have users do that if they want to reset their password which
+ * they use with any Java client. Certainly you want to avoid this code ever
+ * being run on the server as that would require the password to be transmitted
+ * to the server which is something which SRP is designed to avoid.
  */
 public class HexHashedVerifierGenerator {
 	protected final SRP6CryptoParams config;

@@ -4,7 +4,7 @@ import com.nimbusds.srp6.SRP6CryptoParams;
 
 public class SRP6JavaClientSessionSHA256 extends SRP6JavaClientSession {
 	/**
-	 * Create a SHA256 client session compatible with a JavaScript client
+	 * Create a SHA256 Java client session compatible with a thinbus server
 	 * session.
 	 * 
 	 * You can generate your own with openssl see {@link OpenSSLCryptoConfig}
