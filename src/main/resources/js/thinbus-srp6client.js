@@ -94,9 +94,15 @@ function SRP6JavascriptClientSession() {
 		this.check(salt, "salt");
 		this.check(identity, "identity");
 		this.check(password, "password");
+		//console.log("js salt:"+salt+",i:"+identity+",p:"+password);
 		var hash1 = this.H(identity+':'+password);
+		//console.log("js hash1:"+hash1);
+		//console.log("js salt:"+salt);
 		var hashStr = salt+hash1;
+		//console.log("js toUpper:"+hashStr.toUpperCase())
 		var hash = this.H(hashStr.toUpperCase());
+		//console.log("js hash:"+hash)
+		//console.log("js x before modN "+this.fromHex(hash));
 		this.x = this.fromHex(hash).mod(this.N());
 		return this.x;
 	};
@@ -153,7 +159,9 @@ SRP6JavascriptClientSession.prototype.getState = function() {
 };
 
 /* 
- * Generates a new salt 's' using a pure browser random value else by hashing it with a server specified random value. 
+ * Generates a new salt 's'. This takes the current time, a pure browser random value, and an optional server generated random, and hashes them all together. 
+ * This should ensure that the salt is unique to every use registration regardless of the quality of the browser random generation routine. 
+ * Note that this method is optional as you can choose to always generate the salt at the server and sent it to the browser as it is a public value.  
  * <p>
  * Always add a unique constraint to where you store this in your database to force that all users on the system have a unique salt. 
  *
@@ -233,7 +241,6 @@ SRP6JavascriptClientSession.prototype.computeU = function(Astr, Bstr) {
 	this.check(Bstr, "Bstr");
 	/* jshint ignore:start */
 	var output = this.H(Astr+Bstr);
-	//console.log("jshashAB:"+output);
 	var u = new BigInteger(""+output,16);
 	if( BigInteger.ZERO.equals(u) ) {
 	   throw new Error("SRP6Exception bad shared public value 'u' as u==0");

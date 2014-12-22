@@ -34,7 +34,8 @@ function fromHex(h) {
 tests({
 	
 	/**
-	Tests the Javascript Client Verifier against Java code
+	Tests the full flow between the Javascript Client Session and the Java Server Session.
+	See the comments in the SHA256 version of this class for a discription fo what is going on. 
 	*/
 	testMutualAuthentiation: function() {
 	
@@ -49,9 +50,6 @@ tests({
 		var B = server.step1(username, salt, v);
 		
 		var credentials = client.step2(salt, B);
-		
-		//console.log("A:"+credentials.A);
-		//console.log("M1:"+credentials.M1);
 		
 		var M2 = server.step2(credentials.A, credentials.M1);
 		

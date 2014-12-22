@@ -11,7 +11,7 @@ load("src/main/resources/js/isaac.js");
 load("src/main/resources/js/random.js");
 load("src/main/resources/js/thinbus-srp6client.js");
 
-// ** you must define crypo params before importing the particular conifuration thinbus-srp6a-config*.js and they must match the java server config **
+// ** you must define crypo params before importing the particular configuration thinbus-srp6a-config*.js and they must match the java server config **
 var SRP6CryptoParams= {
 	N_base10: "19502997308733555461855666625958719160994364695757801883048536560804281608617712589335141535572898798222757219122180598766018632900275026915053180353164617230434226106273953899391119864257302295174320915476500215995601482640160424279800690785793808960633891416021244925484141974964367107",
 	g_base10: "2", 
@@ -32,7 +32,10 @@ function fromHex(h) {
 }
 
 // we test the javascript client verifier generation against work-alike test java
-var javaVerifierGenerator = Packages.com.bitbucket.thinbus.srp6.js.JavaVerifierGenerator;
+var javaVerifierGenerator = Packages.com.bitbucket.thinbus.srp6.js.HexHashedVerifierGenerator;
+
+// we test the java client matches the javascript client
+var javaClientSession = Packages.com.bitbucket.thinbus.srp6.js.SRP6JavaClientSessionSHA1;
 
 tests({
 	
@@ -107,7 +110,8 @@ tests({
 	},
 	
 	/**
-	Tests the Javascript Client Verifier against Java code
+	Tests the Javascript verifier generator against the Java version. 
+	Note: See the comment on the java class that you should really choose to only ever use the Javascript version. 
 	*/
 	testVerifier: function() {
 	
@@ -117,13 +121,12 @@ tests({
 		
 		var jsV = jsClient.generateVerifier(salt, username, password);
 		
-		var jvClient = new javaVerifierGenerator(SRP6CryptoParams.N_base10, SRP6CryptoParams.g_base10);
+		var jvClient = new javaVerifierGenerator(SRP6CryptoParams.N_base10, SRP6CryptoParams.g_base10, "SHA-1");
 		
 		var jvV = jvClient.generateVerifier(salt, username, password);
 		
 		assert.assertEquals(jvV, jsV);
 		
 	}
-	
 });
 
