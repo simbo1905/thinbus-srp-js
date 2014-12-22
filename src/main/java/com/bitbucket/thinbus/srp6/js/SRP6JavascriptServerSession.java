@@ -71,6 +71,15 @@ abstract public class SRP6JavascriptServerSession {
 	}
 
 	/**
+	 * Gets the identity 'I' of the authenticating user.
+	 *
+	 * @return The user identity 'I', null if undefined.
+	 */
+	public String getUserID() {
+		return session.getUserID();
+	}
+
+	/**
 	 * The crypto parameters for the SRP-6a protocol. These must be agreed
 	 * between client and server before authentication and consist of a large
 	 * safe prime 'N', a corresponding generator 'g' and a hash function
