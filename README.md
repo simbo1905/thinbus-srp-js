@@ -3,7 +3,7 @@
 
 Copyright (c) Simon Massey, 2014
  
-This package provides a [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for Javascript / EMCAScript to perform a zero knowledge proof of password to a Java server. The only dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
+This package provides a [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for Javascript / EMCAScript to perform a zero knowledge proof of password from a browser to a Java server. The only dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
 There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written as a JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). 
 
@@ -20,13 +20,13 @@ There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org
 
 ## Using
 
-Check the `src/main/webapp/lib/*.js` files in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). That demo app is using file extracted from [srp6a-js-1.0.1.jar](http://search.maven.org/#search|ga|1|a%3A%22srp6a-js%22) which contains:
+Check the `src/main/webapp/lib/*.js` files in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). That demo app is using the files extracted from the thinbus-srp6a-js-<version>.jar which contains:
 
   - `js/thinbus-srp6a-min.js` All the required dependencies minified. 
   - `js/shaXXX-min.js` Hashing algorithms. You must choose one. The recommendation is to use sha256 or better. 
   - `js/thinbus-srp6a-config-XXX.js` Multiple example configurations. You must include one which matches the chosen hashing algorithm. The recommended one is sha256.  
 
-You can extract the js files from the jar with any zip tool else just use the ones in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). **Note** If you upgrade versions of the jar then you must **always** extract the js file from the jar and replace the script(s) your webapp uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against newer Java release. 
+You can extract the js files from the jar with any zip tool else just use the ones in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). **Note** If you upgrade versions of the jar then you must **always** extract the js file from the jar and replace the script(s) your webapp uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against a newer Java release. 
 
 ## Custom Configuration
 
@@ -40,9 +40,9 @@ var SRP6CryptoParams= {
 }
 ``` 
 
-See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript sessions. It is recommended that after you have a working setup that you investigate the performance of a custom large safe prime number `N` of greater than 1024 bits for increased security. How to create and configure your own large safe prime is outlined below.  
+See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript sessions and tests them with the JDK Javascript runtime using [JUnit-JS](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with-junit/). It is recommended that after you have a working setup that you investigate the performance of a custom large safe prime number `N` of greater than 1024 bits for increased security. How to create and configure your own large safe prime is outlined below.  
 
-An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the value computed by the Java must be added to the configuration of the Javascript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct format to configure the Javascript session. 
+An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the value computed by the Java must be added to the Javascript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct formats to configure the Javascript. 
 
 ## Creating A Custom Large Safe Prime
 
@@ -55,8 +55,7 @@ openssl dhparam -text <bit-length> | tee /tmp/my_dhparam.txt
 # build the runnable jar-with-dependencies 
 mvn assembly:assembly
 
-# run the jar of version <version> in the jar name to match the build command above 
-# set <hash> to the name of the algorithm e.g. "SHA-256"
+# use the jar name which matches the output of the assembly command. set <hash> to the name of the algorithm e.g. "SHA-256"
 java -jar target/thinbus-srp6a-js-<version>-jar-with-dependencies.jar /tmp/my_dhparam.txt <hash>
 ```
 
@@ -71,9 +70,9 @@ g base10: 2
 k base16: 1a3d1769e1d6337...
 ```
 
-You then use the `N` and `g` value to configure the Java session and use the `N`, `g` and `k` values to configure the Javascript session as outlined above. Also see `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript session and tests them against each other. You could even edit that test to use your own safe prime and confirm the test passes before trying it out with a web server. 
+You then use the `N` and `g` value to configure the Java session and use the `N`, `g` and `k` values to configure the Javascript session as outlined above. Also see `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript session and tests them against one another. You should edit that test to use your own safe prime values and confirm that the test passes before testing with a web browser. 
 
-Using 1024 bit primes on my four year old mac the browser takes between 0.05s and 0.10s to run the main srp work. The timings depend on which of Firefox, Chrome or Safari I am using. YMMV as Javascript runtimes and mobile hardware may vary considerably so you should test the user experience on all your browsers you are targeting even if you are using the provided `N`. 
+Using 1024 bit primes on a four year old mac the browser takes between 0.05s and 0.10s to run the main srp work. The timings depend on which of Firefox, Chrome or Safari is used. YMMV as Javascript runtimes and mobile hardware may vary considerably so you should test the user experience on all your browsers you are targeting even if you are using the provided `N`. 
 
 ## Javascript Code
 
@@ -88,7 +87,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
 ## Random Numbers At The Browser
 
-Thinbus tries to use the browsers `WebCryptoAPI` secure random number generator. If that is not available it falls back to an isaac random number generator with a drop algorithm. This is discussed in detail below. 
+Thinbus tries to use the browsers `WebCryptoAPI` secure random number generator. If that is not available it falls back to an isaac random number generator which is warmed up upon page load. This is discussed in detail below. 
 
 An SRP6a proof of password uses three numbers `s`, `a`, `b` which are specified to be random: 
 
@@ -96,11 +95,11 @@ An SRP6a proof of password uses three numbers `s`, `a`, `b` which are specified 
 1. The salt `s` is created at user registration then stored on the server. This is a public value as anyone claiming to be the user is given the salt to perform the proof of password. Thinbus provides an optional salt generation method to use at the browser. You don't have to use this method. You can choose to use a salt entirely generated at the server, one which is generated entirely at the browser, else one which is a server random hashed into a browser random. These options are described below.  
 1. The value `a` is created by the browser as the client ephemeral one time key for a single login attempt. This is then used to compute `A` which is sent from the browser to the server. There are no options here and the approach taken by Thinbus is detailed below. 
 
-The salt `s` is a public value in the protocol which is fixed per user and would be stored in the user database. The desired property is that it is unique for every user in your system. This can be ensured by adding a uniqueness constraint to a `not null` salt column within the database which is **strongly recommended**. Then it does not matter whether this public value has been generated using a good secure random number at the server or using a weaker random number generator at the browser. You simply reduce the probability of database constraint exceptions if you use a better random number. Thinbus provides a method `generateRandomSalt` to run at the browser to create `s` which can be invoked with, or without, passing a sever generated secure random number or avoided entirely by generating the salt at the server. It hashes `Date.now()` with a browser random and the optional server random to avoid a total failure to come up with values which does not repeat between user registrations. 
+The salt `s` is a public value in the protocol which is fixed per user and would be stored in the user database. The desired property is that it is unique for every user in your system. This can be ensured by adding a uniqueness constraint to a `not null` salt column within the database which is **strongly recommended**. Then it does not matter whether this public value has been generated using a good secure random number at the server or using a weaker random number generator at the browser. You simply reduce the probability of database constraint exceptions if you use a better random number. Thinbus provides a method `generateRandomSalt` to run at the browser to create `s` which can be invoked with, or without, passing a sever generated secure random number or avoided entirely by generating the salt at the server. It hashes `Date.now()` with a browser random and the optional server random to avoid a total failure to come up with values which do not repeat between user registrations. 
 
 The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts even if the browser has a faulty random number generator.  
 
-Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus uses an Isaac generator discarding random numbers in a busy loop for 0.1s at page load. You can detected the use of Isaac by checking whether `random16byteHex.isWebCryptoAPI()` returns false should you wish to abort and tell the user to use a better browser. As noted above `Date.now()` is hashed into the pseudorandom which IMHO makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. If you do allow the use of Isaac it is **recommended** that you spin it forward using an `onkeyup` event handler attached to the username and password input fields: 
+Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus uses an [Isaac](http://en.wikipedia.org/wiki/ISAAC_%28cipher%29) generator discarding random numbers in a busy loop for 0.1s at page load. You can detected the use of Isaac by checking whether `random16byteHex.isWebCryptoAPI()` returns false should you wish to abort and tell the user to use a better browser. As noted above `Date.now()` is hashed into the pseudorandom which IMHO makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. If you do allow the use of Isaac it is **recommended** that you spin it forward using an `onkeyup` event handler attached to the username and password input fields: 
 
 ```Javascript
 function (event) {
@@ -165,6 +164,6 @@ Version 1.0.2
 
 Version 1.0.1
 
-A critical defect was found in the 1.0.0 js logic. Please upgrade to >=1.0.1 immediately. To prevent a regression a test has been added which tests the javascript password algorithm against identical logic implemented in java. The project has also now been configured to use [JsHint](http://www.jshint.com/docs/). This fails the build for the sort of bug which javascript is silent about but a java compiler would notice and which fails the build for critical bug. 
+A critical defect was found in the 1.0.0 js logic. Please upgrade to >=1.0.1 immediately. To prevent a regression a test has been added which tests the javascript password algorithm against identical logic implemented in java. The project has also now been configured to use [JsHint](http://www.jshint.com/docs/). This fails the build for the sort of bug which javascript is silent about but a java compiler would notice such as the critical bug. 
 
 End.
