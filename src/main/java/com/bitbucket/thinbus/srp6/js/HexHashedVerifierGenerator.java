@@ -61,6 +61,7 @@ public class HexHashedVerifierGenerator {
 	 * @param password
 	 *            The user password. Note this should only ever be on java
 	 *            clients and never sent to the java server.
+	 * @return An SRP password verifier
 	 */
 	public String generateVerifier(String salt, String identity, String password) {
 		BigInteger x = generateX(salt, identity, password);

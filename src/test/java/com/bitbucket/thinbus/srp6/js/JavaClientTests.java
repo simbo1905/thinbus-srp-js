@@ -91,6 +91,8 @@ public class JavaClientTests {
 		client.step3(M2);
 	}
 
+	// this is a brute force comparison that javascript and Java can login
+	// against each other
 	public static void main(String[] args) throws Exception {
 		JavaClientTests ct = new JavaClientTests();
 		System.out.println("SHA1:");
