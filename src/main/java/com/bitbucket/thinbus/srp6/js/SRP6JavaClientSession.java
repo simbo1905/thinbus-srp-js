@@ -184,8 +184,8 @@ abstract public class SRP6JavaClientSession {
 	 * 
 	 * @return The salt 's' if available, else {@code null}.
 	 */
-	public BigInteger getSalt() {
-		return session.getSalt();
+	public String getSalt() {
+		return toHex(session.getSalt());
 	}
 
 	/**
@@ -193,8 +193,8 @@ abstract public class SRP6JavaClientSession {
 	 *
 	 * @return The public client value 'A' if available, else {@code null}.
 	 */
-	public BigInteger getPublicClientValue() {
-		return session.getPublicClientValue();
+	public String getPublicClientValue() {
+		return toHex(session.getPublicClientValue());
 	}
 
 	/**
@@ -202,8 +202,8 @@ abstract public class SRP6JavaClientSession {
 	 *
 	 * @return The client evidence message 'M1' if available, else {@code null}.
 	 */
-	public BigInteger getClientEvidenceMessage() {
-		return session.getClientEvidenceMessage();
+	public String getClientEvidenceMessage() {
+		return toHex(session.getClientEvidenceMessage());
 	}
 
 	/**
@@ -226,7 +226,7 @@ abstract public class SRP6JavaClientSession {
 	 *         returned if authentication failed or the method is invoked in a
 	 *         session state when the session key 'S' has not been computed yet.
 	 */
-	public BigInteger getSessionKey(boolean doHash) {
-		return session.getSessionKey(doHash);
+	public String getSessionKey(boolean doHash) {
+		return toHex(session.getSessionKey(doHash));
 	}
 }
