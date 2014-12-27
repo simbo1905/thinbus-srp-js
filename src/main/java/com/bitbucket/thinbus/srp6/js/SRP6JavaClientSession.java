@@ -170,4 +170,63 @@ abstract public class SRP6JavaClientSession {
 		return toHex(bi);
 	}
 
+	/**
+	 * Gets the identity 'I' of the authenticating user.
+	 *
+	 * @return The user identity 'I', {@code null} if undefined.
+	 */
+	public String getUserID() {
+		return session.getUserID();
+	}
+
+	/**
+	 * Gets the password salt 's'.
+	 * 
+	 * @return The salt 's' if available, else {@code null}.
+	 */
+	public BigInteger getSalt() {
+		return session.getSalt();
+	}
+
+	/**
+	 * Gets the public client value 'A'.
+	 *
+	 * @return The public client value 'A' if available, else {@code null}.
+	 */
+	public BigInteger getPublicClientValue() {
+		return session.getPublicClientValue();
+	}
+
+	/**
+	 * Gets the client evidence message 'M1'.
+	 *
+	 * @return The client evidence message 'M1' if available, else {@code null}.
+	 */
+	public BigInteger getClientEvidenceMessage() {
+		return session.getClientEvidenceMessage();
+	}
+
+	/**
+	 * Returns the current state of this SRP-6a authentication session.
+	 *
+	 * @return The current state.
+	 */
+	public State getState() {
+		return session.getState();
+	}
+
+	/**
+	 * Gets the shared session key 'S' or its hash H(S).
+	 *
+	 * @param doHash
+	 *            If {@code true} the hash H(S) of the session key will be
+	 *            returned instead of the raw value.
+	 *
+	 * @return The shared session key 'S' or its hash H(S). {@code null} will be
+	 *         returned if authentication failed or the method is invoked in a
+	 *         session state when the session key 'S' has not been computed yet.
+	 */
+	public BigInteger getSessionKey(boolean doHash) {
+		return session.getSessionKey(doHash);
+	}
 }

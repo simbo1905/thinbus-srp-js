@@ -156,4 +156,46 @@ abstract public class SRP6JavascriptServerSession {
 		builder.append(String.format("k: %s\n", k()));
 		return builder.toString();
 	}
+
+	/**
+	 * Gets the password salt 's'.
+	 * 
+	 * @return The salt 's' if available, else {@code null}.
+	 */
+	public BigInteger getSalt() {
+		return session.getSalt();
+	}
+
+	/**
+	 * Gets the public server value 'B'.
+	 *
+	 * @return The public server value 'B' if available, else {@code null}.
+	 */
+	public BigInteger getPublicServerValue() {
+		return session.getPublicServerValue();
+	}
+
+	/**
+	 * Gets the server evidence message 'M2'.
+	 *
+	 * @return The server evidence message 'M2' if available, else {@code null}.
+	 */
+	public BigInteger getServerEvidenceMessage() {
+		return session.getServerEvidenceMessage();
+	}
+
+	/**
+	 * Gets the shared session key 'S' or its hash H(S).
+	 *
+	 * @param doHash
+	 *            If {@code true} the hash H(S) of the session key will be
+	 *            returned instead of the raw value.
+	 *
+	 * @return The shared session key 'S' or its hash H(S). {@code null} will be
+	 *         returned if authentication failed or the method is invoked in a
+	 *         session state when the session key 'S' has not been computed yet.
+	 */
+	public BigInteger getSessionKey(boolean doHash) {
+		return session.getSessionKey(doHash);
+	}
 }
