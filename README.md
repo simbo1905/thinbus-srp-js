@@ -1,11 +1,14 @@
-
 # Thinbus Secure Remote Password (SRP-6a) 
 
 Copyright (c) Simon Massey, 2014
  
 This package provides a [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for Javascript / EMCAScript to perform a zero knowledge proof of password from a browser to a Java server. The only dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
-There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written as a JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). There is also a PHP demonstration application [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) which uses the Thinbus Javascript library to do SRP authentication to a PHP server.     
+There are a number of demonstration applications: 
+
+1. [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written as a JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). 
+2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) which uses the Thinbus Javascript library to do SRP authentication to a PHP server.     
+3. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) which users Thinbus to create accounts and login users with Spring Security in a Spring MVC application. 
 
 ## Maven Dependency
 
