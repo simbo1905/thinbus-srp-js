@@ -17,7 +17,7 @@ There are a number of demonstration applications:
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.1.0</version>
+		<version>1.1.1</version>
 	</dependency>
 ```
 
@@ -154,6 +154,10 @@ function (event) {
 
 
 ## Release Notes
+
+Version 1.1.1
+
+1. Added getters to be able to access the SRP paramaters outside of the anticipated login flow.  
 
 Version 1.1.0
 
