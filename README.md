@@ -5,7 +5,7 @@ Copyright (c) Simon Massey, 2014
  
 This package provides a [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for Javascript / EMCAScript to perform a zero knowledge proof of password from a browser to a Java server. The only dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
-There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written as a JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). 
+There is a demonstration application [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written as a JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). There is also a PHP demonstration application [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) which uses the Thinbus Javascript library to do SRP authentication to a PHP server.     
 
 ## Maven Dependency
 
@@ -85,29 +85,6 @@ Other JavaScript source files in the jar show the original copyright of the libr
   - `js/sha1.js` The Crypto.JS SHA1 hash algorithm.   
   - `js/thinbus-srp6client.js` The SRP client session
 
-## Random Numbers At The Browser
-
-Thinbus tries to use the browsers `WebCryptoAPI` secure random number generator. If that is not available it falls back to an isaac random number generator which is warmed up upon page load. This is discussed in detail below. 
-
-An SRP6a proof of password uses three numbers `s`, `a`, `b` which are specified to be random: 
-
-1. The value `b` is the server ephemeral one time key. This is used to compute `B` which is sent from server to browser as the unique challenge per login attempt. Thinbus uses Nimbus which uses the Java secure random number generator for this value. 
-1. The salt `s` is created at user registration then stored on the server. This is a public value as anyone claiming to be the user is given the salt to perform the proof of password. Thinbus provides an optional salt generation method to use at the browser. You don't have to use this method. You can choose to use a salt entirely generated at the server, one which is generated entirely at the browser, else one which is a server random hashed into a browser random. These options are described below.  
-1. The value `a` is created by the browser as the client ephemeral one time key for a single login attempt. This is then used to compute `A` which is sent from the browser to the server. There are no options here and the approach taken by Thinbus is detailed below. 
-
-The salt `s` is a public value in the protocol which is fixed per user and would be stored in the user database. The desired property is that it is unique for every user in your system. This can be ensured by adding a uniqueness constraint to a `not null` salt column within the database which is **strongly recommended**. Then it does not matter whether this public value has been generated using a good secure random number at the server or using a weaker random number generator at the browser. You simply reduce the probability of database constraint exceptions if you use a better random number. Thinbus provides a method `generateRandomSalt` to run at the browser to create `s` which can be invoked with, or without, passing a sever generated secure random number or avoided entirely by generating the salt at the server. It hashes `Date.now()` with a browser random and the optional server random to avoid a total failure to come up with values which do not repeat between user registrations. 
-
-The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts even if the browser has a faulty random number generator.  
-
-Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus uses an [Isaac](http://en.wikipedia.org/wiki/ISAAC_%28cipher%29) generator discarding random numbers in a busy loop for 0.1s at page load. You can detected the use of Isaac by checking whether `random16byteHex.isWebCryptoAPI()` returns false should you wish to abort and tell the user to use a better browser. As noted above `Date.now()` is hashed into the pseudorandom which IMHO makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. If you do allow the use of Isaac it is **recommended** that you spin it forward using an `onkeyup` event handler attached to the username and password input fields: 
-
-```Javascript
-function (event) {
-  /* drops randoms in a loop for some millesconds based on the key being pressed */
-  random16byteHex.advance(Math.floor(event.keyCode/4));
-}
-```
-
 ## Recommendations 
 
 * Make the salt column in the database `not null` and add a uniqueness constraint.  
@@ -148,6 +125,30 @@ mvn package
 ```
 
 Note that if you build on jdk17 the junit-js tests which test the javascript cryptography take a long while to run. It is highly recommended that you build with JDK1.8 or higher as the Javascript testing is 10x faster than JDK1.7 due to the new Nashorn EMCAScript engine in Java1.8. 
+
+## Footnote: Random Numbers At The Browser
+
+This section is an advanced discussion about random numbers which most people can skip over. Thinbus tries to use the browsers `WebCryptoAPI` secure random number generator. If that is not available it falls back to an isaac random number generator which is warmed up upon page load. This is discussed in detail below. 
+
+An SRP6a proof of password uses three numbers `s`, `a`, `b` which are specified to be random: 
+
+1. The value `b` is the server ephemeral one time key. This is used to compute `B` which is sent from server to browser as the unique challenge per login attempt. Thinbus uses Nimbus which uses the Java secure random number generator for this value. 
+1. The salt `s` is created at user registration then stored on the server. This is a public value as anyone claiming to be the user is given the salt to perform the proof of password. Thinbus provides an optional salt generation method to use at the browser. You don't have to use this method. You can choose to use a salt entirely generated at the server, one which is generated entirely at the browser, else one which is a server random hashed into a browser random. These options are described below.  
+1. The value `a` is created by the browser as the client ephemeral one time key for a single login attempt. This is then used to compute `A` which is sent from the browser to the server. There are no options here and the approach taken by Thinbus is detailed below. 
+
+The salt `s` is a public value in the protocol which is fixed per user and would be stored in the user database. The desired property is that it is unique for every user in your system. This can be ensured by adding a uniqueness constraint to a `not null` salt column within the database which is **strongly recommended**. Then it does not matter whether this public value has been generated using a good secure random number at the server or using a weaker random number generator at the browser. You simply reduce the probability of database constraint exceptions if you use a better random number. Thinbus provides a method `generateRandomSalt` to run at the browser to create `s` which can be invoked with, or without, passing a sever generated secure random number or avoided entirely by generating the salt at the server. It hashes `Date.now()` with a browser random and the optional server random to avoid a total failure to come up with values which do not repeat between user registrations. 
+
+The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts even if the browser has a faulty random number generator.  
+
+Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus uses an [Isaac](http://en.wikipedia.org/wiki/ISAAC_%28cipher%29) generator discarding random numbers in a busy loop for 0.1s at page load. You can detected the use of Isaac by checking whether `random16byteHex.isWebCryptoAPI()` returns false should you wish to abort and tell the user to use a better browser. As noted above `Date.now()` is hashed into the pseudorandom which IMHO makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. If you do allow the use of Isaac it is **recommended** that you spin it forward using an `onkeyup` event handler attached to the username and password input fields: 
+
+```Javascript
+function (event) {
+  /* drops randoms in a loop for some millesconds based on the key being pressed */
+  random16byteHex.advance(Math.floor(event.keyCode/4));
+}
+```
+
 
 ## Release Notes
 
