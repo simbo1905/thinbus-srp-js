@@ -29,7 +29,7 @@ Check the `src/main/webapp/lib/*.js` files in the [demo application](https://bit
   - `js/shaXXX-min.js` Hashing algorithms. You must choose one. The recommendation is to use sha256 or better. 
   - `js/thinbus-srp6a-config-XXX.js` Multiple example configurations. You must include one which matches the chosen hashing algorithm. The recommended one is sha256.  
 
-You can extract the js files from the jar with any zip tool else just use the ones in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). **Note** If you upgrade versions of the jar then you must **always** extract the js file from the jar and replace the script(s) your webapp uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against a newer Java release. 
+You can extract the js files from the jar with any zip tool else just use the ones in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). **Note** If you upgrade versions of the jar then you must **always** extract the js file from the jar and replace the script(s) your webapp uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against a newer Java logic. 
 
 ## Custom Configuration
 
