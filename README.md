@@ -1,4 +1,4 @@
-# Thinbus Javascript Secure Remote Password (SRP-6a) 
+# Thinbus Javascript Secure Remote Password (SRP) 
 
 Copyright (c) Simon Massey, 2014
  
