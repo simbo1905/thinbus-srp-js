@@ -1,14 +1,14 @@
-# Thinbus Secure Remote Password (SRP-6a) 
+# Thinbus Javascript Secure Remote Password (SRP-6a) 
 
 Copyright (c) Simon Massey, 2014
  
-This package provides a [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for Javascript / EMCAScript to perform a zero knowledge proof of password from a browser to a web server. The server Java code only has a dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
+This package provides a Javascript [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for web browsers to perform a zero-knowledge proof-of-password to a web server. It comes with compatible Java classes but there is also a demo using PHP server code. The server Java code only has a dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
 There are a number of demonstration applications: 
 
-1. [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written as a JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). 
-2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) which uses the Thinbus Javascript library to do SRP authentication to a PHP server.     
-3. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) which users Thinbus to create accounts and login users with Spring Security in a Spring MVC application. 
+1. [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) Is a minimal demo using JSON over AJAX to a simple JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). 
+2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) which uses the Thinbus Javascript library to do SRP authentication to PHP server code. 
+3. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) which users Thinbus JavaScript to create accounts and login users with Spring Security in a Spring MVC application. 
 
 ## Maven Dependency
 
