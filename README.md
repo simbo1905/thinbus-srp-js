@@ -17,7 +17,7 @@ There are a number of demonstration applications:
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.1.0</version>
+		<version>1.2.0</version>
 	</dependency>
 ```
 
@@ -154,6 +154,10 @@ function (event) {
 
 
 ## Release Notes
+
+Version 1.1.1
+
+1. Exposes values such as salt, A, M1, B, M2 as strings. 
 
 Version 1.1.0
 
