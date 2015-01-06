@@ -1,14 +1,14 @@
-# Thinbus Secure Remote Password (SRP-6a) 
+# Thinbus Javascript Secure Remote Password (SRP) 
 
 Copyright (c) Simon Massey, 2014
  
-This package provides a [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for Javascript / EMCAScript to perform a zero knowledge proof of password from a browser to a Java server. The only dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
+This package provides a Javascript [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for web browsers to perform a zero-knowledge proof-of-password to a web server. It comes with compatible Java classes but there is also a demo using PHP server code. The server Java code only has a dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
 There are a number of demonstration applications: 
 
-1. [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) written as a JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). 
-2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) which uses the Thinbus Javascript library to do SRP authentication to a PHP server.     
-3. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) which users Thinbus to create accounts and login users with Spring Security in a Spring MVC application. 
+1. [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) Is a minimal demo using JSON over AJAX to a simple JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). 
+2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) which uses the Thinbus Javascript library to do SRP authentication to PHP server code. 
+3. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) which users Thinbus JavaScript to create accounts and login users with Spring Security in a Spring MVC application. 
 
 ## Maven Dependency
 
@@ -17,7 +17,7 @@ There are a number of demonstration applications:
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.2.0</version>
+		<version>1.1.1</version>
 	</dependency>
 ```
 
@@ -29,7 +29,7 @@ Check the `src/main/webapp/lib/*.js` files in the [demo application](https://bit
   - `js/shaXXX-min.js` Hashing algorithms. You must choose one. The recommendation is to use sha256 or better. 
   - `js/thinbus-srp6a-config-XXX.js` Multiple example configurations. You must include one which matches the chosen hashing algorithm. The recommended one is sha256.  
 
-You can extract the js files from the jar with any zip tool else just use the ones in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). **Note** If you upgrade versions of the jar then you must **always** extract the js file from the jar and replace the script(s) your webapp uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against a newer Java release. 
+You can extract the js files from the jar with any zip tool else just use the ones in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). **Note** If you upgrade versions of the Java jar version you use on the server then you must **always** extract the js file from the jar and refresh the script(s) the browser uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against a newer Java logic. 
 
 ## Custom Configuration
 
@@ -93,8 +93,9 @@ Other JavaScript source files in the jar show the original copyright of the libr
 * Make the salt column in the database `not null` and add a uniqueness constraint.  
 * Use symmetric encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off site database backups being used in an offline dictionary attack against `v`. 
 * If you allow the use of Issac as a fallback random number generator add `onkeyup` event handlers which advance the random stream as documented above. 
+* Add a password strength meter to the register form to encourage users to use strong passwords. The best cryptography in the world won't protect your users if they use "12345" as their password. Consider only allowing them to register with strong  passwords to make an online dictionary attack unfeasible. 
 * Use Thinbus SRP over HTTPS. If your customers use a company supplied computer going via a corporate web proxy then HTTPS may be [decrypted and monitored](https://www.bluecoat.com/products/proxysg). HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS alone cannot protected against leaking passwords into error messages on your webserver or database server logs. SRP over HTTPS is better than either used alone. 
-* Create a custom large safe prime number `N` of greater than 1024 bits. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience.
+* Create a custom large safe prime number `N` of greater than 1024 bits. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience. 
 
 ## License
 
@@ -157,7 +158,7 @@ function (event) {
 
 Version 1.1.1
 
-1. Exposes values such as salt, A, M1, B, M2 as strings. 
+1. Added getters to be able to access the SRP paramaters outside of the anticipated login flow.  
 
 Version 1.1.0
 
@@ -173,5 +174,3 @@ Version 1.0.2
 Version 1.0.1
 
 A critical defect was found in the 1.0.0 js logic. Please upgrade to >=1.0.1 immediately. To prevent a regression a test has been added which tests the javascript password algorithm against identical logic implemented in java. The project has also now been configured to use [JsHint](http://www.jshint.com/docs/). This fails the build for the sort of bug which javascript is silent about but a java compiler would notice such as the critical bug. 
-
-End.
