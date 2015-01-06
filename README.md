@@ -156,6 +156,12 @@ function (event) {
 
 ## Release Notes
 
+Version 1.2.0
+
+1. Exposed `userId` on the javascript client session
+2. Added `getSessionKey` on the javascript client 
+3. Changed the `getSessionKey(true)` java code to do hashing which matches the javascript and PHP versions.
+
 Version 1.1.1
 
 1. Added getters to be able to access the SRP paramaters outside of the anticipated login flow.  
