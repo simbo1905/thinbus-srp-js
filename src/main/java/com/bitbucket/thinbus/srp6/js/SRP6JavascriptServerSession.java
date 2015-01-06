@@ -196,6 +196,14 @@ abstract public class SRP6JavascriptServerSession {
 	 *         session state when the session key 'S' has not been computed yet.
 	 */
 	public String getSessionKey(boolean doHash) {
-		return toHex(session.getSessionKey(doHash));
+		String S = toHex(session.getSessionKey(false));
+		if (doHash) {
+			String K = HexHashedRoutines.toHexString(this.config
+					.getMessageDigestInstance().digest(
+					S.getBytes(HexHashedRoutines.utf8)));
+			return K;
+		} else {
+			return S;
+		}
 	}
 }

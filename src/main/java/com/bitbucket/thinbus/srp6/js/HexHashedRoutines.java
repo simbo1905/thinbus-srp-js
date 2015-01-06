@@ -66,7 +66,7 @@ public class HexHashedRoutines {
 		return toHexString(output);
 	}
 
-	final private static char[] hexArray = "0123456789ABCDEF".toCharArray();
+	final private static char[] hexArray = "0123456789abcdef".toCharArray();
 
 	/**
 	 * http://stackoverflow.com/a/9855338

@@ -35,7 +35,7 @@ tests({
 	
 	/**
 	Tests the full flow between the Javascript Client Session and the Java Server Session.
-	See the comments in the SHA256 version of this class for a discription fo what is going on. 
+	See the comments in the SHA256 version of this class for a fuller description.  
 	*/
 	testMutualAuthentiation: function() {
 	
@@ -54,6 +54,18 @@ tests({
 		var M2 = server.step2(credentials.A, credentials.M1);
 		
 		client.step3(M2);
+		
+		var cS = client.getSessionKey(false);
+		
+		var sS = server.getSessionKey(false);
+
+		assert.assertTrue(cS == sS); 
+		
+		var cK = client.getSessionKey();
+		
+		var sK = server.getSessionKey(true);
+		
+		assert.assertTrue(cK == sK); 
 	}
 	
 });

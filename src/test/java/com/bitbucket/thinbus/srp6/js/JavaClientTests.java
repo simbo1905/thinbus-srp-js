@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.nimbusds.srp6.SRP6ClientCredentials;
@@ -62,6 +63,16 @@ public class JavaClientTests {
 		String M2 = server.step2(toHex(credentials.A), toHex(credentials.M1));
 		
 		client.step3(M2);
+
+		// both share a strong session key.
+		String cS = client.getSessionKey(false);
+		String sS = server.getSessionKey(false);
+		Assert.assertEquals(cS, sS);
+
+		// the hash value may be more useful as a secret key.
+		String cK = client.getSessionKey(true);
+		String sK = server.getSessionKey(true);
+		Assert.assertEquals(cK, sK);
 	}
 
 	@Test
@@ -89,6 +100,16 @@ public class JavaClientTests {
 		String M2 = server.step2(toHex(credentials.A), toHex(credentials.M1));
 
 		client.step3(M2);
+		
+		// both share a strong session key.
+		String cS = client.getSessionKey(false);
+		String sS = server.getSessionKey(false);
+		Assert.assertEquals(cS, sS);
+		
+		// the hash value may be more useful as a secret key. 
+		String cK = client.getSessionKey(true);
+		String sK = server.getSessionKey(true);
+		Assert.assertEquals(cK, sK);
 	}
 
 	// this is a brute force comparison that javascript and Java can login

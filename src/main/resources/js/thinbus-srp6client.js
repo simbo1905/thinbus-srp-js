@@ -70,6 +70,7 @@ function SRP6JavascriptClientSession() {
 	this.k = null;
 	this.u = null;
 	this.S = null;
+	this.K = null;
 	this.M1str = null;
 	
 	// private
@@ -152,10 +153,37 @@ SRP6JavascriptClientSession.prototype.fromHex = function(s) {
 };
 /* jshint ignore:end */
 
-// public getter
+// public getter of the current workflow state. 
 SRP6JavascriptClientSession.prototype.getState = function() {
 	"use strict";
 	return this.state;
+};
+
+/**
+ * Gets the shared sessionkey
+ * 
+ * @param hash Boolean With to return the large session key 'S' or 'K=H(S)'
+ */
+SRP6JavascriptClientSession.prototype.getSessionKey = function(hash) {
+	"use strict";
+	if( this.S === null ) {
+		return null;
+	}
+	this.SS = this.toHex(this.S);
+	if(typeof hash !== 'undefined' && hash === false){
+		return this.SS;
+	} else {
+		if( this.K === null ) {
+			this.K = this.H(this.SS);
+		}
+		return this.K;
+	}
+};
+
+// public getter
+SRP6JavascriptClientSession.prototype.getUserID = function() {
+	"use strict";
+	return this.I;
 };
 
 /* 
