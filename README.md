@@ -21,15 +21,16 @@ There are a number of demonstration applications:
 	</dependency>
 ```
 
-## Using
+## Quick Start
 
-Check the `src/main/webapp/lib/*.js` files in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). That demo app is using the files extracted from the thinbus-srp6a-js-<version>.jar which contains:
+Check the `src/main/webapp/lib/*.js` files in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). That demo app is using the files extracted from the built thinbus-srp6a-js-<version>.jar:
 
   - `js/thinbus-srp6a-min.js` All the required dependencies minified. 
-  - `js/shaXXX-min.js` Hashing algorithms. You must choose one. The recommendation is to use sha256 or better. 
-  - `js/thinbus-srp6a-config-XXX.js` Multiple example configurations. You must include one which matches the chosen hashing algorithm. The recommended one is sha256.  
+  - `js/thinbus-srp6a-2048-sha256-min.js` Example minified configuration using the RFC 5054 2048 bit prime and the sha256 hashing algorithm.  
 
-You can extract the js files from the jar with any zip tool else just use the ones in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). **Note** If you upgrade versions of the Java jar version you use on the server then you must **always** extract the js file from the jar and refresh the script(s) the browser uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against a newer Java logic. 
+See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript sessions and tests them with the JDK Javascript runtime using [JUnit-JS](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with-junit/). 
+
+**Note** If you use the java server code if you upgrade versions of the Java jar version you must **always** extract the js file from the jar and refresh the script(s) the browser uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against a newer Java logic. 
 
 ## Custom Configuration
 
@@ -43,16 +44,14 @@ var SRP6CryptoParams= {
 }
 ``` 
 
-See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript sessions and tests them with the JDK Javascript runtime using [JUnit-JS](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with-junit/). It is recommended that after you have a working setup that you investigate the performance of a custom large safe prime number `N` of greater than 1024 bits for increased security. How to create and configure your own large safe prime is outlined below.  
-
 An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the value computed by the Java must be added to the Javascript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct formats to configure the Javascript. 
 
 ## Creating A Custom Large Safe Prime
 
-It is recommended you use openssl to create your own large safe prime which is larger that 1024 bits. To help with this there is a class which parses the output of the openssl safe prime generation command: 
+You can use openssl to create your own large safe prime. To help with this there is a class which parses the output of the openssl safe prime generation command: 
 
 ```sh
-# create your parameters set <bit-length> (use a minimum of 1024 bits)
+# create your parameters set <bit-length> (use a minimum of 1024 bits the demo uses twice that length)
 openssl dhparam -text <bit-length> | tee /tmp/my_dhparam.txt
 
 # build the runnable jar-with-dependencies 
@@ -64,7 +63,7 @@ java -jar target/thinbus-srp6a-js-<version>-jar-with-dependencies.jar /tmp/my_dh
 
 This will output something like: 
 
-```
+```sh
 bits:1024
 hashing to create 'k' using SHA-256
 computing
@@ -75,7 +74,7 @@ k base16: 1a3d1769e1d6337...
 
 You then use the `N` and `g` value to configure the Java session and use the `N`, `g` and `k` values to configure the Javascript session as outlined above. Also see `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript session and tests them against one another. You should edit that test to use your own safe prime values and confirm that the test passes before testing with a web browser. 
 
-Using 1024 bit primes on a four year old mac the browser takes between 0.05s and 0.10s to run the main srp work. The timings depend on which of Firefox, Chrome or Safari is used. YMMV as Javascript runtimes and mobile hardware may vary considerably so you should test the user experience on all your browsers you are targeting even if you are using the provided `N`. 
+Using the demo 2048 bit prime a modern developer workstation takes less than 90ms to do the math. Trying out smaller 1024 bit primes on a four year old mac the browser takes between 0.05s and 0.10s to run the main srp work. The timings depend on which of Firefox, Chrome or Safari is used. YMMV as Javascript runtimes and mobile hardware may vary considerably so you should test the user experience on all your browsers you are targeting. 
 
 ## Javascript Code
 
@@ -84,8 +83,8 @@ Other JavaScript source files in the jar show the original copyright of the libr
   - `js/biginteger.js` BigInteger math package. 
   - `js/isaac.js` A random number generator which aims to be secure. 
   - `js/random.js` A random number class which tries to use `window.crypto` or `window.msCrypto` random numbers else fall-backs to the `isaac.js` generator. 
-  - `js/sha256.js` The Crypto.JS SHA256 hash algorithm. 
-  - `js/sha1.js` The Crypto.JS SHA1 hash algorithm.   
+  - `js/sha256.js` The Crypto.JS SHA256 hash algorithm. Recommended. 
+  - `js/sha1.js` The Crypto.JS SHA1 hash algorithm. 
   - `js/thinbus-srp6client.js` The SRP client session
 
 ## Recommendations 
@@ -100,7 +99,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 ## License
 
 ```
-   Copyright 2014 Simon Massey
+   Copyright 2014-2015 Simon Massey
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
