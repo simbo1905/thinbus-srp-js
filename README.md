@@ -1,14 +1,14 @@
 # Thinbus Javascript Secure Remote Password (SRP) 
 
-Copyright (c) Simon Massey, 2014
+Copyright (c) Simon Massey, 2014-2015
  
 This package provides a Javascript [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for web browsers to perform a zero-knowledge proof-of-password to a web server. It comes with compatible Java classes but there is also a demo using PHP server code. The server Java code only has a dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
 There are a number of demonstration applications: 
 
 1. [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) Is a minimal demo using JSON over AJAX to a simple JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). 
-2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) which uses the Thinbus Javascript library to do SRP authentication to PHP server code. 
-3. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) which users Thinbus JavaScript to create accounts and login users with Spring Security in a Spring MVC application. 
+2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) Uses the Thinbus Javascript library to do SRP authentication to PHP server code. 
+3. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) A Spring MVC application which uses the Thinbus JavaScript library to create accounts and login users with Spring Security. 
 
 ## Maven Dependency
 
@@ -30,7 +30,7 @@ Check the `src/main/webapp/lib/*.js` files in the [demo application](https://bit
 
 See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript sessions and tests them with the JDK Javascript runtime using [JUnit-JS](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with-junit/). 
 
-**Note** If you use the java server code if you upgrade versions of the Java jar version you must **always** extract the js file from the jar and refresh the script(s) the browser uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js files against a newer Java logic. 
+**Note** If you use the java server code if you upgrade versions of the Java jar version you must **always** extract the main js file from the jar and refresh the script(s) the browser uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js logic against a newer Java logic. 
 
 ## Custom Configuration
 
@@ -57,7 +57,7 @@ openssl dhparam -text <bit-length> | tee /tmp/my_dhparam.txt
 # build the runnable jar-with-dependencies 
 mvn assembly:assembly
 
-# use the jar name which matches the output of the assembly command. set <hash> to the name of the algorithm e.g. "SHA-256"
+# use the jar name which matches the output of the assembly command. set <hash> to the name of the java hashing algorithm to use e.g. "SHA-256"
 java -jar target/thinbus-srp6a-js-<version>-jar-with-dependencies.jar /tmp/my_dhparam.txt <hash>
 ```
 
@@ -92,7 +92,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 * Make the salt column in the database `not null` and add a uniqueness constraint.  
 * Use symmetric encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off site database backups being used in an offline dictionary attack against `v`. 
 * If you allow the use of Issac as a fallback random number generator add `onkeyup` event handlers which advance the random stream as documented above. 
-* Add a password strength meter to the register form to encourage users to use strong passwords. The best cryptography in the world won't protect your users if they use "12345" as their password. Consider only allowing them to register with strong  passwords to make an online dictionary attack unfeasible. 
+* Add a javascript password strength meter to the register form to encourage users to use strong passwords. The best cryptography in the world won't protect your users if they use "password" as their password. Consider only allowing them to register with strong  passwords to make an [online dictionary attack infeasible](http://xkcd.com/936/). 
 * Use Thinbus SRP over HTTPS. If your customers use a company supplied computer going via a corporate web proxy then HTTPS may be [decrypted and monitored](https://www.bluecoat.com/products/proxysg). HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS alone cannot protected against leaking passwords into error messages on your webserver or database server logs. SRP over HTTPS is better than either used alone. 
 * Create a custom large safe prime number `N` of greater than 1024 bits. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience. 
 
@@ -131,7 +131,9 @@ Note that if you build on jdk17 the junit-js tests which test the javascript cry
 
 ## Footnote: Random Numbers At The Browser
 
-This section is an advanced discussion about random numbers which most people can skip over. Thinbus tries to use the browsers `WebCryptoAPI` secure random number generator. If that is not available it falls back to an isaac random number generator which is warmed up upon page load. This is discussed in detail below. 
+This section is an advanced discussion about how Thinbus generates and uses random numbers which most people can skip over. 
+
+Typically cryptography depends on secure random numbers and historically this has been a weak point with browsers. Thinbus tries to use the moden `WebCryptoAPI` secure random number API in modern browsers have. If that is not available it falls back to a pure javascript isaac random number generator which is warmed up upon page load. The reasoning as to why I consider this acceptable is as follows. 
 
 An SRP6a proof of password uses three numbers `s`, `a`, `b` which are specified to be random: 
 
@@ -143,7 +145,7 @@ The salt `s` is a public value in the protocol which is fixed per user and would
 
 The property of `a` which we desire is that it does not repeat between login attempts. The user could be redirected to a malicious server which is forcing multiple login attempts with a crafted `B` to attack the password. This requires that `a` be random to not leak information. It **must not** be passed by the server else a malicious server could pass known `a`, `s` and `B` for which it has pre-computed a rainbow table which takes `M1` as the lookup value. Thinbus hashes `Date.now()` into the browser random to formulate an `a` value which will then vary for subsequent login attempts even if the browser has a faulty random number generator.  
 
-Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus uses an [Isaac](http://en.wikipedia.org/wiki/ISAAC_%28cipher%29) generator discarding random numbers in a busy loop for 0.1s at page load. You can detected the use of Isaac by checking whether `random16byteHex.isWebCryptoAPI()` returns false should you wish to abort and tell the user to use a better browser. As noted above `Date.now()` is hashed into the pseudorandom which IMHO makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. If you do allow the use of Isaac it is **recommended** that you spin it forward using an `onkeyup` event handler attached to the username and password input fields: 
+Currently IE11, Chrome, Firefox and Safari each implement a version of the secure random number generator in the WebCryptoAPI draft standard. If `window.crypto` or `window.msCrypto` is not detected Thinbus uses an [Isaac](http://en.wikipedia.org/wiki/ISAAC_%28cipher%29) generator discarding random numbers in a busy loop for 0.1s at page load. The discarding of randoms is to warm up the isaac generator as the published cryptanalysis indicates that with too uniform a starting array the early numbers may not be random enough. You can detected the use of Isaac by checking whether `random16byteHex.isWebCryptoAPI()` returns false should you wish to abort and tell the user to use a better browser. As noted above `Date.now()` is hashed into the pseudorandom which IMHO makes Issac an acceptable option for older browsers that don't provide WebCryptoAPI secure random numbers. If you do allow the use of Isaac it is **recommended** that you spin it forward using an `onkeyup` event handler attached to the username and password input fields to further warm it up: 
 
 ```Javascript
 function (event) {
@@ -151,7 +153,6 @@ function (event) {
   random16byteHex.advance(Math.floor(event.keyCode/4));
 }
 ```
-
 
 ## Release Notes
 
