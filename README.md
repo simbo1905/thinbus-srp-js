@@ -2,7 +2,7 @@
 
 Copyright (c) Simon Massey, 2014-2015
  
-This package provides a Javascript [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for web browsers to perform a zero-knowledge proof-of-password to a web server. It comes with compatible Java classes but there is also a demo using PHP server code. The server Java code only has a dependency is the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
+This package provides a Javascript [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for web browsers to perform a zero-knowledge proof-of-password to a web server. It comes with compatible Java classes but there is also a demo using PHP server code. The server Java code only has a dependency on the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
 There are a number of demonstration applications: 
 
@@ -51,7 +51,7 @@ An extra implementation detail is that the JavaScript must be configure with `k`
 You can use openssl to create your own large safe prime. To help with this there is a class which parses the output of the openssl safe prime generation command: 
 
 ```sh
-# create your parameters set <bit-length> (use a minimum of 1024 bits the demo uses twice that length)
+# create your parameters set <bit-length> (recommended minimum of 2048)
 openssl dhparam -text <bit-length> | tee /tmp/my_dhparam.txt
 
 # build the runnable jar-with-dependencies 
@@ -94,7 +94,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 * If you allow the use of Issac as a fallback random number generator add `onkeyup` event handlers which advance the random stream as documented above. 
 * Add a javascript password strength meter to the register form to encourage users to use strong passwords. The best cryptography in the world won't protect your users if they use "password" as their password. Consider only allowing them to register with strong  passwords to make an [online dictionary attack infeasible](http://xkcd.com/936/). 
 * Use Thinbus SRP over HTTPS. Configure your Webserver to mark session cookies as secure so that uses won't be able to login except over HTTPS to prevent accident use of HTTP. If your customers use a company supplied computer going via a corporate web proxy then HTTPS may be [decrypted and monitored](https://www.bluecoat.com/products/proxysg). HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). So HTTPS alone cannot protected against leaking passwords into error messages on your webserver or database server logs. SRP over HTTPS is better than either used alone. 
-* Create a custom large safe prime number `N` of greater than 1024 bits. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience. 
+* Create a custom large safe prime number `N`. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience for your chosen bit length. 
 
 ## License
 
