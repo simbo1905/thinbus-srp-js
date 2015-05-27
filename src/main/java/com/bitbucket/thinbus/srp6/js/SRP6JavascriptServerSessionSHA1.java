@@ -1,5 +1,7 @@
 package com.bitbucket.thinbus.srp6.js;
 
+import java.io.Serializable;
+
 import com.nimbusds.srp6.SRP6CryptoParams;
 
 /**
@@ -13,7 +15,12 @@ import com.nimbusds.srp6.SRP6CryptoParams;
  * 
  * @author Simon Massey
  */
-public class SRP6JavascriptServerSessionSHA1 extends SRP6JavascriptServerSession {
+public class SRP6JavascriptServerSessionSHA1 extends SRP6JavascriptServerSession implements Serializable {
+
+	/**
+	 * SerialVersionUID
+	 */
+	private static final long serialVersionUID = -8615033464877868308L;
 
 	public static final String SHA_1 = "SHA-1";
 
