@@ -2,6 +2,7 @@ package com.bitbucket.thinbus.srp6.js;
 
 import static com.nimbusds.srp6.BigIntegerUtils.toHex;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 import com.nimbusds.srp6.SRP6CryptoParams;
@@ -18,7 +19,12 @@ import com.nimbusds.srp6.ServerEvidenceRoutine;
  * 
  * @author Simon Massey
  */
-public class HexHashedServerEvidenceRoutine implements ServerEvidenceRoutine {
+public class HexHashedServerEvidenceRoutine implements ServerEvidenceRoutine, Serializable {
+
+	/**
+	 * SerialVersionUID
+	 */
+	private static final long serialVersionUID = 3243998651178428263L;
 
 	/**
 	 * Computes a server evidence message 'M2'.

@@ -2,6 +2,7 @@ package com.bitbucket.thinbus.srp6.js;
 
 import static com.nimbusds.srp6.BigIntegerUtils.toHex;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 import com.nimbusds.srp6.SRP6CryptoParams;
@@ -18,7 +19,12 @@ import com.nimbusds.srp6.URoutineContext;
  * 
  * @author Simon Massey
  */
-final class HexHashedURoutine implements URoutine {
+final class HexHashedURoutine implements URoutine, Serializable {
+
+	/**
+	 * SerialVersionUID
+	 */
+	private static final long serialVersionUID = -2041787925113762310L;
 
 	/**
 	 * Computes the random scrambling parameter u = H(A | B)
