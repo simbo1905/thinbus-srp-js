@@ -71,6 +71,15 @@ abstract public class SRP6JavascriptServerSession {
 	}
 
 	/**
+	 * Gets the identity 'I' of the authenticating user.
+	 *
+	 * @return The user identity 'I', null if undefined.
+	 */
+	public String getUserID() {
+		return session.getUserID();
+	}
+
+	/**
 	 * The crypto parameters for the SRP-6a protocol. These must be agreed
 	 * between client and server before authentication and consist of a large
 	 * safe prime 'N', a corresponding generator 'g' and a hash function
@@ -146,5 +155,55 @@ abstract public class SRP6JavascriptServerSession {
 		builder.append(String.format("N: %s\n", config.N.toString(10)));
 		builder.append(String.format("k: %s\n", k()));
 		return builder.toString();
+	}
+
+	/**
+	 * Gets the password salt 's'.
+	 * 
+	 * @return The salt 's' if available, else {@code null}.
+	 */
+	public String getSalt() {
+		return toHex(session.getSalt());
+	}
+
+	/**
+	 * Gets the public server value 'B'.
+	 *
+	 * @return The public server value 'B' if available, else {@code null}.
+	 */
+	public String getPublicServerValue() {
+		return toHex(session.getPublicServerValue());
+	}
+
+	/**
+	 * Gets the server evidence message 'M2'.
+	 *
+	 * @return The server evidence message 'M2' if available, else {@code null}.
+	 */
+	public String getServerEvidenceMessage() {
+		return toHex(session.getServerEvidenceMessage());
+	}
+
+	/**
+	 * Gets the shared session key 'S' or its hash H(S).
+	 *
+	 * @param doHash
+	 *            If {@code true} the hash H(S) of the session key will be
+	 *            returned instead of the raw value.
+	 *
+	 * @return The shared session key 'S' or its hash H(S). {@code null} will be
+	 *         returned if authentication failed or the method is invoked in a
+	 *         session state when the session key 'S' has not been computed yet.
+	 */
+	public String getSessionKey(boolean doHash) {
+		String S = toHex(session.getSessionKey(false));
+		if (doHash) {
+			String K = HexHashedRoutines.toHexString(this.config
+					.getMessageDigestInstance().digest(
+					S.getBytes(HexHashedRoutines.utf8)));
+			return K;
+		} else {
+			return S;
+		}
 	}
 }

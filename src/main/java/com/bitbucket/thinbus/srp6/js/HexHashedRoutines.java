@@ -1,5 +1,7 @@
 package com.bitbucket.thinbus.srp6.js;
 
+import static com.nimbusds.srp6.BigIntegerUtils.toHex;
+
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -43,5 +45,47 @@ public class HexHashedRoutines {
 		}
 		builder.append(value);
 		return builder.toString();
+	}
+
+	public static String hashCredentials(MessageDigest digest, String salt,
+			String identity, String password) {
+		digest.reset();
+
+		String concat = identity + ":" + password;
+
+		digest.update(concat.getBytes(utf8));
+		byte[] output = digest.digest();
+		digest.reset();
+
+		final String hash1 = toHex(new BigInteger(1, output));
+		concat = (salt + hash1).toUpperCase();
+
+		digest.update(concat.getBytes(utf8));
+		output = digest.digest();
+
+		return toHexString(output);
+	}
+
+	final private static char[] hexArray = "0123456789abcdef".toCharArray();
+
+	/**
+	 * http://stackoverflow.com/a/9855338
+	 * 
+	 * Compute a String in HexDigit from the input. Note that this string may
+	 * have leading zeros but hex strings created by toString(16) of BigInteger
+	 * would strip leading zeros.
+	 * 
+	 * @param bytes
+	 *            Raw byte array
+	 * @return Hex encoding of the input
+	 */
+	public static String toHexString(final byte[] bytes) {
+		char[] hexChars = new char[bytes.length * 2];
+		for (int j = 0; j < bytes.length; j++) {
+			int v = bytes[j] & 0xFF;
+			hexChars[j * 2] = hexArray[v >>> 4];
+			hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+		}
+		return new String(hexChars);
 	}
 }

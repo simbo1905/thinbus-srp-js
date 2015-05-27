@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.bitbucket.simon_massey</groupId>
-	<artifactId>srp6a-js</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
+	<artifactId>thinbus-srp6a-js</artifactId>
+	<version>1.2.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Thinbus SRP6a</name>
@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>com.nimbusds</groupId>
 			<artifactId>srp6a</artifactId>
-			<version>1.5</version>
+			<version>1.5.2</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -205,6 +205,15 @@
 								<include>${project.build.directory}/classes/js/isaac-min.js</include>
 								<include>${project.build.directory}/classes/js/random-min.js</include>
 								<include>${project.build.directory}/classes/js/thinbus-srp6client-min.js</include>
+							</includes>
+						</aggregation>
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
+							<output>${project.build.directory}/classes/js/thinbus-srp6a-2048-sha256-min.js</output>
+							<includes>
+								<include>${project.build.directory}/classes/js/sha256-min.js</include>
+								<include>${project.build.directory}/classes/js/rfc5054-2048-sha256-min.js</include>
+								<include>${project.build.directory}/classes/js/thinbus-srp6a-config-sha256-min.js</include>
 							</includes>
 						</aggregation>
 					</aggregations>
