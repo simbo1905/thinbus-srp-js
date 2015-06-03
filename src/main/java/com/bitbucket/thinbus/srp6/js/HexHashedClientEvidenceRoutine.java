@@ -21,7 +21,7 @@ import com.nimbusds.srp6.SRP6CryptoParams;
 public class HexHashedClientEvidenceRoutine implements ClientEvidenceRoutine, Serializable {
 
 	/**
-	 * SerialVersionUID
+	 * Serializable class version number
 	 */
 	private static final long serialVersionUID = 514520909658167615L;
 

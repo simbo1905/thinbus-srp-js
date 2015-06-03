@@ -22,7 +22,7 @@ import com.nimbusds.srp6.ServerEvidenceRoutine;
 public class HexHashedServerEvidenceRoutine implements ServerEvidenceRoutine, Serializable {
 
 	/**
-	 * SerialVersionUID
+	 * Serializable class version number
 	 */
 	private static final long serialVersionUID = 3243998651178428263L;
 

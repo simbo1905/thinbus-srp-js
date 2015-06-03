@@ -22,7 +22,7 @@ import com.nimbusds.srp6.URoutineContext;
 final class HexHashedURoutine implements URoutine, Serializable {
 
 	/**
-	 * SerialVersionUID
+	 * Serializable class version number
 	 */
 	private static final long serialVersionUID = -2041787925113762310L;
 

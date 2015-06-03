@@ -15,7 +15,7 @@ import com.nimbusds.srp6.SRP6ServerSession.State;
 abstract public class SRP6JavascriptServerSession implements Serializable {
 
 	/**
-	 * SerialVersionUID
+	 * Serializable class version number
 	 */
 	private static final long serialVersionUID = -5998252135527603869L;
 

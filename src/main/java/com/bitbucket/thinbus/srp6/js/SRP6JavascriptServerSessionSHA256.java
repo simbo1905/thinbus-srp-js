@@ -18,7 +18,7 @@ import com.nimbusds.srp6.SRP6CryptoParams;
 public class SRP6JavascriptServerSessionSHA256 extends SRP6JavascriptServerSession implements Serializable {
 
 	/**
-	 * SerialVersionUID
+	 * Serializable class version number
 	 */
 	private static final long serialVersionUID = 8311147633496438232L;
 
