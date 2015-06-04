@@ -156,6 +156,11 @@ function (event) {
 
 ## Release Notes
 
+Version 1.2.1
+
+1. Support of Session Serialization - update to Nimbus 1.5.3. Thanks to Bernard Wittwer. 
+
+
 Version 1.2.0
 
 1. Exposed `userId` on the javascript client session
