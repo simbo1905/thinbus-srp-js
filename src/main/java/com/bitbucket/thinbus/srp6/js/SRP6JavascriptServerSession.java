@@ -3,6 +3,7 @@ package com.bitbucket.thinbus.srp6.js;
 import static com.nimbusds.srp6.BigIntegerUtils.fromHex;
 import static com.nimbusds.srp6.BigIntegerUtils.toHex;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 import com.nimbusds.srp6.SRP6CryptoParams;
@@ -11,7 +12,12 @@ import com.nimbusds.srp6.SRP6Routines;
 import com.nimbusds.srp6.SRP6ServerSession;
 import com.nimbusds.srp6.SRP6ServerSession.State;
 
-abstract public class SRP6JavascriptServerSession {
+abstract public class SRP6JavascriptServerSession implements Serializable {
+
+	/**
+	 * Serializable class version number
+	 */
+	private static final long serialVersionUID = -5998252135527603869L;
 
 	/**
 	 * Increments this SRP-6a authentication session to {@link State#STEP_1}.
