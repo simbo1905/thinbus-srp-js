@@ -16,7 +16,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.nimbusds.srp6.SRP6ClientCredentials;
-import com.nimbusds.srp6.SRP6ServerSession;
 
 public class JavaClientTests {
 
@@ -160,6 +159,7 @@ public class JavaClientTests {
 		Assert.assertEquals(cK, sK);
 	}
 	
+
 	//	
 	//	 Use a ObjectOutputStream to perform serialization
 	//	 
@@ -237,7 +237,7 @@ public class JavaClientTests {
 			long end = System.currentTimeMillis();
 			System.out.print(" " + (end - start) / 1000);
 		}
-		System.out.println("SHA256:");
+		System.out.println("\nSHA256:");
 		for (int i = 0; i < 10; i++) {
 			long start = System.currentTimeMillis();
 			for (int j = 0; j < 1000; j++) {

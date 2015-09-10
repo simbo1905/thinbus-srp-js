@@ -97,11 +97,25 @@ function SRP6JavascriptClientSession() {
 		this.check(password, "password");
 		//console.log("js salt:"+salt+",i:"+identity+",p:"+password);
 		var hash1 = this.H(identity+':'+password);
+		
+		// server BigInteger math will trim leading zeros so we must do likewise to get a match
+		while (hash1.substring(0, 1) === '0') { 
+			//console.log("stripping leading zero from M1");
+			hash1 = hash1.substring(1);
+		}
+		
 		//console.log("js hash1:"+hash1);
 		//console.log("js salt:"+salt);
-		var hashStr = salt+hash1;
-		//console.log("js toUpper:"+hashStr.toUpperCase())
-		var hash = this.H(hashStr.toUpperCase());
+		var concat = (salt+hash1).toUpperCase();
+		//console.log("js concat:"+concat);
+		var hash = this.H(concat);
+		
+		// server BigInteger math will trim leading zeros so we must do likewise to get a match
+		while (hash.substring(0, 1) === '0') { 
+			//console.log("stripping leading zero from M1");
+			hash = hash.substring(1);
+		}		
+		
 		//console.log("js hash:"+hash)
 		//console.log("js x before modN "+this.fromHex(hash));
 		this.x = this.fromHex(hash).mod(this.N());
@@ -223,6 +237,7 @@ SRP6JavascriptClientSession.prototype.generateVerifier = function(salt, identity
 	"use strict";
 	// no need to check the parameters as generateX will do this
 	var x = this.generateX(salt, identity, password);
+	//console.log("js x: "+x)
 	this.v = this.g().modPow(x, this.N());
 	return this.toHex(this.v);
 };
@@ -370,6 +385,12 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	//console.log("jsABS:" + AA+BB+this.toHex(this.S));
 	//console.log("M1 js A:" + AA);
 	//console.log("M1 js B:" + BB);
+	//console.log("v:" + this.v);
+	//console.log("u:" + this.u);	
+	//console.log("A:" + this.A);
+	//console.log("b:" + this.B);
+	//console.log("S:" + this.S);
+	//console.log("M1:" + this.M1);
 	//console.log("M1 js S:" + this.toHex(this.S));
 	//console.log("M1 jsM1:" + this.M1str);
 	

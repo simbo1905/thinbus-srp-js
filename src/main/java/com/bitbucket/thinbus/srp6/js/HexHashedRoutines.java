@@ -58,8 +58,9 @@ public class HexHashedRoutines {
 		digest.reset();
 
 		final String hash1 = toHex(new BigInteger(1, output));
+		
 		concat = (salt + hash1).toUpperCase();
-
+		
 		digest.update(concat.getBytes(utf8));
 		output = digest.digest();
 
