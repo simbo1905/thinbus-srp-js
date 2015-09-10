@@ -156,10 +156,13 @@ function (event) {
 
 ## Release Notes
 
+Version 1.3.0
+
+1. Fix to issue #3. This changes the computation of 'x' on the browser to drop leading zeros to match how the Java client generates verifiers. Unfortunately this means that there is a 1/16 chance that users who generated verifiers using the browser will not be able to login after the change and will have to use your password reset logic to generate a new verifier with the new JS logic. 
+
 Version 1.2.1
 
 1. Support of Session Serialization - update to Nimbus 1.5.3. Thanks to Bernard Wittwer. 
-
 
 Version 1.2.0
 
