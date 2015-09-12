@@ -10,6 +10,8 @@ There are a number of demonstration applications:
 2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) Uses the Thinbus Javascript library to do SRP authentication to PHP server code. 
 3. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) A Spring MVC application which uses the Thinbus JavaScript library to create accounts and login users with Spring Security. 
 
+[ ![Build Status](https://codeship.com/projects/f95bffe0-3b5d-0133-b993-428ee47fa127/status?branch=master)](https://codeship.com/projects/102093)
+
 ## Maven Dependency
 
 ```
