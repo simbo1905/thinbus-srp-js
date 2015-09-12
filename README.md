@@ -160,7 +160,7 @@ function (event) {
 
 Version 1.3.0
 
-1. Fix to issue #3 that Java generated verifiers (e.g. your server generates temporary password for the user to do a first login and password reset) had a ~6%% chance of the Java verifier not working with the JS code. This release changes the computation of 'x' on the browser to drop leading zeros to be consistent with the Java core libraries generate hex strings. Unfortunately this means that there is a ~6% chance that any users who generated verifiers using the browser on prior release will not longer be able to login. So they will have to use your password reset logic to set a fresh verifier.  
+1. Fix to issue #3 that Java generated verifiers (e.g. your server generates temporary passwords for users to do a first login and password reset) had a 6% chance of the Java verifier not working with the JavaScript code. This release changes the computation of 'x' on the browser to drop leading zeros to be consistent with the Java core libraries generate hex strings. Unfortunately this means that there is a 6% chance that any users who generated verifiers using the browser on prior release will not longer be able to login. They will have to use your password reset logic to set a fresh verifier using the latest JavaScript code.  
 
 Version 1.2.1
 
