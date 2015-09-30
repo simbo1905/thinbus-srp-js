@@ -89,7 +89,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
 ## Recommendations 
 
-* Destroy the JavaScript client session object immediately after the user has logged in. The object is intended to be a temporary object and should be deleted immediately after successful use to erase all traces of the password. The password input field must be destroyed also. 
+* Destroy the JavaScript client session object immediately after the user has logged in. The object is intended to be a temporary object and should be deleted immediately after successful use to erase all traces of the password. The password input field must be destroyed also. The normal way to achieve this is to have the login page GET the main application landing page immediately after login which would automatically destroy all traces of the password. 
 * Make the salt column in the database `not null` and add a uniqueness constraint.  
 * Use symmetric encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
 * If you allow the use of Issac as a fallback random number generator add `onkeyup` event handlers which advance the random stream as show in the demo applications. 
