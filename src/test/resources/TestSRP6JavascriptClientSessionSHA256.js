@@ -61,17 +61,7 @@ tests({
 		// normal login flow step3 client: client verifies that the server shows proof of the shared session key which demonstrates that it knows actual verifier
 		client.step3(M2);
 
-		// both share a strong session key.
-		var cS = client.getSessionKey(false);
-		var sS = server.getSessionKey(false);
-		assert.assertTrue(cS == sS); 
-		
-		// the hash value may be more useful as a secret key. 
-		var cK = client.getSessionKey();
-		var sK = server.getSessionKey(true);
-		assert.assertTrue(cK == sK); 
-		
-		// the javascript client defaults to hashing the session key
+		// the javascript client defaults to hashing the session key as that is additional protection of the password in case the key is accidentally exposed to an attacker. 
 		assert.assertTrue(client.getSessionKey() == client.getSessionKey(true));
 	}
 	
