@@ -51,7 +51,8 @@ In the diagram above the user is shown a standard login form. They enter their e
 JavaScript then makes an AJAX call using their email to load their `salt` and a one-time server challenge `B`. JavaScript creates 
 a one-time client challenge `A` and uses all the information to compute a password proof `M1`. It then posts to the server 
 the email, `A` and `M1` as the users credentials. The server uses all the information to check the password proof. If it is good 
-it then redirects the user to the secure homepage. 
+it then redirects the user to the private landing page. Note that redirecting a logged in user to a secure landing page is best 
+practice to cause the browser to unload the login page which will delete any traces of the uses password. 
 
 Note that the server has to remember the one-time server challenge `B` that it gave to the browser in order to check the user password proof. 
 This requires storing the one-time challenge value either in the database, the server session or a server cache for the short duration of the login protocol. 
@@ -113,7 +114,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
 ## Recommendations 
 
-* Destroy the JavaScript client session object immediately after the user has logged in. The object is intended to be a temporary object and should be deleted immediately after successful use to erase all traces of the password. The password input field must be destroyed also. The normal way to achieve this is to have the login page GET the main application landing page immediately after login which would automatically destroy all traces of the password. 
+* Destroy the JavaScript client session object immediately after the user has logged in. The object is intended to be a temporary object and should be deleted immediately after successful use to erase all traces of the password. The password form field the user typed the password into must also be destroyed. The normal way to achieve this is redirect the user to a main landing page upon successful login which will unload the login page from the browser destroying all traces of the password. A single page application should be at least two pages; the login page which only has login code and the main application page which is only show to users who are successfully authenticated. 
 * Make the salt column in the database `not null` and add a uniqueness constraint.  
 * Use symmetric encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
 * If you allow the use of Issac as a fallback random number generator add `onkeyup` event handlers which advance the random stream as show in the demo applications. 
