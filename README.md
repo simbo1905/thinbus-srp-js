@@ -31,6 +31,30 @@ See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java an
 
 **Note** If you use the java server code if you upgrade versions of the Java jar version you must **always** extract the main js file from the jar and refresh the script(s) the browser uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js logic against a newer Java logic. 
 
+## Using
+
+The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
+[demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo): 
+
+![Thinbus SRP Register Diagram](http://simon_massey.bitbucket.org/thinbus/register.png "Thinbus SRP Register Diagram")
+
+In the diagram above the user is shown a standard registration form which includes a email field and a password field. They enter their email and password. 
+JavaScript then generates their random `salt` and uses their email and password to generate the `verififer`. 
+The `salt` and the `verifier` are saved into the database along with the email. 
+
+The following sequence diagram shows how to login a registered user: 
+
+![Thinbus SRP Login Diagram](http://simon_massey.bitbucket.org/thinbus/login.png "Thinbus SRP Login Diagram")
+
+In the diagram above the user is shown a standard login form. They enter their email and password and click the login button. 
+JavaScript then makes an AJAX call using their email to load their `salt` and a one-time server challenge `B`. JavaScript creates 
+the the one-time client challenge `A` and uses all the information to compute a password proof `M1`. It then posts to the server 
+the email, `A` and `M1` as the users credentials. The server uses all the information to check the password proof. If it is good 
+it then redirects the user to the secure homepage. 
+
+Note that the server has to remember the one-time server challenge `B` that it gave to the browser in order to check the user password proof. 
+This requires storing that one-time challenge value either in the database, the server session or a server cache for the short duration of the login protocol. 
+
 ## Custom Configuration
 
 SHA-256 is the strongest hash algorithm Java 1.7/1.8 supports out of the box so it is recommended. The Javascript SHA-256 client session configuration is in `thinbus-srp6a-config-sha256.js`. The corresponding Java server SRP session class is `SRPJavascriptServerSessionSHA256`. The Java code is configured via constructor parameters. The JavaScript code is configured by defining an `SRP6CryptoParams` object literal before you include the `thinbus-srp6a-config-sha256.js` file: 
