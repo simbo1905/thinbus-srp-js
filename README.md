@@ -38,7 +38,8 @@ The following sequence diagram shows how to register a user with an SRP salt and
 
 ![Thinbus SRP Register Diagram](http://simon_massey.bitbucket.org/thinbus/register.png "Thinbus SRP Register Diagram")
 
-In the diagram above the user is shown a standard registration form which includes a email field and a password field. They enter their email and password. 
+In the diagram above the user is shown a standard registration form which includes email and password fields. 
+They enter their email and password and click the register button. 
 JavaScript then generates their random `salt` and uses their email and password to generate the `verififer`. 
 The `salt` and the `verifier` are saved into the database along with the email. 
 
@@ -48,12 +49,12 @@ The following sequence diagram shows how to login a registered user:
 
 In the diagram above the user is shown a standard login form. They enter their email and password and click the login button. 
 JavaScript then makes an AJAX call using their email to load their `salt` and a one-time server challenge `B`. JavaScript creates 
-the the one-time client challenge `A` and uses all the information to compute a password proof `M1`. It then posts to the server 
+a one-time client challenge `A` and uses all the information to compute a password proof `M1`. It then posts to the server 
 the email, `A` and `M1` as the users credentials. The server uses all the information to check the password proof. If it is good 
 it then redirects the user to the secure homepage. 
 
 Note that the server has to remember the one-time server challenge `B` that it gave to the browser in order to check the user password proof. 
-This requires storing that one-time challenge value either in the database, the server session or a server cache for the short duration of the login protocol. 
+This requires storing the one-time challenge value either in the database, the server session or a server cache for the short duration of the login protocol. 
 
 ## Custom Configuration
 
