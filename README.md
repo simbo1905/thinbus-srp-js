@@ -2,11 +2,10 @@
  
 This package provides a Javascript [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for web browsers to perform a zero-knowledge proof-of-password to a web server. It comes with compatible Java classes but there is also a demo using PHP server code. The server Java code only has a dependency on the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
-There are a number of demonstration applications: 
+There are some demonstration applications: 
 
-1. [thinbus-srp-js-demo](https://bitbucket.org/simon_massey/thinbus-srp-js-demo) Is a minimal demo using JSON over AJAX to a simple JAX-RS webservice. The demo has been tested with Firefox, Chrome, and Safari (on an iPad). 
+1. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) A Spring MVC application which uses the Thinbus JavaScript library to create accounts and login users with Spring Security. 
 2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) Uses the Thinbus Javascript library to do SRP authentication to PHP server code. 
-3. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) A Spring MVC application which uses the Thinbus JavaScript library to create accounts and login users with Spring Security. 
 
 CI Build Status: [ ![Codeship Status for simon_massey/thinbus-srp-js](https://codeship.com/projects/f95bffe0-3b5d-0133-b993-428ee47fa127/status?branch=master)](https://codeship.com/projects/102093)
 
@@ -23,7 +22,7 @@ CI Build Status: [ ![Codeship Status for simon_massey/thinbus-srp-js](https://co
 
 ## Quick Start
 
-Check the `src/main/webapp/lib/*.js` files in the [demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo). That demo app is using the files extracted from the built thinbus-srp6a-js-<version>.jar:
+Check the `src/main/webapp/resources/js/*.js` files in the [Spring MVC Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). That demo app is using the files extracted from the built thinbus-srp6a-js-<version>.jar:
 
   - `js/thinbus-srp6a-min.js` All the required dependencies minified. 
   - `js/thinbus-srp6a-2048-sha256-min.js` Example minified configuration using the RFC 5054 2048 bit prime and the sha256 hashing algorithm.  
