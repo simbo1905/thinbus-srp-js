@@ -54,8 +54,12 @@ the email, `A` and `M1` as the users credentials. The server uses all the inform
 it then redirects the user to the private landing page. Note that redirecting a logged in user to a secure landing page is best 
 practice to cause the browser to unload the login page which will delete any traces of the uses password. 
 
-Note that the server has to remember the one-time server challenge `B` that it gave to the browser in order to check the user password proof. 
+Note that the server has to remember the one-time server challenge `B` that it gave to the browser in order to check the users password proof. 
 This requires storing the one-time challenge value either in the database, the server session or a server cache for the short duration of the login protocol. 
+
+Note that there is an optional step `client.step3(M2)` that can be used to check that both the client and server share the same strong session key. 
+This is useful if you wish to use the strong session key for further crytography. If your web application is distributed as a native mobile application 
+then the optional step3 confirms to the client that the server knows the verifier which matches the user password. 
 
 ## Custom Configuration
 
