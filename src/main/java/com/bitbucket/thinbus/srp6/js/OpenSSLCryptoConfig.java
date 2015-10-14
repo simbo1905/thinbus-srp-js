@@ -30,7 +30,7 @@ public class OpenSSLCryptoConfig {
 		for (String line : lines) {
 			if (line.startsWith("Diffie-Hellman-Parameters:")) {
 				try {
-					bits = bits(line);
+					bits = bits(line.trim());
 				} catch (Exception e) {
 					throw new AssertionError("could not parse 'xxxx bit' number out of line beginning 'Diffie-Hellman-Parameters'");
 				}
@@ -40,9 +40,9 @@ public class OpenSSLCryptoConfig {
 				hexparts.append(line.trim());
 			} else if (line.contains("generator")) {
 				try {
-					generator = generator(line);
+					generator = generator(line.trim());
 				} catch (Exception e) {
-					throw new AssertionError("could not parse 'generator: x' number out of line containing 'generator'");
+					throw new AssertionError("could not parse 'generator: x' number out of line containing 'generator': "+line);
 				}
 			}
 		}
@@ -69,7 +69,7 @@ public class OpenSSLCryptoConfig {
 		MessageDigest digest = MessageDigest.getInstance(hash);
 		BigInteger k = SRP6Routines.computeK(digest, N, g);
 		
-		output.add("computing");
+		output.add("computing...");
 		output.add("N base10: " + N.toString(10));
 		output.add("g base10: " + g.toString(10));
 		output.add("k base16: " + k.toString(16));
