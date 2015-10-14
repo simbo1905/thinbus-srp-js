@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,16 +21,12 @@ import com.nimbusds.srp6.SRP6Routines;
  * to be configure in the Javascript.
  */
 public class OpenSSLCryptoConfig {
-	public static void main(String[] args) throws Exception {
-		System.out.println(String.format("attempting to open a openssl dhparam text file at: %s", args[0]));
-
-		List<String> lines = Files.readAllLines(Paths.get(args[0]), Charset.forName("UTF8"));
-
-		StringBuilder hexparts = new StringBuilder();
-
+	
+	public List<String> run(String hash, List<String> lines) throws Exception {
 		int bits = 0;
 		int generator = 0;
-
+		StringBuilder hexparts = new StringBuilder();
+		
 		for (String line : lines) {
 			if (line.startsWith("Diffie-Hellman-Parameters:")) {
 				try {
@@ -49,31 +46,59 @@ public class OpenSSLCryptoConfig {
 				}
 			}
 		}
-
+		
 		if (bits <= 0) {
 			throw new AssertionError("could not parse 'xxxx bit' number out of line beginning 'Diffie-Hellman-Parameters'");
 		}
-
+		
 		if (generator <= 0) {
 			throw new AssertionError("could not parse 'generator: x' number out of line containing 'generator'");
 		}
-
+		
 		String primeHex = hexparts.toString().replace(":", "");
-
-		System.out.println("bits:" + bits);
-
+		
+		List<String> output = new ArrayList<String>();
+		
+		output.add("bits:" + bits);
+		
 		BigInteger N = new BigInteger(primeHex, 16);
 		BigInteger g = new BigInteger(generator + "");
-
-		System.out.println("hashing to create 'k' using " + args[1]);
-
-		MessageDigest digest = MessageDigest.getInstance(args[1]);
+		
+		output.add("hashing to create 'k' using " + hash);
+		
+		MessageDigest digest = MessageDigest.getInstance(hash);
 		BigInteger k = SRP6Routines.computeK(digest, N, g);
+		
+		output.add("computing");
+		output.add("N base10: " + N.toString(10));
+		output.add("g base10: " + g.toString(10));
+		output.add("k base16: " + k.toString(16));
+		
+		return output;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		
+		if( args.length != 2) {
+			System.err.println("Arguments: file hash ");
+			System.err.println("Example  : /tmp/my_dhparam.txt SHA-256 ");
+			System.exit(1);
+		}
+		
+		final String file = args[0];
+		final String hash = args[1];
+		
+		System.out.println(String.format("Attempting to load 'openssl dhparam -text <bitlength>' output text file at: %s", file));
+		
+		final List<String> lines = Files.readAllLines(Paths.get(args[0]), Charset.forName("UTF8"));
+		
+		System.out.println(String.format("Loaded %s lines.", lines.size()));
+		
+		System.out.println(String.format("Creating configuration parmeters using hash algorithm %s.", hash));
 
-		System.out.println("computing");
-		System.out.println("N base10: " + N.toString(10));
-		System.out.println("g base10: " + g.toString(10));
-		System.out.println("k base16: " + k.toString(16));
+		for(String output : (new OpenSSLCryptoConfig()).run(hash, lines) ) {
+			System.out.println(output);
+		}
 	}
 
 	static Pattern generatorPattern = Pattern.compile(".*generator: (\\d*) \\(.*");

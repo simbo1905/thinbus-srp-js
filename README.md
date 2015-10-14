@@ -16,7 +16,7 @@ CI Build Status: [ ![Codeship Status for simon_massey/thinbus-srp-js](https://co
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.3.0</version>
+		<version>1.3.2</version>
 	</dependency>
 ```
 
@@ -52,7 +52,7 @@ JavaScript then makes an AJAX call using their email to load their `salt` and a 
 a one-time client challenge `A` and uses all the information to compute a password proof `M1`. It then posts to the server 
 the email, `A` and `M1` as the users credentials. The server uses all the information to check the password proof. If it is good 
 it then redirects the user to the private landing page. Note that redirecting a logged in user to a secure landing page is best 
-practice to cause the browser to unload the login page which will delete any traces of the uses password. 
+practice to cause the browser to unload the login page which will delete any traces of the password. 
 
 Note that the server has to remember the one-time server challenge `B` that it gave to the browser in order to check the users password proof. 
 This requires storing the one-time challenge value either in the database, the server session or a server cache for the short duration of the login protocol. 
@@ -187,6 +187,10 @@ function (event) {
 ```
 
 ## Release Notes
+
+Version 1.3.1 / 1.3.2
+
+1. Refactor of OpenSSLCryptoConfig.java to be able to run it in the demo servlet in addition to being run on the commandline. 
 
 Version 1.3.0
 
