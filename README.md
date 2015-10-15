@@ -16,7 +16,7 @@ CI Build Status: [ ![Codeship Status for simon_massey/thinbus-srp-js](https://co
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.3.2</version>
+		<version>1.3.1</version>
 	</dependency>
 ```
 
