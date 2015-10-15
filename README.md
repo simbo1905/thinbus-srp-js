@@ -188,7 +188,7 @@ function (event) {
 
 ## Release Notes
 
-Version 1.3.1 / 1.3.2
+Version 1.3.1
 
 1. Refactor of OpenSSLCryptoConfig.java to be able to run it in the demo servlet in addition to being run on the commandline. 
 
