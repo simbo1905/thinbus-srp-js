@@ -101,6 +101,8 @@ g base10: 2
 k base16: 1a3d1769e1d6337...
 ```
 
+Else you could try the online version of that tool if it is currently up and running over on the [demo server](http://thinbus-n00p.rhcloud.com/dhparam). 
+
 You then use the `N` and `g` value to configure the Java session and use the `N`, `g` and `k` values to configure the Javascript session as outlined above. Also see `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript sessions and tests them against one another. You should edit that test to use your own safe prime values and confirm that the test passes before attempting the use your configuration with a web browser. 
 
 Using the demo 2048 bit prime a modern developer workstation takes less than 90ms to do the math. Trying out smaller 1024 bit primes on a four year old mac the browser takes between 0.05s and 0.10s to run the main srp work. The timings depend on which of Firefox, Chrome or Safari is used. YMMV as Javascript runtimes and mobile hardware may vary considerably so you should test the user experience on all the browsers you are targeting. 
