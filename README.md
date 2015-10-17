@@ -36,7 +36,7 @@ See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java an
 ## Using
 
 The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
-[demo application](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview): 
+[demo application](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
 
 ![Thinbus SRP Register Diagram](http://simon_massey.bitbucket.org/thinbus/register.png "Thinbus SRP Register Diagram")
 
@@ -45,7 +45,7 @@ They enter their email and password and click the register button.
 JavaScript then generates their random `salt` and uses their email and password to generate the `verififer`. 
 The `salt` and the `verifier` are saved into the database along with the email. 
 
-The following sequence diagram shows how to login a registered user: 
+The following sequence diagram shows how to login a registered user. For the definitions of the values transmitted please refer to the [SRP design page](http://srp.stanford.edu/design.html): 
 
 ![Thinbus SRP Login Diagram](http://simon_massey.bitbucket.org/thinbus/login.png "Thinbus SRP Login Diagram")
 
