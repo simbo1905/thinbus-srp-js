@@ -36,7 +36,7 @@ See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java an
 ## Using
 
 The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
-[demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo): 
+[demo application](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview): 
 
 ![Thinbus SRP Register Diagram](http://simon_massey.bitbucket.org/thinbus/register.png "Thinbus SRP Register Diagram")
 
