@@ -24,7 +24,7 @@ There are some demonstration applications:
 
 ## Quick Start
 
-Check the `src/main/webapp/resources/js/*.js` files in the [Spring MVC Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). That demo app is using the files extracted from the built thinbus-srp6a-js-<version>.jar:
+Check the `src/main/webapp/resources/js/*.js` files in the [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). That demo app is using the files extracted from the built thinbus-srp6a-js-<version>.jar:
 
   - `js/thinbus-srp6a-min.js` All the required dependencies minified. 
   - `js/thinbus-srp6a-2048-sha256-min.js` Example minified configuration using the RFC 5054 2048 bit prime and the sha256 hashing algorithm.  
@@ -36,7 +36,7 @@ See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java an
 ## Using
 
 The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
-[demo application](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
+[Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
 
 ![Thinbus SRP Register Diagram](http://simon_massey.bitbucket.org/thinbus/register.png "Thinbus SRP Register Diagram")
 
@@ -75,7 +75,7 @@ var SRP6CryptoParams= {
 }
 ``` 
 
-An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the value computed by the Java must be added to the Javascript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct formats to configure the Javascript. 
+An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the constant value computed by the Java must be added to the Javascript configuration. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct formats to configure the Javascript. 
 
 ## Creating A Custom Large Safe Prime
 
@@ -122,7 +122,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
 ## Recommendations 
 
-* Destroy the JavaScript `SRP6JavascriptClientSessionSHA256` object immediately after the user has logged in. The object is intended to be a temporary object and should be deleted to erase traces of the password. The password form field the user typed the password into must also be destroyed. The normal way to achieve this is redirect the user to a main landing page upon successful login to unload the login page. A single page application should be at least two pages; the login page which only has login code and the main application page which is only show to users who are successfully authenticated. 
+* Destroy the JavaScript `SRP6JavascriptClientSessionSHA256` object immediately after any login attempt. The object is intended to be a temporary object and should be deleted to erase all traces of the password. The password form field the user typed their password into must also be destroyed. The normal way to achieve this is to reload the login page upon authentication failure else load a main landing page upon successful login. 
 * Make the salt column in the database `not null` and add a uniqueness constraint.  
 * Use symmetric encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
 * Add `onkeyup` event handlers which advance the random stream as show in the demo applications. (See the footnote on random numbers below.)
