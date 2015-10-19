@@ -110,7 +110,7 @@ function SRP6JavascriptClientSession() {
 		//console.log("js concat:"+concat);
 		var hash = this.H(concat);
 		
-		// server BigInteger math will trim leading zeros so we must do likewise to get a match
+		// Java BigInteger math will trim leading zeros so we do likewise
 		while (hash.substring(0, 1) === '0') { 
 			//console.log("stripping leading zero from M1");
 			hash = hash.substring(1);

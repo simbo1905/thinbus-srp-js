@@ -20,21 +20,14 @@ import com.nimbusds.srp6.SRP6Routines;
  * which is not available in Javascript so the value genenerated by Java needs
  * to be configure in the Javascript.
  */
-public class OpenSSLCryptoConfig {
-	
+public class OpenSSLCryptoConfigConverter {
+
 	public List<String> run(String hash, List<String> lines) throws Exception {
-		int bits = 0;
 		int generator = 0;
 		StringBuilder hexparts = new StringBuilder();
-		
+
 		for (String line : lines) {
-			if (line.startsWith("Diffie-Hellman-Parameters:")) {
-				try {
-					bits = bits(line.trim());
-				} catch (Exception e) {
-					throw new AssertionError("could not parse 'xxxx bit' number out of line beginning 'Diffie-Hellman-Parameters'");
-				}
-			} else if (line.endsWith("prime:")) {
+			if (line.endsWith("prime:")) {
 				// skip this one
 			} else if (line.endsWith(":")) {
 				hexparts.append(line.trim());
@@ -42,66 +35,71 @@ public class OpenSSLCryptoConfig {
 				try {
 					generator = generator(line.trim());
 				} catch (Exception e) {
-					throw new AssertionError("could not parse 'generator: x' number out of line containing 'generator': "+line);
+					throw new AssertionError(
+							"could not parse 'generator: x' number out of line containing 'generator': "
+									+ line);
 				}
 			}
 		}
-		
-		if (bits <= 0) {
-			throw new AssertionError("could not parse 'xxxx bit' number out of line beginning 'Diffie-Hellman-Parameters'");
-		}
-		
+
 		if (generator <= 0) {
-			throw new AssertionError("could not parse 'generator: x' number out of line containing 'generator'");
+			throw new AssertionError(
+					"could not parse 'generator: x' number out of line containing 'generator'");
 		}
-		
+
 		String primeHex = hexparts.toString().replace(":", "");
-		
+
 		List<String> output = new ArrayList<String>();
-		
-		output.add("bits:" + bits);
-		
+
 		BigInteger N = new BigInteger(primeHex, 16);
 		BigInteger g = new BigInteger(generator + "");
-		
+
 		output.add("hashing to create 'k' using " + hash);
-		
+
 		MessageDigest digest = MessageDigest.getInstance(hash);
 		BigInteger k = SRP6Routines.computeK(digest, N, g);
-		
+
 		output.add("computing...");
 		output.add("N base10: " + N.toString(10));
 		output.add("g base10: " + g.toString(10));
 		output.add("k base16: " + k.toString(16));
-		
+
 		return output;
 	}
-	
+
 	public static void main(String[] args) throws Exception {
-		
-		if( args.length != 2) {
+
+		if (args.length != 2) {
 			System.err.println("Arguments: file hash ");
 			System.err.println("Example  : /tmp/my_dhparam.txt SHA-256 ");
 			System.exit(1);
 		}
-		
+
 		final String file = args[0];
 		final String hash = args[1];
-		
-		System.out.println(String.format("Attempting to load 'openssl dhparam -text <bitlength>' output text file at: %s", file));
-		
-		final List<String> lines = Files.readAllLines(Paths.get(args[0]), Charset.forName("UTF8"));
-		
-		System.out.println(String.format("Loaded %s lines.", lines.size()));
-		
-		System.out.println(String.format("Creating configuration parmeters using hash algorithm %s.", hash));
 
-		for(String output : (new OpenSSLCryptoConfig()).run(hash, lines) ) {
+		System.out
+				.println(String
+						.format("Attempting to load 'openssl dhparam -text <bitlength>' output text file at: %s",
+								file));
+
+		final List<String> lines = Files.readAllLines(Paths.get(args[0]),
+				Charset.forName("UTF8"));
+
+		System.out.println(String.format("Loaded %s lines.", lines.size()));
+
+		System.out.println(String.format(
+				"Creating configuration parmeters using hash algorithm %s.",
+				hash));
+
+		for (String output : (new OpenSSLCryptoConfigConverter()).run(hash,
+				lines)) {
 			System.out.println(output);
 		}
 	}
 
-	static Pattern generatorPattern = Pattern.compile(".*generator: (\\d*) \\(.*");
+	static Pattern generatorPattern = Pattern
+			.compile(".*generator: (\\d*) \\(.*");
 
 	private static int generator(String line) {
 		Matcher matcher = generatorPattern.matcher(line);
@@ -109,14 +107,4 @@ public class OpenSSLCryptoConfig {
 		String number = matcher.group(1);
 		return Integer.valueOf(number);
 	}
-
-	static Pattern bitsPattern = Pattern.compile(".*\\((\\d*) bit\\).*");
-
-	private static int bits(String line) {
-		Matcher matcher = bitsPattern.matcher(line);
-		matcher.matches();
-		String number = matcher.group(1);
-		return Integer.valueOf(number);
-	}
-
 }

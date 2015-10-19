@@ -7,7 +7,7 @@ public class SRP6JavaClientSessionSHA256 extends SRP6JavaClientSession {
 	 * Create a SHA256 Java client session compatible with a thinbus server
 	 * session.
 	 * 
-	 * You can generate your own with openssl see {@link OpenSSLCryptoConfig}
+	 * You can generate your own with openssl see {@link OpenSSLCryptoConfigConverter}
 	 * 
 	 * @param N
 	 *            The large safe prime in radix10

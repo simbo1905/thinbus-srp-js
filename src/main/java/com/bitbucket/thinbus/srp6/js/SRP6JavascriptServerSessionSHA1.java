@@ -33,7 +33,7 @@ public class SRP6JavascriptServerSessionSHA1 extends SRP6JavascriptServerSession
 	/**
 	 * Create a SHA1 server session compatible with a JavaScript client session.
 	 * 
-	 * You can generate your own with openssl see {@link OpenSSLCryptoConfig}
+	 * You can generate your own with openssl see {@link OpenSSLCryptoConfigConverter}
 	 * 
 	 * @param N
 	 *            The large safe prime in radix10

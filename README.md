@@ -188,6 +188,10 @@ function (event) {
 
 ## Release Notes
 
+Version 1.3.2
+
+1. Renamed OpenSSLCryptoConfig to OpenSSLCryptoConfigConverter and made it more resilant to differences in the output of the openssl tools. 
+
 Version 1.3.1
 
 1. Refactor of OpenSSLCryptoConfig.java to be able to run it in the demo servlet in addition to being run on the commandline. 

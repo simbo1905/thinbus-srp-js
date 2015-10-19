@@ -90,7 +90,7 @@ abstract public class SRP6JavascriptServerSession implements Serializable {
 	 * between client and server before authentication and consist of a large
 	 * safe prime 'N', a corresponding generator 'g' and a hash function
 	 * algorithm 'H'. You can generate your own with openssl using
-	 * {@link OpenSSLCryptoConfig}
+	 * {@link OpenSSLCryptoConfigConverter}
 	 * 
 	 */
 	protected final SRP6CryptoParams config;

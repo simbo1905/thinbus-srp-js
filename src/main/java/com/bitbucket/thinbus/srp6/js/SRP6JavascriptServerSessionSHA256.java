@@ -34,7 +34,7 @@ public class SRP6JavascriptServerSessionSHA256 extends SRP6JavascriptServerSessi
 	 * Create a SHA-256 server session compatible with a JavaScript client
 	 * session.
 	 * 
-	 * You can generate your own with openssl see {@link OpenSSLCryptoConfig}
+	 * You can generate your own with openssl see {@link OpenSSLCryptoConfigConverter}
 	 * 
 	 * @param N
 	 *            The large safe prime in radix10
