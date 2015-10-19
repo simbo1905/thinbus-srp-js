@@ -48,9 +48,8 @@ and uses their email and password to generate the `verififer`. Only the `salt` a
 the server and they are saved into the database keyed by the users email. 
 
 **Note** Always use browser developer tools to inspect what you actually post to the server and only post the values shown 
-in the sequence diagram and as defined in the [SRP design page](http://srp.stanford.edu/design.html). It is a protocol 
-violation and a violation of the protocol to have a security bug where the raw password is accidently transmitted to the 
-server even if it is ignored by the server. 
+in the sequence diagram as defined in the [SRP design page](http://srp.stanford.edu/design.html). It is a protocol 
+violation and security bug if the raw password is accidently transmitted to the server even if it is ignored by the server. 
 
 The following sequence diagram shows how to login a registered user. 
 
@@ -73,14 +72,13 @@ the login page after every login attempt. This is trivial to do by reloading the
 landing page upon successful login. 
 
 **Note** that the server has to remember the one-time server challenge `B` that it gave to the browser in order to check the users password proof. 
-This requires storing the one-time challenge value either in the database, the server session or a server cache for the short duration of the login protocol. 
-You cannot pass this values from the client without compromising security so that would be a security bug. 
+This requires storing the one-time challenge value either in the database, the server session or a server cache for the short duration of the login protocol. You cannot pass this value back to the server from the client without compromising security. The server should not use any values transmitted from the client other than those shown in the sequence diagram and named in the [SRP design page](http://srp.stanford.edu/design.html).
 
 There is an optional step `client.step3(M2)` that can be used to check that both the client and server share the same strong session key. 
 This is useful if you wish to use the strong session key for further cryptography. If your web application is distributed as a native mobile application 
 then the optional step3 confirms to the client that the server knows the verifier which matches the user password. 
 
-**Note** if you want to use the shared session key for follow on cryptography you should use `client.getSessionKey()` to retrieved the
+**Note** if you want to use the shared session key for follow-on cryptography you should use `client.getSessionKey()` to retrieved the
 session key from the thinbus object and destroy the thinbus object as discussed above. The typical way to do this is to put the session key 
 into browser local session storage. Then you can unload the login page and load a main landing page which can collect the session key 
 from browser local storage.  
@@ -144,8 +142,9 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
 ## Recommendations 
 
-* Use Thinbus SRP over HTTPS. Configure your webserver to mark session cookies as secure to prevent accident use of `HTTP`. If your customers use a company supplied computer going via a corporate web proxy then HTTPS may be [decrypted and monitored](http://security.stackexchange.com/questions/63304/how-can-my-employer-be-a-man-in-the-middle-when-i-connect-to-gmail). HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS alone cannot protected against leaking passwords into error messages in your webserver logs. SRP over HTTPS is much safer than either used alone. 
-* Use a custom large safe prime number `N`. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience for your chosen bit length. * Make the salt column in the database `not null` and add a uniqueness constraint.  
+* Use Thinbus SRP over HTTPS. Configure your webserver to mark session cookies as secure to prevent accident use of HTTP. If your customers use a company supplied computer going via a corporate web proxy then HTTPS may be [decrypted and monitored](http://security.stackexchange.com/questions/63304/how-can-my-employer-be-a-man-in-the-middle-when-i-connect-to-gmail). HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS alone cannot protected against leaking passwords into error messages in your webserver logs. SRP over HTTPS is much safer than either used alone. 
+* Use a custom large safe prime number `N`. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience for your chosen bit length. 
+* Make the salt column in the database `not null` and add a uniqueness constraint.  
 * Use symmetric encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
 * Add `onkeyup` event handlers which advance the random stream if you allow thinbus to work in browswers which dont have the `WebCryptoAPI` secure random number APIs (which is the default behavior - see the footnote on random numbers below).
 * Consider protect the login form target with a CSRF token which forces an attacker to actual load the login form to be able to post a proof-of-password. This will slow down an online dictionary attack by forcing that the attacker acturally loads the login page to get a fresh CSRF token for every login attempt.  
