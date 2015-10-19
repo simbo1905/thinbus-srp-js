@@ -35,33 +35,55 @@ See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java an
 
 ## Using
 
+For the definitions of the values discussed below please refer to the [SRP design page](http://srp.stanford.edu/design.html).  
+
 The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
 [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
 
 ![Thinbus SRP Register Diagram](http://simon_massey.bitbucket.org/thinbus/register.png "Thinbus SRP Register Diagram")
 
 In the diagram above the user is shown a standard registration form which includes email and password fields. 
-They enter their email and password and click the register button. 
-JavaScript then generates their random `salt` and uses their email and password to generate the `verififer`. 
-The `salt` and the `verifier` are saved into the database along with the email. 
+They enter their email and password and click the register button. JavaScript then generates their random `salt` 
+and uses their email and password to generate the `verififer`. Only the `salt` and the `verifier` are transmitted to 
+the server and they are saved into the database keyed by the users email. 
 
-The following sequence diagram shows how to login a registered user. For the definitions of the values transmitted please refer to the [SRP design page](http://srp.stanford.edu/design.html): 
+**Note** Always use browser developer tools to inspect what you actually post to the server and only post the values shown 
+in the sequence diagram and as defined in the [SRP design page](http://srp.stanford.edu/design.html). It is a protocol 
+violation and a violation of the protocol to have a security bug where the raw password is accidently transmitted to the 
+server even if it is ignored by the server. 
+
+The following sequence diagram shows how to login a registered user. 
 
 ![Thinbus SRP Login Diagram](http://simon_massey.bitbucket.org/thinbus/login.png "Thinbus SRP Login Diagram")
 
 In the diagram above the user is shown a standard login form. They enter their email and password and click the login button. 
 JavaScript then makes an AJAX call using their email to load their `salt` and a one-time server challenge `B`. JavaScript creates 
 a one-time client challenge `A` and uses all the information to compute a password proof `M1`. It then posts to the server 
-the email, `A` and `M1` as the users credentials. The server uses all the information to check the password proof. If it is good 
-it then redirects the user to the private landing page. Note that redirecting a logged in user to a secure landing page is best 
-practice to cause the browser to unload the login page which will delete any traces of the password. 
+the email, `A`, and `M1` as the users credentials. The server uses all the information to check the password proof. Only the email, 
+client challenge `A` and the password proof `M1` are transmitted to the server. 
 
-Note that the server has to remember the one-time server challenge `B` that it gave to the browser in order to check the users password proof. 
+**Note** Always use browser developer tools to inspect what you actually post to the server and only post the values shown 
+in the sequence diagram as defined in the [SRP design page](http://srp.stanford.edu/design.html). It is a protocol violation 
+and a security bug to accidently transmit to the server anything else even if it is ignored by the server. 
+
+**Note** the JavaScript client object (typically `SRP6JavascriptClientSessionSHA256`) must be destroyed after each login attempt. 
+The object is intended to be a temporary object and should be deleted to erase all traces of the password. You must also destroy 
+the password form field the user typed their password into. The normal way to achieve destroying any traces of the password is to unload 
+the login page after every login attempt. This is trivial to do by reloading the login page upon authentication failure or by loading a main 
+landing page upon successful login. 
+
+**Note** that the server has to remember the one-time server challenge `B` that it gave to the browser in order to check the users password proof. 
 This requires storing the one-time challenge value either in the database, the server session or a server cache for the short duration of the login protocol. 
+You cannot pass this values from the client without compromising security so that would be a security bug. 
 
-Note that there is an optional step `client.step3(M2)` that can be used to check that both the client and server share the same strong session key. 
-This is useful if you wish to use the strong session key for further crytography. If your web application is distributed as a native mobile application 
+There is an optional step `client.step3(M2)` that can be used to check that both the client and server share the same strong session key. 
+This is useful if you wish to use the strong session key for further cryptography. If your web application is distributed as a native mobile application 
 then the optional step3 confirms to the client that the server knows the verifier which matches the user password. 
+
+**Note** if you want to use the shared session key for follow on cryptography you should use `client.getSessionKey()` to retrieved the
+session key from the thinbus object and destroy the thinbus object as discussed above. The typical way to do this is to put the session key 
+into browser local session storage. Then you can unload the login page and load a main landing page which can collect the session key 
+from browser local storage.  
 
 ## Custom Configuration
 
@@ -122,13 +144,12 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
 ## Recommendations 
 
-* Destroy the JavaScript `SRP6JavascriptClientSessionSHA256` object immediately after any login attempt. The object is intended to be a temporary object and should be deleted to erase all traces of the password. The password form field the user typed their password into must also be destroyed. The normal way to achieve this is to reload the login page upon authentication failure else load a main landing page upon successful login. 
-* Make the salt column in the database `not null` and add a uniqueness constraint.  
-* Use symmetric encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
-* Add `onkeyup` event handlers which advance the random stream as show in the demo applications. (See the footnote on random numbers below.)
-* Add a javascript password strength meter to the register form which encourages users to use strong passwords. The best cryptography in the world won't protect your users if they use "password" as their password. Consider only allowing them to register with strong passwords to make an [online dictionary attack infeasible](http://xkcd.com/936/). 
 * Use Thinbus SRP over HTTPS. Configure your webserver to mark session cookies as secure to prevent accident use of `HTTP`. If your customers use a company supplied computer going via a corporate web proxy then HTTPS may be [decrypted and monitored](http://security.stackexchange.com/questions/63304/how-can-my-employer-be-a-man-in-the-middle-when-i-connect-to-gmail). HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS alone cannot protected against leaking passwords into error messages in your webserver logs. SRP over HTTPS is much safer than either used alone. 
-* Use a custom large safe prime number `N`. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience for your chosen bit length. 
+* Use a custom large safe prime number `N`. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience for your chosen bit length. * Make the salt column in the database `not null` and add a uniqueness constraint.  
+* Use symmetric encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
+* Add `onkeyup` event handlers which advance the random stream if you allow thinbus to work in browswers which dont have the `WebCryptoAPI` secure random number APIs (which is the default behavior - see the footnote on random numbers below).
+* Consider protect the login form target with a CSRF token which forces an attacker to actual load the login form to be able to post a proof-of-password. This will slow down an online dictionary attack by forcing that the attacker acturally loads the login page to get a fresh CSRF token for every login attempt.  
+* Add a javascript password strength meter and only allow users to register using a strong password. The best cryptography in the world won't protect your users if they use "password" as their password. 
 
 ## License
 
