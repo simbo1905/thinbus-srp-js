@@ -7,7 +7,9 @@ There are some demonstration applications:
 1. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) A Spring MVC application which uses the Thinbus JavaScript library to create accounts and login users with Spring Security. 
 2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) Uses the Thinbus Javascript library to do SRP authentication to PHP server code. 
 
-CI Build Status: [ ![Codeship Status for simon_massey/thinbus-srp-js](https://codeship.com/projects/f95bffe0-3b5d-0133-b993-428ee47fa127/status?branch=master)](https://codeship.com/projects/102093)
+## CI Build Status
+
+[ ![Codeship Status for simon_massey/thinbus-srp-js](https://codeship.com/projects/f95bffe0-3b5d-0133-b993-428ee47fa127/status?branch=master)](https://codeship.com/projects/102093)
 
 ## Maven Dependency
 
@@ -22,7 +24,7 @@ CI Build Status: [ ![Codeship Status for simon_massey/thinbus-srp-js](https://co
 
 ## Quick Start
 
-Check the `src/main/webapp/resources/js/*.js` files in the [Spring MVC Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). That demo app is using the files extracted from the built thinbus-srp6a-js-<version>.jar:
+Check the `src/main/webapp/resources/js/*.js` files in the [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). That demo app is using the files extracted from the built thinbus-srp6a-js-<version>.jar:
 
   - `js/thinbus-srp6a-min.js` All the required dependencies minified. 
   - `js/thinbus-srp6a-2048-sha256-min.js` Example minified configuration using the RFC 5054 2048 bit prime and the sha256 hashing algorithm.  
@@ -34,7 +36,7 @@ See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java an
 ## Using
 
 The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
-[demo application](https://bitbucket.org/simon_massey/thinbus-srp-js-demo): 
+[Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
 
 ![Thinbus SRP Register Diagram](http://simon_massey.bitbucket.org/thinbus/register.png "Thinbus SRP Register Diagram")
 
@@ -43,7 +45,7 @@ They enter their email and password and click the register button.
 JavaScript then generates their random `salt` and uses their email and password to generate the `verififer`. 
 The `salt` and the `verifier` are saved into the database along with the email. 
 
-The following sequence diagram shows how to login a registered user: 
+The following sequence diagram shows how to login a registered user. For the definitions of the values transmitted please refer to the [SRP design page](http://srp.stanford.edu/design.html): 
 
 ![Thinbus SRP Login Diagram](http://simon_massey.bitbucket.org/thinbus/login.png "Thinbus SRP Login Diagram")
 
@@ -73,7 +75,7 @@ var SRP6CryptoParams= {
 }
 ``` 
 
-An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the value computed by the Java must be added to the Javascript. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct formats to configure the Javascript. 
+An extra implementation detail is that the JavaScript must be configure with `k`. In the SRP protocol `k` is computed from `N` and `g` which is why the Java code does not need it. The catch is that Nimbus uses the `java.net.BigInteger` byte array constructor when generating `k`. This byte array constructor is not available in JavaScript so the constant value computed by the Java must be added to the Javascript configuration. The `toString()` of the Java class will print each of `N`, `g` and `k` in the correct formats to configure the Javascript. 
 
 ## Creating A Custom Large Safe Prime
 
@@ -101,6 +103,8 @@ g base10: 2
 k base16: 1a3d1769e1d6337...
 ```
 
+Else you could try the online version of that tool if it is currently up and running over on the [demo server](http://thinbus-n00p.rhcloud.com/dhparam). 
+
 You then use the `N` and `g` value to configure the Java session and use the `N`, `g` and `k` values to configure the Javascript session as outlined above. Also see `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript sessions and tests them against one another. You should edit that test to use your own safe prime values and confirm that the test passes before attempting the use your configuration with a web browser. 
 
 Using the demo 2048 bit prime a modern developer workstation takes less than 90ms to do the math. Trying out smaller 1024 bit primes on a four year old mac the browser takes between 0.05s and 0.10s to run the main srp work. The timings depend on which of Firefox, Chrome or Safari is used. YMMV as Javascript runtimes and mobile hardware may vary considerably so you should test the user experience on all the browsers you are targeting. 
@@ -118,10 +122,10 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
 ## Recommendations 
 
-* Destroy the JavaScript client session object immediately after the user has logged in. The object is intended to be a temporary object and should be deleted immediately after successful use to erase all traces of the password. The password form field the user typed the password into must also be destroyed. The normal way to achieve this is redirect the user to a main landing page upon successful login which will unload the login page from the browser destroying all traces of the password. A single page application should be at least two pages; the login page which only has login code and the main application page which is only show to users who are successfully authenticated. 
+* Destroy the JavaScript `SRP6JavascriptClientSessionSHA256` object immediately after any login attempt. The object is intended to be a temporary object and should be deleted to erase all traces of the password. The password form field the user typed their password into must also be destroyed. The normal way to achieve this is to reload the login page upon authentication failure else load a main landing page upon successful login. 
 * Make the salt column in the database `not null` and add a uniqueness constraint.  
 * Use symmetric encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
-* If you allow the use of Issac as a fallback random number generator add `onkeyup` event handlers which advance the random stream as show in the demo applications. 
+* Add `onkeyup` event handlers which advance the random stream as show in the demo applications. (See the footnote on random numbers below.)
 * Add a javascript password strength meter to the register form which encourages users to use strong passwords. The best cryptography in the world won't protect your users if they use "password" as their password. Consider only allowing them to register with strong passwords to make an [online dictionary attack infeasible](http://xkcd.com/936/). 
 * Use Thinbus SRP over HTTPS. Configure your webserver to mark session cookies as secure to prevent accident use of `HTTP`. If your customers use a company supplied computer going via a corporate web proxy then HTTPS may be [decrypted and monitored](http://security.stackexchange.com/questions/63304/how-can-my-employer-be-a-man-in-the-middle-when-i-connect-to-gmail). HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS alone cannot protected against leaking passwords into error messages in your webserver logs. SRP over HTTPS is much safer than either used alone. 
 * Use a custom large safe prime number `N`. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience for your chosen bit length. 
