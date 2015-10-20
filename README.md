@@ -18,17 +18,16 @@ There are some demonstration applications:
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.3.2</version>
+		<version>1.3.3</version>
 	</dependency>
 ```
 
 ## Using
 
 Check the [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
+It may or may not be running on the [demo server](http://thinbus-n00p.rhcloud.com/dhparam) if not the the build tool can run it locally for you. 
 
-For the definitions of the values discussed below please refer to the [SRP design page](http://srp.stanford.edu/design.html).  
-
-The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
+For the definitions of the values discussed below please refer to the [SRP design page](http://srp.stanford.edu/design.html). The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
 [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
 
 ![Thinbus SRP Register Diagram](http://simon_massey.bitbucket.org/thinbus/register.png "Thinbus SRP Register Diagram")
@@ -76,7 +75,7 @@ from browser local storage.
 
 ## Custom Configuration
 
-SHA-256 is the strongest hash algorithm Java 1.7/1.8 supports out of the box so it is recommended. The Javascript SHA-256 client session configuration is in `thinbus-srp6a-config-sha256.js`. The corresponding Java server SRP session class is `SRPJavascriptServerSessionSHA256`. The Java code is configured via constructor parameters. The JavaScript code is configured by defining an `SRP6CryptoParams` object literal before you include the `thinbus-srp6a-config-sha256.js` file: 
+SHA-256 is the strongest hash algorithm Java 1.7/1.8 supports out of the box so it is recommended. The Javascript SHA-256 version is in `thinbus-srp6a-sha256-min.js`. The corresponding Java server SRP session class is `SRPJavascriptServerSessionSHA256`. The Java code is configured via constructor parameters. The JavaScript code is configured by defining an `SRP6CryptoParams` object literal before you include the main thinbus file: 
 
 ```Javascript
 var SRP6CryptoParams= {
@@ -202,6 +201,10 @@ function (event) {
 ```
 
 ## Release Notes
+
+version 1.3.3
+
+1. Refactored the minified JS files to pull out the safe prime N to make it easier to provide a custom safe prime. 
 
 Version 1.3.2
 
