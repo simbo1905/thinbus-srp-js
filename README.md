@@ -18,22 +18,13 @@ There are some demonstration applications:
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.3.1</version>
+		<version>1.3.2</version>
 	</dependency>
 ```
 
-## Quick Start
-
-Check the `src/main/webapp/resources/js/*.js` files in the [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). That demo app is using the files extracted from the built thinbus-srp6a-js-<version>.jar:
-
-  - `js/thinbus-srp6a-min.js` All the required dependencies minified. 
-  - `js/thinbus-srp6a-2048-sha256-min.js` Example minified configuration using the RFC 5054 2048 bit prime and the sha256 hashing algorithm.  
-
-See `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript sessions and tests them with the JDK Javascript runtime using [JUnit-JS](http://benjiweber.co.uk/blog/2013/01/27/javascript-tests-with-junit/). 
-
-**Note** If you use the java server code if you upgrade versions of the Java jar version you must **always** extract the main js file from the jar and refresh the script(s) the browser uses. Alternatively you could write a servlet which serves the js directly from the jar file. There will be no support for running old js logic against a newer Java logic. 
-
 ## Using
+
+Check the [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
 
 For the definitions of the values discussed below please refer to the [SRP design page](http://srp.stanford.edu/design.html).  
 

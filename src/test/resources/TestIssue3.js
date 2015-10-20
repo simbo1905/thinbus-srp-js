@@ -15,7 +15,7 @@ load("src/main/resources/js/thinbus-srp6client.js");
 load("src/test/resources/js/issue3-config.js");
 
 // import config for test
-load("src/main/resources/js/thinbus-srp6a-config-sha256.js");
+load("src/main/resources/js/thinbus-srp6client-sha256.js");
 
 var username = "qa_poc_2_user-0-33671@leshop.ch";
 var password = "asdasd";

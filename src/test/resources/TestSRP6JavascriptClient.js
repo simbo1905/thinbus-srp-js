@@ -19,7 +19,7 @@ var SRP6CryptoParams= {
 }
 
 // import config for test
-load("src/main/resources/js/thinbus-srp6a-config-sha1.js");
+load("src/main/resources/js/thinbus-srp6client-sha1.js");
 
 var username = "tom@arcot.com";
 var password = "password1234";

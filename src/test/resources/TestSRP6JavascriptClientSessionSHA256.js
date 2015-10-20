@@ -12,10 +12,8 @@ load("src/main/resources/js/random.js");
 load("src/main/resources/js/thinbus-srp6client.js");
 
 // ** you must define crypo params before importing the particular configuration thinbus-srp6a-config*.js and they must match the java server config **
-load("src/main/resources/js/rfc5054-2048-sha256.js");
-
-// import config for test
-load("src/main/resources/js/thinbus-srp6a-config-sha256.js");
+load("src/main/resources/js/rfc5054-safe-prime-config.js");
+load("src/main/resources/js/thinbus-srp6client-sha256.js");
 
 var username = "tom@arcot.com";
 var password = "password1234";
