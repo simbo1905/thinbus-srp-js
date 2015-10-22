@@ -18,7 +18,7 @@ There are some demonstration applications:
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.3.3</version>
+		<version>1.3.4</version>
 	</dependency>
 ```
 
@@ -202,7 +202,11 @@ function (event) {
 
 ## Release Notes
 
-version 1.3.3
+Version 1.3.4
+
+1. Added the release version into the main JS file to make it easier to track if anyone is using obsolete code. 
+
+Version 1.3.3
 
 1. Refactored the minified JS files to pull out the safe prime N to make it easier to provide a custom safe prime. 
 
