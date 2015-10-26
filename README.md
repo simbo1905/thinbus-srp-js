@@ -25,7 +25,7 @@ There are some demonstration applications:
 ## Using
 
 Check the [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
-It may or may not be running on the [demo server](http://thinbus-n00p.rhcloud.com/dhparam) if not the the build tool can run it locally for you. 
+It may or may not be running on the [demo server](http://thinbus-n00p.rhcloud.com/) if not the the build tool can run it locally for you. 
 
 For the definitions of the values discussed below please refer to the [SRP design page](http://srp.stanford.edu/design.html). The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
 [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
