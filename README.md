@@ -18,7 +18,7 @@ There are some demonstration applications:
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.3.4</version>
+		<version>1.3.5</version>
 	</dependency>
 ```
 
