@@ -20,6 +20,7 @@ abstract public class SRP6JavascriptServerSession implements Serializable {
 	private static final long serialVersionUID = -5998252135527603869L;
 
 	/**
+	 * Returns the one-time server challenge `B` encoded as hex. 
 	 * Increments this SRP-6a authentication session to {@link State#STEP_1}.
 	 * 
 	 * @param username
@@ -42,6 +43,7 @@ abstract public class SRP6JavascriptServerSession implements Serializable {
 	}
 
 	/**
+	 * Validates a password proof `M1` based on the client one-tiem public key `A`. 
 	 * Increments this SRP-6a authentication session to {@link State#STEP_2}.
 	 * 
 	 * @param A

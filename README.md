@@ -133,12 +133,12 @@ Other JavaScript source files in the jar show the original copyright of the libr
 ## Recommendations 
 
 * Use Thinbus SRP over HTTPS. Configure your webserver to mark session cookies as secure to prevent accident use of HTTP. If your customers use a company supplied computer going via a corporate web proxy then HTTPS may be [decrypted and monitored](http://security.stackexchange.com/questions/63304/how-can-my-employer-be-a-man-in-the-middle-when-i-connect-to-gmail). HTTPS may be compromised due to things like [bad certs in the wild](http://nakedsecurity.sophos.com/2013/12/09/serious-security-google-finds-fake-but-trusted-ssl-certificates-for-its-domains-made-in-france/). HTTPS may be compromised by bugs or misconfigurations such as [Heartbleed](http://en.wikipedia.org/wiki/Heartbleed). HTTPS alone cannot protected against leaking passwords into error messages in your webserver logs. SRP over HTTPS is much safer than either used alone. 
-* Use a custom large safe prime number `N`. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience for your chosen bit length. 
+* Use a custom large safe prime number `N` using the instructions above. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience for your chosen bit length. 
 * Make the salt column in the database `not null` and add a uniqueness constraint.  
-* Use symmetric encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
+* Use symmetric AES encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
 * Add `onkeyup` event handlers which advance the random stream if you allow thinbus to work in browswers which dont have the `WebCryptoAPI` secure random number APIs (which is the default behavior - see the footnote on random numbers below).
-* Consider protect the login form target with a CSRF token which forces an attacker to actual load the login form to be able to post a proof-of-password. This will slow down an online dictionary attack by forcing that the attacker acturally loads the login page to get a fresh CSRF token for every login attempt.  
-* Add a javascript password strength meter and only allow users to register using a strong password. The best cryptography in the world won't protect your users if they use "password" as their password. 
+* Add a javascript password strength meter and only allow users to register a verifier for a strong password. The best cryptography in the world won't protect your users if they use "password" as their password. 
+* Count the number of failed password attempts and suspend the user account after a dozen attempts to prevent against scripted online dictionary attacks or someone carefully researching a user then attempted to guess their likely password. 
 
 ## License
 
