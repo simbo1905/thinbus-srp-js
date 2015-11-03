@@ -3,3 +3,5 @@
 /.classpath
 /.settings
 /pom.xml.versionsBackup
+.idea/
+thinbus-srp6a-js.iml

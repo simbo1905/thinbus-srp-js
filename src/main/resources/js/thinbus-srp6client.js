@@ -1,30 +1,8 @@
-/*
-The MIT License (MIT) http://opensource.org/licenses/MIT
-
-Copyright (c) 2014  Simon Massey
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-
 /**
-Javascript client which speaks hex strings. 
-It uses random 16 byte hex strings as random key 'a'. 
+ * Thinbus Javascript Secure Remote Password (SRP)
+ * Version  ${project.version}
+ * Copyright 2014-2015 Simon Massey
+ * http://www.apache.org/licenses/LICENSE-2.0
 */
 function SRP6JavascriptClientSession() {
 	"use strict";
@@ -349,8 +327,7 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	r2 = random16byteHex.random();
 	/* jshint ignore:end */
 	
-	// 1024 bit N implies 512 bit key implies 32byte random means two 16 byte values. 
-	// we use Date.now() to prevent the same 'a' being returned for multiple login attempts if `window.crypto` is faulty
+	// we use Date.now() to prevent the same 'a' being returned for multiple login attempts if `window.crypto` is buggy
 	var aStr = this.H(Date.now()+':'+this.I+':'+r1+':'+r2);
 	// this is checked when passed to computeSessionKey
 	this.a = this.fromHex(aStr);
