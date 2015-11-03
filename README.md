@@ -62,16 +62,21 @@ the login page after every login attempt. This is trivial to do by reloading the
 landing page upon successful login. 
 
 **Note** that the server has to remember the one-time server challenge `B` that it gave to the browser in order to check the users password proof. 
-This requires storing the one-time challenge value either in the database, the server session or a server cache for the short duration of the login protocol. You cannot pass this value back to the server from the client without compromising security. The server should not use any values transmitted from the client other than those shown in the sequence diagram and named in the [SRP design page](http://srp.stanford.edu/design.html).
+This requires storing the one-time challenge value either in the database, the server session or a server cache for the short duration of the login protocol. 
+You cannot pass this value back to the server from the client without compromising security. 
+The server should not use any values transmitted from the client other than those shown in the sequence diagram and 
+named in the [SRP design page](http://srp.stanford.edu/design.html).
 
-There is an optional step `client.step3(M2)` that can be used to check that both the client and server share the same strong session key. 
-This is useful if you wish to use the strong session key for further cryptography. If your web application is distributed as a native mobile application 
-then the optional step3 confirms to the client that the server knows the verifier which matches the user password. 
+There is an optional step `client.step3(M2)` where `M2` is the server's proof of a shared session key to the client. 
+You can return `M2` from server to check they both have the same shared secret if which to use it for further cryptography. 
+If your web application is distributed as a native mobile application such that the client is running trusted JavaScript 
+then the `M2` proof is an additional check of the authenticity of the server; it confirms to truested JavaScript that the 
+server knows the verifier matching the user password. 
 
 **Note** if you want to use the shared session key for follow-on cryptography you should use `client.getSessionKey()` to retrieved the
 session key from the thinbus object and destroy the thinbus object as discussed above. The typical way to do this is to put the session key 
-into browser local session storage. Then you can unload the login page and load a main landing page which can collect the session key 
-from browser local storage.  
+into browser local session storage. Then you can unload the login page then load a main landing page that collects the session key 
+from storage.  
 
 ## Custom Configuration
 
@@ -136,9 +141,9 @@ Other JavaScript source files in the jar show the original copyright of the libr
 * Use a custom large safe prime number `N` using the instructions above. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience for your chosen bit length. 
 * Make the salt column in the database `not null` and add a uniqueness constraint.  
 * Use symmetric AES encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
-* Add `onkeyup` event handlers which advance the random stream if you allow thinbus to work in browswers which dont have the `WebCryptoAPI` secure random number APIs (which is the default behavior - see the footnote on random numbers below).
+* Add `onkeyup` event handlers which advance the random stream if you allow thinbus to work in browsers which dont have the `WebCryptoAPI` secure random number APIs (which is the default behavior - see the footnote on random numbers below).
 * Add a javascript password strength meter and only allow users to register a verifier for a strong password. The best cryptography in the world won't protect your users if they use "password" as their password. 
-* Count the number of failed password attempts and suspend the user account after a dozen attempts to prevent against scripted online dictionary attacks or someone carefully researching a user then attempted to guess their likely password. 
+* Count the number of failed password attempts and suspend the user account after a dozen attempts to prevent against scripted online dictionary attacks or someone carefully researching a user then guessing likely password. 
 
 ## License
 
