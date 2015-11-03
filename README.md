@@ -202,6 +202,10 @@ function (event) {
 
 ## Release Notes
 
+Version 1.3.5
+
+1. Added missing attribution and copyright notices of 3rd party JS into header of minified library.  
+
 Version 1.3.4
 
 1. Added the release version into the main JS file to make it easier to track if anyone is using obsolete code. 
