@@ -1,9 +1,9 @@
 package com.bitbucket.thinbus.srp6.js;
 
+import org.bitbucket.thinbus.junitjs.JSRunner;
+import org.bitbucket.thinbus.junitjs.Tests;
 import org.junit.runner.RunWith;
 
-import uk.co.benjiweber.junitjs.JSRunner;
-import uk.co.benjiweber.junitjs.Tests;
 
 import com.nimbusds.srp6.SRP6CryptoParams;
 

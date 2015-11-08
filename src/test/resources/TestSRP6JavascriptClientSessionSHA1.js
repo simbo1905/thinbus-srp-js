@@ -1,5 +1,3 @@
-// import test untils
-load("src/test/resources/JsUnitUtils.js");
 
 // no need to warm up the fallback random number generator when testing
 var test_random16byteHexAdvance = 0;

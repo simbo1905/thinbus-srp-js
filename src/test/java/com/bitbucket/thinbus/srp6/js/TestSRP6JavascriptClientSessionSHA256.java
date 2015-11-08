@@ -1,9 +1,9 @@
 package com.bitbucket.thinbus.srp6.js;
 
+import org.bitbucket.thinbus.junitjs.JSRunner;
+import org.bitbucket.thinbus.junitjs.Tests;
 import org.junit.runner.RunWith;
 
-import uk.co.benjiweber.junitjs.JSRunner;
-import uk.co.benjiweber.junitjs.Tests;
 
 @Tests({
  "TestSRP6JavascriptClientSessionSHA256.js"
