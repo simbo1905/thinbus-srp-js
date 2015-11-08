@@ -143,7 +143,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 * Use symmetric AES encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
 * Add `onkeyup` event handlers which advance the random stream if you allow thinbus to work in browsers which dont have the `WebCryptoAPI` secure random number APIs (which is the default behavior - see the footnote on random numbers below).
 * Add a javascript password strength meter and only allow users to register a verifier for a strong password. The best cryptography in the world won't protect your users if they use "password" as their password. 
-* Count the number of failed password attempts and present the user with a CAPTCHA after a dozen attempts. This slows down scripted online dictionary attack. Consider suspending the account after a maximum number of failed attempts to defeat someone carefully researching a user then trying to guess their likely password. 
+* Count the number of failed password attempts and present the user with a CAPTCHA after a dozen attempts. This slows down scripted online dictionary attack. Consider suspending the account (possibly temporarily) after a large number of contiguous failed attempts to defeat someone carefully researching a user then trying to guess their likely password. 
 
 ## License
 
