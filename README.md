@@ -145,7 +145,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 * Use symmetric AES encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
 * If you allow thinbus to work in browsers which don't have the `WebCryptoAPI` secure random number APIs (which is the default behavior - see the footnote on random numbers below) then add `onkeyup` event handlers to warm up the fallback random number generator. The fallback random generator hashes `window.cookie` and the time as a seed so consider adding a secure random cookie to your login page to help seed the fallback. 
 * Add a javascript password strength meter and only allow users to register a verifier for a strong password. The best cryptography in the world won't protect your users if they use "password" as their password. 
-* Count the number of failed password attempts and suspend the user account after a dozen attempts to prevent against scripted online dictionary attacks or someone carefully researching a user then guessing likely password. 
+* Count the number of failed password attempts and present the user with a CAPTCHA after a dozen attempts. This slows down scripted online dictionary attack. Consider suspending the account (possibly temporarily) after a large number of contiguous failed attempts to defeat someone carefully researching a user then trying to guess their likely password. 
 
 ## License
 
@@ -179,6 +179,10 @@ mvn package
 ```
 
 Note that if you build on jdk1.7 the junit-js tests which test the javascript cryptography take a long while to run. It is highly recommended that you build with JDK1.8 or higher as the Javascript testing is 10x faster than JDK1.7 due to the Nashorn EMCAScript engine in Java1.8. 
+
+## Thankyou
+
+My thanks go to ej-technologies for giving free JProfiler licenses to opensource projects [ ![Profiled using JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](http://www.ej-technologies.com/products/jprofiler/overview.html)
 
 ## Footnote: Random Numbers At The Browser
 
