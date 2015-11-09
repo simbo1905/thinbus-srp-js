@@ -197,7 +197,7 @@ SRP6JavascriptClientSession.prototype.generateRandomSalt = function(opionalServe
 	/* jshint ignore:end */
 
 	// if you invoke without passing the string parameter the '+' operator uses 'undefined' so no nullpointer risk here
-	var ss = this.H(Date.now()+':'+opionalServerSalt+':'+s);
+	var ss = this.H((new Date())+':'+opionalServerSalt+':'+s);
 	return ss;
 };
 
@@ -328,7 +328,7 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	/* jshint ignore:end */
 	
 	// we use Date.now() to prevent the same 'a' being returned for multiple login attempts if `window.crypto` is buggy
-	var aStr = this.H(Date.now()+':'+this.I+':'+r1+':'+r2);
+	var aStr = this.H((new Date())+':'+this.I+':'+r1+':'+r2);
 	// this is checked when passed to computeSessionKey
 	this.a = this.fromHex(aStr);
 	//console.log("M1 js a:" + a);

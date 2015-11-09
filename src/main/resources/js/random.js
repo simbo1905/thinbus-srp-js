@@ -6,53 +6,17 @@
 /*
 This module tries to use window.crypto random number generator which is available 
 in modern browsers. If it cannot find that then it falls back to using an isaac 
-random number generator which is seeded by Math.random. Then to improve security
-it will skip forward until some time has passed. This will make the amount of 
-randoms skipped determined by hardware/browser/load. Finally you can attach the skip
-method to html input boxes with random16byteHex.advance(Math.floor(event.keyCode/4));
+random number generator which is seeded by Math.random and any cookies. To improve
+security whcn using isaac it will skip forward until some time has passed. This will
+make the amount of randoms skipped determined by hardware/browser/load. You can attach
+the skip method to html input boxes with:
+random16byteHex.advance(Math.floor(event.keyCode/4));
 which will further advance the stream an unpredictable amount. If the browser
 has built in crypto randoms the advance method with do nothing.
+Do not add to the password box to leak any info about the password to the outside world.
 */
 var random16byteHex = (function() {
-  function random() {
-    var wordCount = 4;
-    var randomWords;
 
-    // First we're going to try to use a built-in CSPRNG
-    if (typeof(window) != 'undefined' && window.crypto && window.crypto.getRandomValues) {
-        randomWords = new Int32Array(wordCount);
-        window.crypto.getRandomValues(randomWords);
-    }
-    // Because of course IE calls it msCrypto instead of being standard
-    else if (typeof(window) != 'undefined' && window.msCrypto && window.msCrypto.getRandomValues) {
-        randomWords = new Int32Array(wordCount);
-        window.msCrypto.getRandomValues(randomWords);
-    }
-    // Last resort - we'll use isaac.js to get a random number. 
-    else {
-    	// skip forward an unpredictable amount
-    	var now = Date.now();
-    	var t = now % 10;
-        isaac.prng(1+t);
-        
-        // grab some words
-        randomWords = [];
-        for (var i = 0; i < wordCount; i++) {
-            randomWords.push(isaac.rand());
-        }
-    }
-    
-    var string = '';
-    
-    for( var i=0; i<wordCount; i++ ) {
-      var int32 = randomWords[i];
-      if( int32 < 0 ) int32 = -1 * int32;
-      string = string + int32.toString(16);
-    }
-
-    return string;
-  };
-  	
   function isWebCryptoAPI() {
     if (typeof(window) != 'undefined' && window.crypto && window.crypto.getRandomValues) {
       return true;
@@ -63,22 +27,69 @@ var random16byteHex = (function() {
       return false;
     }
   };
-  
+
   var crypto = isWebCryptoAPI();
-  
+
+  function seedIsaac() {
+    console.log("isWebCryptoAPI:"+crypto);
+    if( crypto ) return false;
+    var value = +(new Date())+':'+Math.random();
+    if( typeof(window) != 'undefined' && window.cookie) {
+      value += document.cookie;
+    }
+    var h = CryptoJS.SHA256 ||  CryptoJS.SHA1;
+    isaac.seed(h(value));
+    return true;
+  }
+
+  var seeded = seedIsaac();
+
+  function random() {
+    var wordCount = 4;
+    var randomWords;
+
+    if( crypto ) {
+      var acrypto = window.crypto || window.msCrypto;
+      randomWords = new Int32Array(wordCount);
+      acrypto.getRandomValues(randomWords);
+    } else {
+        // skip forward an unpredictable amount
+        var now = +(new Date());
+        var t = now % 50;
+        isaac.prng(1+t);
+
+        // grab some words
+        randomWords = new Array();
+        for (var i = 0; i < wordCount; i++) {
+            randomWords.push(isaac.rand());
+        }
+    }
+
+    var string = '';
+    
+    for( var i=0; i<wordCount; i++ ) {
+      var int32 = randomWords[i];
+      if( int32 < 0 ) int32 = -1 * int32;
+      string = string + int32.toString(16);
+    }
+    //console.log(string);
+    return string;
+  };
+  	
+
   /**
   Run this within onkeyup of html inputs so that user typing makes the random numbers more random:
   random16byteHex.advance(Math.floor(event.keyCode/4));
   */
   function advance(ms) {
     if( !crypto ) {
-      var start = Date.now();
+      var start = +(new Date());
       var end = start + ms;
-      var now = Date.now();
+      var now = +(new Date());
       while( now < end ) {
           var t = now % 5;
           isaac.prng(1+t);
-          now = Date.now();
+          now = +(new Date());
       }
     }
   }

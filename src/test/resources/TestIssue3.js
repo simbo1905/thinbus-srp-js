@@ -2,6 +2,9 @@
 // no need to warm up the fallback random number generator when testing
 var test_random16byteHexAdvance = 0;
 
+// simulate having a cookie
+var document = { cookie: "JSESSIONID=1A530637289A03B07199A44E8D531427" };
+
 // import collaborators
 load("src/main/resources/js/biginteger.js");
 load("src/main/resources/js/sha256.js");
