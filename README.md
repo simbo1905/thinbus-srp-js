@@ -7,7 +7,7 @@ There are some demonstration applications:
 1. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) A Spring MVC application which uses the Thinbus JavaScript library to create accounts and login users with Spring Security. 
 2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) Uses the Thinbus Javascript library to do SRP authentication to PHP server code. 
 
-The demo apps have been seen to work on IE8+, Edge, Chrome, FF, Safari. 
+The spring demo app has been seen to work on IE8+, Edge, Chrome, FireFox, and Safari. 
 
 ## CI Build Status
 
