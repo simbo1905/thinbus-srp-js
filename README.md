@@ -20,7 +20,7 @@ The spring demo app has been seen to work on IE8+, Edge, Chrome, FireFox, and Sa
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.3.5</version>
+		<version>1.4.0</version>
 	</dependency>
 ```
 
