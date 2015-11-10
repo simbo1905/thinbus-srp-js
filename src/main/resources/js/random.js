@@ -31,7 +31,7 @@ var random16byteHex = (function() {
   var crypto = isWebCryptoAPI();
 
   function seedIsaac() {
-    console.log("isWebCryptoAPI:"+crypto);
+    //console.log("isWebCryptoAPI:"+crypto);
     if( crypto ) return false;
     var value = +(new Date())+':'+Math.random();
     if( typeof(window) != 'undefined' && window.cookie) {
