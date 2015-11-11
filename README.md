@@ -72,7 +72,7 @@ named in the [SRP design page](http://srp.stanford.edu/design.html).
 There is an optional step `client.step3(M2)` where `M2` is the server's proof of a shared session key to the client. 
 You can return `M2` from server to check they both have the same shared secret if which to use it for further cryptography. 
 If your web application is distributed as a native mobile application such that the client is running trusted JavaScript 
-then the `M2` proof is an additional check of the authenticity of the server; it confirms to truested JavaScript that the 
+then the `M2` proof is an additional check of the authenticity of the server; it confirms to trusted JavaScript that the 
 server knows the verifier matching the user password. 
 
 **Note** if you want to use the shared session key for follow-on cryptography you should use `client.getSessionKey()` to retrieved the
