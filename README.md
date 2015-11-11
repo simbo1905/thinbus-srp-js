@@ -36,7 +36,7 @@ For the definitions of the values discussed below please refer to the [SRP desig
 
 In the diagram above the user is shown a standard registration form which includes email and password fields. 
 They enter their email and password and click the register button. JavaScript then generates their random `salt` 
-and uses their email and password to generate the `verififer`. Only the `salt` and the `verifier` are transmitted to 
+and uses the salt, email and password to generate an SRP `verififer`. Only the `salt` and the `verifier` are transmitted to 
 the server and they are saved into the database keyed by the users email. 
 
 **Note** Always use browser developer tools to inspect what you actually post to the server and only post the values shown 
