@@ -7,7 +7,7 @@ There are some demonstration applications:
 1. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) A Spring MVC application which uses the Thinbus JavaScript library to create accounts and login users with Spring Security. 
 2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) Uses the Thinbus Javascript library to do SRP authentication to PHP server code. 
 
-The spring demo app has been seen to work on IE8+, Edge, Chrome, FireFox, and Safari. 
+The spring demo app has been checked on IE8+, Edge, Chrome, FireFox, and Safari. 
 
 ## CI Build Status
 
@@ -70,7 +70,7 @@ The server should not use any values transmitted from the client other than thos
 named in the [SRP design page](http://srp.stanford.edu/design.html).
 
 There is an optional step `client.step3(M2)` where `M2` is the server's proof of a shared session key to the client. 
-You can return `M2` from server to check they both have the same shared secret if which to use it for further cryptography. 
+You can return `M2` from the server to check the browser has a matching shared secret if you wish to use that for further cryptography. 
 If your web application is distributed as a native mobile application such that the client is running trusted JavaScript 
 then the `M2` proof is an additional check of the authenticity of the server; it confirms to trusted JavaScript that the 
 server knows the verifier matching the user password. 
@@ -124,7 +124,10 @@ Else you could try the online version of that tool if it is currently up and run
 
 You then use the `N` and `g` value to configure the Java session and use the `N`, `g` and `k` values to configure the Javascript session as outlined above. Also see `TestSRP6JavascriptClientSessionSHA256.js` which configures matching Java and Javascript sessions and tests them against one another. You should edit that test to use your own safe prime values and confirm that the test passes before attempting the use your configuration with a web browser. 
 
-Using the demo 2048 bit prime a modern developer workstation takes less than 90ms to do the math. Trying out smaller 1024 bit primes on a four year old mac the browser takes between 0.05s and 0.10s to run the main srp work. The timings depend on which of Firefox, Chrome or Safari is used. YMMV as Javascript runtimes and mobile hardware may vary considerably so you should test the user experience on all the browsers you are targeting. 
+Using the demo 2048 bit prime a modern developer workstation takes less than 90ms to do the math. 
+Trying out smaller 1024 bit primes on a low spec 2010 mac the browser takes between 0.05s and 0.10s to run the main srp work. 
+The timings depend on which of Firefox, Chrome or Safari is used. YMMV as Javascript runtimes and mobile hardware may vary considerably 
+so you should test the user experience on all the browsers you are targeting. 
 
 ## Javascript Code
 
@@ -144,9 +147,9 @@ Other JavaScript source files in the jar show the original copyright of the libr
 * Use a custom large safe prime number `N` using the instructions above. **Tip:** Check on the browsers and hardware you are targeting that the math runs fast enough for a good user experience for your chosen bit length. 
 * Make the salt column in the database `not null` and add a uniqueness constraint.  
 * Use symmetric AES encryption with a key only visible at the webserver to encrypt the verifier `v` value within the database. This protects against off-site database backups being used in an offline dictionary attack against `v`. 
-* You can prevent privileged accounts from logging in using legacy browsers by passing `random16byteHex.isWebCryptoAPI()` when fetching the user salt; simply abort the protocol for privileged accounts when secure random numbers are not available at the browser. If you allow the use of browsers that don't have the `WebCryptoAPI` secure random number APIs then the fallback random generator hashes `window.cookie` as part of the generator seed. Consider adding a secure random cookie to help seed the fallback generator; see PRNG.md for more info.
-* Don't include any JS files [or any CSS file](http://stackoverflow.com/a/3613162/329496) from external sites onto your login page.
-* Count the number of failed password attempts and present the user with a CAPTCHA after a dozen attempts. This slows down scripted online dictionary attack. Consider suspending the account (possibly temporarily) after a large number of contiguous failed attempts to defeat someone carefully researching a user then trying to guess their likely password. 
+* You can prevent privileged accounts from logging in using legacy browsers by checking `random16byteHex.isWebCryptoAPI()` when fetching the user salt; simply abort the protocol for privileged accounts when secure random numbers are not available at the browser. If you allow the use of browsers that don't have the `WebCryptoAPI` secure random number APIs then the fallback random generator hashes `window.cookie` as part of the generator seed. Consider adding a secure random cookie to help seed the fallback generator; see PRNG.md for more info.
+* Don't include any JS files [or any CSS files](http://stackoverflow.com/a/3613162/329496) from external sites onto your login page.
+* Count the number of failed password attempts and present the user with a CAPTCHA after a dozen attempts. This slows down scripted online dictionary attacks. Consider suspending the account (possibly temporarily) after a large number of contiguous failed attempts to defeat someone carefully researching a user then trying to guess their likely password. 
 
 ## License
 
