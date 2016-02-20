@@ -53,6 +53,8 @@ a one-time client challenge `A` and uses all the information to compute a passwo
 the email, `A`, and `M1` as the users credentials. The server uses all the information to check the password proof. Only the email, 
 client challenge `A` and the password proof `M1` are transmitted to the server. 
 
+**Note** As per RFC 2945 the user ID (usually their email) is concatenated to their password when generating the verifier. This means that if a user changes *either* their email address or their password you need to generate a new verifier and replace the old one in the database. 
+
 **Note** Always use browser developer tools to inspect what you actually post to the server and only post the values shown 
 in the sequence diagram as defined in the [SRP design page](http://srp.stanford.edu/design.html). It is a protocol violation 
 and a security bug to accidently transmit to the server anything else even if it is ignored by the server. 
