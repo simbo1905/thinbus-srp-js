@@ -137,7 +137,7 @@
 							<Build-Date>${timestamp}</Build-Date>
 						</manifestEntries>
 						<manifest>
-							<mainClass>com.bitbucket.thinbus.srp6.js.OpenSSLCryptoConfig</mainClass>
+							<mainClass>com.bitbucket.thinbus.srp6.js.OpenSSLCryptoConfigConverter</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -234,7 +234,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.bitbucket.thinbus.srp6.js.OpenSSLCryptoConfig</mainClass>
+							<mainClass>com.bitbucket.thinbus.srp6.js.OpenSSLCryptoConfigConverter</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
