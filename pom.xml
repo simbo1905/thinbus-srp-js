@@ -40,6 +40,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nimbusds.version>1.5.3</nimbusds.version>
         <junit-js.version>1.0.0</junit-js.version>
+		<dhParamMainClass>com.bitbucket.thinbus.srp6.js.OpenSSLCryptoConfigConverter</dhParamMainClass>
 	</properties>
 
 	<dependencies>
@@ -137,7 +138,7 @@
 							<Build-Date>${timestamp}</Build-Date>
 						</manifestEntries>
 						<manifest>
-							<mainClass>com.bitbucket.thinbus.srp6.js.OpenSSLCryptoConfigConverter</mainClass>
+							<mainClass>${dhParamMainClass}</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -286,6 +287,15 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<configuration>
+					<mainClass>${dhParamMainClass}</mainClass>
+					<arguments>./my_dhparam.txt,SHA-256</arguments>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

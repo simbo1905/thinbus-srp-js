@@ -1,0 +1,8 @@
+Diffie-Hellman-Parameters: (128 bit)
+    prime:
+        00:b3:19:d7:83:96:42:57:7d:c9:41:f1:28:8d:bc:
+        87:b3
+    generator: 2 (0x2)
+-----BEGIN DH PARAMETERS-----
+MBYCEQCzGdeDlkJXfclB8SiNvIezAgEC
+-----END DH PARAMETERS-----
