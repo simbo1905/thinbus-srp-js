@@ -294,7 +294,10 @@
 				<version>1.2.1</version>
 				<configuration>
 					<mainClass>${dhParamMainClass}</mainClass>
-					<arguments>./my_dhparam.txt,SHA-256</arguments>
+					<arguments>
+						<argument>./my_dhparam.txt</argument>
+						<argument>SHA-256</argument>
+                    </arguments>
 				</configuration>
 			</plugin>
 		</plugins>
