@@ -1,6 +1,6 @@
 # Thinbus Javascript Secure Remote Password (SRP)
  
-This package provides a Javascript [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for web browsers to perform a zero-knowledge proof-of-password to a web server. It comes with compatible Java classes but there is also a demo using PHP server code. The server Java code only has a dependency on the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
+This package provides a Javascript [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for web browsers to perform a zero-knowledge proof-of-password to a web server. It comes with compatible Java classes but there is also a demo using PHP server code (and now a 3rd party Python module!). The server Java code only has a dependency on the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
 There are some demonstration applications: 
 
