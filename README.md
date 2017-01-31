@@ -32,7 +32,7 @@ It may or may not be running on the [demo server](http://thinbus-n00p.rhcloud.co
 For the definitions of the values discussed below please refer to the [SRP design page](http://srp.stanford.edu/design.html). The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
 [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
 
-![Thinbus SRP Register Diagram](http://simon_massey.bitbucket.org/thinbus/register.png "Thinbus SRP Register Diagram")
+![Thinbus SRP Register Diagram](http://simonmassey.bitbucket.org/thinbus/register.png "Thinbus SRP Register Diagram")
 
 In the diagram above the user is shown a standard registration form which includes email and password fields. 
 They enter their email and password and click the register button. JavaScript then generates their random `salt` 
@@ -45,7 +45,7 @@ violation and security bug if the raw password is accidently transmitted to the 
 
 The following sequence diagram shows how to login a registered user. 
 
-![Thinbus SRP Login Diagram](http://simon_massey.bitbucket.org/thinbus/login.png "Thinbus SRP Login Diagram")
+![Thinbus SRP Login Diagram](http://simonmassey.bitbucket.org/thinbus/login.png "Thinbus SRP Login Diagram")
 
 In the diagram above the user is shown a standard login form. They enter their email and password and click the login button. 
 JavaScript then makes an AJAX call using their email to load their `salt` and a one-time server challenge `B`. JavaScript creates 
