@@ -73,7 +73,9 @@ function SRP6JavascriptClientSession() {
 		this.check(salt, "salt");
 		this.check(identity, "identity");
 		this.check(password, "password");
-		//console.log("js salt:"+salt+",i:"+identity+",p:"+password);
+		//console.log("js salt:"+salt);
+		//console.log("js i:"+identity);
+		//console.log("js p:"+password);
 		var hash1 = this.H(identity+':'+password);
 		
 		// server BigInteger math will trim leading zeros so we must do likewise to get a match
@@ -124,7 +126,7 @@ function SRP6JavascriptClientSession() {
 		this.check(u, "u");
 		this.check(a, "a");
 		this.check(B, "B");
-	
+
 		var exp = u.multiply(x).add(a);
 		var tmp = this.g().modPow(x, this.N()).multiply(k);
 		return B.subtract(tmp).modPow(exp, this.N());
@@ -213,10 +215,12 @@ SRP6JavascriptClientSession.prototype.generateRandomSalt = function(opionalServe
  */
 SRP6JavascriptClientSession.prototype.generateVerifier = function(salt, identity, password) {
 	"use strict";
+	//console.log("SRP6JavascriptClientSession.prototype.generateVerifier");
 	// no need to check the parameters as generateX will do this
 	var x = this.generateX(salt, identity, password);
-	//console.log("js x: "+x)
+	//console.log("js x: "+this.toHex(x));
 	this.v = this.g().modPow(x, this.N());
+	//console.log("js v: "+this.toHex(this.v));
 	return this.toHex(this.v);
 };
 
@@ -236,6 +240,10 @@ SRP6JavascriptClientSession.prototype.generateVerifier = function(salt, identity
  */
 SRP6JavascriptClientSession.prototype.step1 = function(identity, password) {
 	"use strict";
+	//console.log("SRP6JavascriptClientSession.prototype.step1");
+	//console.log("N: "+this.N());
+	//console.log("g: "+this.g());
+	//console.log("k: "+this.toHex(this.k));
 	this.check(identity, "identity");
 	this.check(password, "password");
 	this.I = identity;
@@ -258,16 +266,37 @@ SRP6JavascriptClientSession.prototype.step1 = function(identity, password) {
  */
 SRP6JavascriptClientSession.prototype.computeU = function(Astr, Bstr) {
 	"use strict";
+	//console.log("SRP6JavascriptClientSession.prototype.computeU");
 	this.check(Astr, "Astr");
 	this.check(Bstr, "Bstr");
 	/* jshint ignore:start */
 	var output = this.H(Astr+Bstr);
+	//console.log("js raw u:"+output);
 	var u = new BigInteger(""+output,16);
+	//console.log("js u:"+this.toHex(u));
 	if( BigInteger.ZERO.equals(u) ) {
 	   throw new Error("SRP6Exception bad shared public value 'u' as u==0");
 	}
 	return u;
 	/* jshint ignore:end */
+};
+
+// separated out so that test subclasses can override with known values
+SRP6JavascriptClientSession.prototype.randomA = function() {
+    "use strict";
+
+    var r1 = null;
+    var r2 = null;
+
+    /* jshint ignore:start */
+    r1 = random16byteHex.random();
+    r2 = random16byteHex.random();
+    /* jshint ignore:end */
+
+    // we use Date.now() to prevent the same 'a' being returned for multiple login attempts if `window.crypto` is buggy
+    var aStr = this.H((new Date())+':'+this.I+':'+r1+':'+r2);
+    // this is checked when passed to computeSessionKey
+    return aStr;
 };
 
 /**
@@ -291,10 +320,13 @@ SRP6JavascriptClientSession.prototype.computeU = function(Astr, Bstr) {
  */
 SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	"use strict";
+
+	//console.log("SRP6JavascriptClientSession.prototype.step2");
+
 	this.check(s, "s");
-	//console.log("M1 js s:" + s);
+	//console.log("s:" + s);
 	this.check(BB, "BB");
-	//console.log("M1 js BB:" + BB);
+	//console.log("BB:" + BB);
 	
 	if( this.state !== this.STEP_1 ) {
 		throw new Error("IllegalStateException not in state STEP_1");
@@ -313,38 +345,28 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 		throw new Error("SRP6Exception bad server public value 'B' as B == 0 (mod N)");
 	}
 	
-	//console.log("M1 js k:" + k);
+	//console.log("k:" + this.k);
 
 	// this is checked when passed to computeSessionKey
 	var x = this.generateX(s, this.I, this.P);
-	//console.log("M1 js x:" + x);
-	
-	var r1 = null;
-	var r2 = null;
-	
-	/* jshint ignore:start */
-	r1 = random16byteHex.random();
-	r2 = random16byteHex.random();
-	/* jshint ignore:end */
-	
-	// we use Date.now() to prevent the same 'a' being returned for multiple login attempts if `window.crypto` is buggy
-	var aStr = this.H((new Date())+':'+this.I+':'+r1+':'+r2);
-	// this is checked when passed to computeSessionKey
-	this.a = this.fromHex(aStr);
-	//console.log("M1 js a:" + a);
-	
+	//console.log("x:" + x);
+
+	this.a = this.fromHex(this.randomA());
+
+    //console.log("a:" + this.toHex(this.a));
+
 	this.A = this.g().modPow(this.a, this.N());
-	//console.log("M1 js A:" + A);
+	//console.log("A:" + this.toHex(this.A));
 	this.check(this.A, "A");
 	
 	this.u = this.computeU(this.A.toString(16),BB);
-	//console.log("M1 js u:" + u);
+	//console.log("u:" + this.u);
 	
 	this.S = this.computeSessionKey(this.k, x, this.u, this.a, this.B);
 	this.check(this.S, "S");
 	
-	//console.log("jsU:" + toHex(u));
-	//console.log("jsS:" + toHex(S));
+	//console.log("jsU:" + this.toHex(this.u));
+	//console.log("jsS:" + this.toHex(this.S));
 	
 	var AA = this.toHex(this.A);
 	
@@ -359,17 +381,16 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	
 	//console.log("M1str:" + this.M1str);
 	
-	//console.log("jsABS:" + AA+BB+this.toHex(this.S));
-	//console.log("M1 js A:" + AA);
-	//console.log("M1 js B:" + BB);
-	//console.log("v:" + this.v);
-	//console.log("u:" + this.u);	
-	//console.log("A:" + this.A);
-	//console.log("b:" + this.B);
-	//console.log("S:" + this.S);
-	//console.log("M1:" + this.M1);
-	//console.log("M1 js S:" + this.toHex(this.S));
-	//console.log("M1 jsM1:" + this.M1str);
+	//console.log("js ABS:" + AA+BB+this.toHex(this.S));
+	//console.log("js A:" + AA);
+	//console.log("js B:" + BB);
+	//console.log("js v:" + this.v);
+	//console.log("js u:" + this.u);
+	//console.log("js A:" + this.A);
+	//console.log("js b:" + this.B);
+	//console.log("js S:" + this.S);
+	//console.log("js S:" + this.toHex(this.S));
+	//console.log("js M1:" + this.M1str);
 	
 	this.state = this.STEP_2;
 	return { A: AA, M1: this.M1str };
@@ -393,19 +414,20 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 SRP6JavascriptClientSession.prototype.step3 = function(M2) {
 	"use strict";
 	this.check(M2);
-	
+	//console.log("SRP6JavascriptClientSession.prototype.step3");
+
 	// Check current state
 	if (this.state !== this.STEP_2)
 		throw new Error("IllegalStateException State violation: Session must be in STEP_2 state");
 
-	//console.log("M2 js A:" + toHex(A));
-	//console.log("M2 jsM1:" + M1str);
-	//console.log("M2 js S:" + toHex(S));
+	//console.log("js A:" + this.toHex(this.A));
+	//console.log("jsM1:" + this.M1str);
+	//console.log("js S:" + this.toHex(this.S));
 	
 	var computedM2 = this.H(this.toHex(this.A)+this.M1str+this.toHex(this.S));
 	
-	//console.log("M2 jsServerM2:" + M2);
-	//console.log("M2 jsClientM2:" + computedM2);
+	//console.log("jsServerM2:" + M2);
+	//console.log("jsClientM2:" + computedM2);
 	
 	// server BigInteger math will trim leading zeros so we must do likewise to get a match
 	while (computedM2.substring(0, 1) === '0') { 
