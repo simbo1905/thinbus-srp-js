@@ -125,6 +125,11 @@ tests({
 		
 		assert.assertEquals(jvV, jsV);
 		
-	}
+	},
+
+    testRandoms: function() {
+        var client = new SRP6JavascriptClientSessionSHA1();
+        var a = client.randomA(new BigInteger(SRP6CryptoParams.N_base10, 10));
+    }
 });
 

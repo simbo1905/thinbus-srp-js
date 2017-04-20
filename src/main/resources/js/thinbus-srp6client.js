@@ -38,18 +38,19 @@ function SRP6JavascriptClientSession() {
   
 	this.state = this.INIT;
 	
-	this.x = null;
-	this.v = null;
-	this.I = null;
-	this.P = null;
-	this.B = null;
-	this.A = null;
-	this.a = null;
-	this.k = null;
-	this.u = null;
-	this.S = null;
-	this.K = null;
-	this.M1str = null;
+	this.x = null; // salted hashed password
+	this.v = null; // verifier
+	this.I = null; // identity
+	this.P = null; // password, nulled after use
+	this.salt = null; // salt
+	this.B = null; // server public key
+	this.A = null; // client public key
+	this.a = null; // client private key
+	this.k = null; // constant computed by the server
+	this.u = null; // blended public keys
+	this.S = null; // shared secret key long form
+	this.K = null; // shared secret hashed form
+	this.M1str = null; // password proof
 	
 	// private
 	this.check = function(v, name) {
@@ -76,6 +77,7 @@ function SRP6JavascriptClientSession() {
 		//console.log("js salt:"+salt);
 		//console.log("js i:"+identity);
 		//console.log("js p:"+password);
+		this.salt = salt;
 		var hash1 = this.H(identity+':'+password);
 		
 		// server BigInteger math will trim leading zeros so we must do likewise to get a match
@@ -146,6 +148,15 @@ SRP6JavascriptClientSession.prototype.fromHex = function(s) {
 	return new BigInteger(""+s, 16); // jdk1.7 rhino requires string concat
 };
 /* jshint ignore:end */
+
+// public helper to hide BigInteger from the linter
+/* jshint ignore:start */
+SRP6JavascriptClientSession.prototype.BigInteger = function(string, radix) {
+	"use strict";
+	return new BigInteger(""+string, radix); // jdk1.7 rhino requires string concat
+};
+/* jshint ignore:end */
+
 
 // public getter of the current workflow state. 
 SRP6JavascriptClientSession.prototype.getState = function() {
@@ -281,22 +292,76 @@ SRP6JavascriptClientSession.prototype.computeU = function(Astr, Bstr) {
 	/* jshint ignore:end */
 };
 
-// separated out so that test subclasses can override with known values
-SRP6JavascriptClientSession.prototype.randomA = function() {
+SRP6JavascriptClientSession.prototype.random16byteHex = function() {
     "use strict";
 
     var r1 = null;
-    var r2 = null;
-
     /* jshint ignore:start */
     r1 = random16byteHex.random();
-    r2 = random16byteHex.random();
     /* jshint ignore:end */
+    return r1;
+};
 
-    // we use Date.now() to prevent the same 'a' being returned for multiple login attempts if `window.crypto` is buggy
-    var aStr = this.H((new Date())+':'+this.I+':'+r1+':'+r2);
-    // this is checked when passed to computeSessionKey
-    return aStr;
+/**
+ * Generate a random value in the range `[1,N)` using a minimum of 256 random bits.
+ *
+ * See specification RFC 5054.
+ * This method users the best random numbers available. Just in case the random number
+ * generate in the client web browser is totally buggy it also adds `H(I+":"+salt+":"+time())`
+ * to the generated random number.
+ * @param N The safe prime.
+*/
+SRP6JavascriptClientSession.prototype.randomA = function(N) {
+    "use strict";
+
+    //console.log("N:"+N);
+
+    // our ideal number of random  bits to use for `a` as long as its bigger than 256 bits
+    var hexLength = this.toHex(N).length;
+
+    var ZERO = this.BigInteger("0", 10);
+    var ONE = this.BigInteger("1", 10);
+
+    var r = ZERO;
+
+    //  loop until we don't have a ZERO value. we would have to generate exactly N to loop so very rare.
+    while(ZERO.equals(r)){
+        // in theory we get 256 bits of good random numbers here
+        var rstr = this.random16byteHex() + this.random16byteHex();
+
+        //console.log("rstr:"+rstr);
+
+        // add more random bytes until we are at least as large as N and ignore any overshoot
+        while( rstr.length < hexLength ) {
+            rstr = rstr + this.random16byteHex();
+        }
+
+        //console.log("rstr:"+rstr);
+
+        // we now have a random just at lest 256 bits but typically more bits than N for large N
+        var rBi = this.BigInteger(rstr, 16);
+
+        //console.log("rBi:"+rBi);
+
+        // this hashes the time in ms such that we wont get repeated numbers for successive attempts
+        // it also hashes the salt which can itself be salted by a server strong random which protects
+        // against rainbow tables. it also hashes the user identity which is unique to each user
+        // to protect against having simply no good random numbers anywhere
+        var oneTimeBi = this.BigInteger(this.H(this.I+":"+this.salt+':'+(new Date()).getTime()), 16);
+
+        //console.log("oneTimeBi:"+oneTimeBi);
+
+        // here we add the "one time" hashed time number to our random number to the random number
+        // this protected against a buggy browser random number generated generating a constant value
+        // we mod(N) to wrap to the range [0,N) then loop if we get 0 to give [1,N)
+        // mod(N) is broken due to buggy library code so we workaround with modPow(1,N)
+        r = (oneTimeBi.add(rBi)).modPow(ONE, N);
+    }
+
+    //console.log("r:"+r);
+
+    // the result will in the range [1,N) using more random bits than size N
+    return r;
 };
 
 /**
@@ -351,7 +416,12 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	var x = this.generateX(s, this.I, this.P);
 	//console.log("x:" + x);
 
-	this.a = this.fromHex(this.randomA());
+	// blank the password as there is no reason to keep it around in memory.
+	this.P = null;
+
+    //console.log("N:"+this.toHex(this.N).toString(16));
+
+	this.a = this.randomA(this.N);
 
     //console.log("a:" + this.toHex(this.a));
 
