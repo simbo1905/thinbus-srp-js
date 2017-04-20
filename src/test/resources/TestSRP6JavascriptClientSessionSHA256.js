@@ -28,7 +28,7 @@ tests({
 	/**
 	Tests the full flow between the Javascript Client Session and the Java Server Session
 	*/
-	testMutualAuthentiation: function() {
+	testMutualAuthentication: function() {
 
 	    for( var i = 0; i < 8; i++) {
 	

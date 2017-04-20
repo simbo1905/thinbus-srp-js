@@ -36,7 +36,7 @@ tests({
 	Tests the full flow between the Javascript Client Session and the Java Server Session.
 	See the comments in the SHA256 version of this class for a fuller description.  
 	*/
-	testMutualAuthentiation: function() {
+	testMutualAuthentication: function() {
 		
 //		println(username);
 //		println(password);
@@ -44,8 +44,8 @@ tests({
 //		println(SRP6CryptoParams.N_base10);
 //		println(SRP6CryptoParams.k_base16);
 	
-		// run this 100 times to catch any problems with dropping leading zeros in BigDecimal conversions to and from hex
-		for( var i = 0; i < 100; i++) {
+		// run this 64 times to catch any problems with dropping leading zeros in BigDecimal conversions to and from hex
+		for( var i = 0; i < 64; i++) {
 			var client = new SRP6JavascriptClientSessionSHA1();
 			
 			var salt = client.generateRandomSalt(); // consider passing server secure random to this method

@@ -47,27 +47,5 @@ tests({
 		assert.assertTrue(vC == vS); 
 		
 	}
-	/*
-	, 
-	
-	testVerifierIssueRandoms: function() {
-		var client = new SRP6JavascriptClientSessionSHA256();
-		for( var i = 0; i < 100; i++ ){
-			var salt = client.generateRandomSalt();
-			var username = salt;
-			var password = salt;
 
-			var vC = client.generateVerifier(salt, username, password);
-			
-			var vS = (new javaHexHashedVerifierGenerator(SRP6CryptoParams.N_base10, SRP6CryptoParams.g_base10, "SHA-256" )).generateVerifier(salt, username, password);
-			
-			console.log("vC:"+vC);
-			console.log("vS:"+vS);
-			
-			assert.assertTrue(vC == vS); 
-			
-		}
-	}
-	*/
-	
 });
