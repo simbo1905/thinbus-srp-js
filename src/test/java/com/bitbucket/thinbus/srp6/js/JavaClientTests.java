@@ -49,7 +49,7 @@ public class JavaClientTests {
 				N_base10, g_base10);
 
 		String salt = client
-				.generateRandomSalt(SRP6JavascriptServerSessionSHA1.HASH_HEX_LENGTH);
+				.generateRandomSalt(SRP6JavascriptServerSessionSHA1.HASH_BYTE_LENGTH);
 
 		HexHashedVerifierGenerator generator = new HexHashedVerifierGenerator(
 				N_base10, g_base10, SRP6JavascriptServerSessionSHA1.SHA_1);
@@ -86,7 +86,7 @@ public class JavaClientTests {
 				N_base10, g_base10);
 
 		String salt = client
-				.generateRandomSalt(SRP6JavascriptServerSessionSHA256.HASH_HEX_LENGTH);
+				.generateRandomSalt(SRP6JavascriptServerSessionSHA256.HASH_BYTE_LENGTH);
 
 		HexHashedVerifierGenerator generator = new HexHashedVerifierGenerator(
 				N_base10, g_base10, SRP6JavascriptServerSessionSHA256.SHA_256);

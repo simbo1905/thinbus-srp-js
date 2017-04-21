@@ -28,7 +28,9 @@ public class SRP6JavascriptServerSessionSHA1 extends SRP6JavascriptServerSession
 	 * This must match the expected character length of the specified algorithm
 	 * i.e. SHA-1 is 40
 	 */
-	public static int HASH_HEX_LENGTH = 40;
+	public static final int HASH_HEX_LENGTH = 40;
+
+	public static final int HASH_BYTE_LENGTH = HASH_HEX_LENGTH / 2;
 
 	/**
 	 * Create a SHA1 server session compatible with a JavaScript client session.
