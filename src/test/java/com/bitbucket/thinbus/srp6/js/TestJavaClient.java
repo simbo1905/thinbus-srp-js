@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import com.nimbusds.srp6.SRP6ClientCredentials;
 
-public class JavaClientTests {
+public class TestJavaClient {
 
 	final String N_base10 = "19502997308733555461855666625958719160994364695757801883048536560804281608617712589335141535572898798222757219122180598766018632900275026915053180353164617230434226106273953899391119864257302295174320915476500215995601482640160424279800690785793808960633891416021244925484141974964367107";
 	final String g_base10 = "2";
@@ -227,7 +227,7 @@ public class JavaClientTests {
 	// this is a brute force comparison that javascript and Java can login
 	// against each other
 	public static void main(String[] args) throws Exception {
-		JavaClientTests ct = new JavaClientTests();
+		TestJavaClient ct = new TestJavaClient();
 		System.out.println("SHA1:");
 		for (int i = 0; i < 10; i++) {
 			long start = System.currentTimeMillis();
