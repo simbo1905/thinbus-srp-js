@@ -38,7 +38,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <nimbusds.version>1.5.3</nimbusds.version>
+        <nimbusds.version>2.0.2</nimbusds.version>
         <junit-js.version>1.0.0</junit-js.version>
 		<dhParamMainClass>com.bitbucket.thinbus.srp6.js.OpenSSLCryptoConfigConverter</dhParamMainClass>
 	</properties>

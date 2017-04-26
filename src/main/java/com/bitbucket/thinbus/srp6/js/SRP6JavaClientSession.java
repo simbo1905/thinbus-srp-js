@@ -21,6 +21,8 @@ import com.nimbusds.srp6.SRP6Routines;
  */
 abstract public class SRP6JavaClientSession {
 
+	final SRP6Routines srp6Routines = new SRP6Routines();
+
 	/**
 	 * The crypto parameters for the SRP-6a protocol. These must be agreed
 	 * between client and server before authentication and consist of a large
@@ -162,7 +164,7 @@ abstract public class SRP6JavaClientSession {
 	 * @return A hex encoded random salt value.
 	 */
 	public String generateRandomSalt(final int numBytes) {
-		byte[] bytes = SRP6Routines.generateRandomSalt(numBytes);
+		byte[] bytes = this.srp6Routines.generateRandomSalt(numBytes);
 		MessageDigest digest = config.getMessageDigestInstance();
 		digest.reset();
 		digest.update(bytes, 0, bytes.length);
@@ -227,7 +229,7 @@ abstract public class SRP6JavaClientSession {
 	 *         session state when the session key 'S' has not been computed yet.
 	 */
 	public String getSessionKey(boolean doHash) {
-		String S = toHex(session.getSessionKey(false));
+		String S = toHex(session.getSessionKey());
 		if (doHash) {
 			String K = HexHashedRoutines.toHexString(this.config
 					.getMessageDigestInstance().digest(

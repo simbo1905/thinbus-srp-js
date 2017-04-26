@@ -14,6 +14,8 @@ import com.nimbusds.srp6.SRP6ServerSession.State;
 
 abstract public class SRP6JavascriptServerSession implements Serializable {
 
+	final SRP6Routines srp6Routines = new SRP6Routines();
+
 	/**
 	 * Serializable class version number
 	 */
@@ -128,7 +130,7 @@ abstract public class SRP6JavascriptServerSession implements Serializable {
 	 * @return 'k' calculated as H( N, g )
 	 */
 	public String k() {
-		return toHex(SRP6Routines.computeK(config.getMessageDigestInstance(), config.N, config.g));
+		return toHex(this.srp6Routines.computeK(config.getMessageDigestInstance(), config.N, config.g));
 	}
 
 	/**
@@ -213,7 +215,7 @@ abstract public class SRP6JavascriptServerSession implements Serializable {
 	 *         session state when the session key 'S' has not been computed yet.
 	 */
 	public String getSessionKey(boolean doHash) {
-		String S = toHex(session.getSessionKey(false));
+		String S = toHex(session.getSessionKey());
 		if (doHash) {
 			String K = HexHashedRoutines.toHexString(this.config
 					.getMessageDigestInstance().digest(

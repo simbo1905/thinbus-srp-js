@@ -22,6 +22,8 @@ import com.nimbusds.srp6.SRP6Routines;
  */
 public class OpenSSLCryptoConfigConverter {
 
+	final SRP6Routines srp6Routines = new SRP6Routines();
+
 	public List<String> run(String hash, List<String> lines) throws Exception {
 		int generator = 0;
 		StringBuilder hexparts = new StringBuilder();
@@ -57,7 +59,7 @@ public class OpenSSLCryptoConfigConverter {
 		output.add("hashing to create 'k' using " + hash);
 
 		MessageDigest digest = MessageDigest.getInstance(hash);
-		BigInteger k = SRP6Routines.computeK(digest, N, g);
+		BigInteger k = srp6Routines.computeK(digest, N, g);
 
 		output.add("computing...");
 		output.add("N base10: " + N.toString(10));
