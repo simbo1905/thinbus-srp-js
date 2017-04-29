@@ -6,7 +6,7 @@
 
 	<groupId>org.bitbucket.simon_massey</groupId>
 	<artifactId>thinbus-srp6a-js</artifactId>
-	<version>1.4.2</version>
+	<version>1.4.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Thinbus SRP6a</name>
