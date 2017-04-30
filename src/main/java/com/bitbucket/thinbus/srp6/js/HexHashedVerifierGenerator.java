@@ -11,14 +11,13 @@ import com.nimbusds.srp6.SRP6CryptoParams;
 /**
  * Generates a SRP6 verifier. WARNING: You should use the JavaScript client not
  * the Java client for generating the verifier. See the
- * TestSRP6JavascriptClientSessionSHA256.js for an example. This class is only
- * for systems which let users login from Java clients in addition to JavaScript
- * clients who additionally wish to implement user registration of password
- * reset logic in their Java clients which subsequently let users login via a
- * browser. It is probably better to implement user registration or password
- * rest logic only via the browser. Certainly you SHOULD to avoid this code ever
- * being run on the server as that would require the password to be transmitted
- * to the server which is something which SRP is designed to avoid.
+ * TestSRP6JavascriptClientSessionSHA256.js for an example. A valid use case
+ * for generating a verifier using server code would be if a user lost their
+ * password and you were generating a temporary password and verifier to email
+ * out to the client.
+ *
+ * Certainly you SHOULD avoid this code ever being run against a real user password
+ * which is transmitted to the server which is something which SRP is designed to avoid.
  */
 public class HexHashedVerifierGenerator {
 	protected final SRP6CryptoParams config;

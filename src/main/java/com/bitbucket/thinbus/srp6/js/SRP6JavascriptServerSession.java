@@ -29,9 +29,9 @@ abstract public class SRP6JavascriptServerSession implements Serializable {
 	 *            The identity 'I' of the authenticating user. Must not be
 	 *            {@code null} or empty.
 	 * @param salt
-	 *            The password salt 's'. Must not be {@code null}.
+	 *            The password salt 's' as hex string with no leading zeros. Must not be {@code null}.
 	 * @param v
-	 *            The password verifier 'v'. Must not be {@code null}.
+	 *            The password verifier 'v' as hex string with no leading zeros. Must not be {@code null}.
 	 * 
 	 * @return The server public value 'B' as hex encoded number.
 	 * 
