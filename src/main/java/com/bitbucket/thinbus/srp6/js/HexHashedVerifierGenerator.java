@@ -22,6 +22,10 @@ import com.nimbusds.srp6.SRP6CryptoParams;
 public class HexHashedVerifierGenerator {
 	protected final SRP6CryptoParams config;
 
+	public HexHashedVerifierGenerator(final SRP6CryptoParams config) {
+		this.config = config;
+	}
+
 	/**
 	 * @param N
 	 *            The large safe prime in radix10
