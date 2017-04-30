@@ -1,14 +1,21 @@
 package com.bitbucket.thinbus.srp6.js;
 
-import static com.nimbusds.srp6.BigIntegerUtils.fromHex;
-import static com.nimbusds.srp6.BigIntegerUtils.toHex;
+import com.nimbusds.srp6.XRoutine;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
-import com.nimbusds.srp6.XRoutine;
+import static com.nimbusds.srp6.BigIntegerUtils.fromHex;
+import static com.nimbusds.srp6.BigIntegerUtils.toHex;
 
 public class HexHashedXRoutine implements XRoutine {
+
+	final BigInteger N;
+
+	public HexHashedXRoutine(BigInteger N){
+		this.N = N;
+	}
+
 	/**
 	 * Computes the password key 'x'.
 	 *
@@ -44,8 +51,8 @@ public class HexHashedXRoutine implements XRoutine {
 			throw new IllegalArgumentException(
 					"The user salt 's' must not be null or empty");
 
-		final String x = HexHashedRoutines.hashCredentials(digest, s, i, p);
-		final BigInteger X = fromHex(x);
+		final String hash = HexHashedRoutines.hashCredentials(digest, s, i, p);
+		final BigInteger X = fromHex(hash).mod(N);
 		return X;
 	}
 

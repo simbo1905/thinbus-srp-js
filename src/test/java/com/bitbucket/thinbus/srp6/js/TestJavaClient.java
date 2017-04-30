@@ -29,7 +29,7 @@ public class TestJavaClient {
 	public void testJavaX() throws Exception {
 		// given
 		final BigInteger salt = fromHex("522af15569421614823e502f157f3f856355e63e");
-		final HexHashedXRoutine xRoutine = new HexHashedXRoutine();
+		final HexHashedXRoutine xRoutine = new HexHashedXRoutine(new BigInteger(N_base10));
 
 		// when
 		final BigInteger X = xRoutine.computeX(MessageDigest

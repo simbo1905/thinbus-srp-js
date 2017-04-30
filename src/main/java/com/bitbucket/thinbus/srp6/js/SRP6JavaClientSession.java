@@ -137,7 +137,7 @@ abstract public class SRP6JavaClientSession {
 		session.setHashedKeysRoutine(new HexHashedURoutine());
 		session.setClientEvidenceRoutine(new HexHashedClientEvidenceRoutine());
 		session.setServerEvidenceRoutine(new HexHashedServerEvidenceRoutine());
-		session.setXRoutine(new HexHashedXRoutine());
+		session.setXRoutine(new HexHashedXRoutine(this.config.N));
 	}
 
 	/**
