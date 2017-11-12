@@ -27,15 +27,14 @@ The spring demo app has been checked on IE8+, Edge, Chrome, FireFox, and Safari.
 
 ## Using
 
-Check the [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
-It may or may not be running on the [demo server](http://thinbus-n00p.rhcloud.com/) if not the build tool can run it locally for you. 
+Check the [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). The build tool can run it locally for you. 
 
 For the definitions of the values discussed below please refer to the [SRP design page](http://srp.stanford.edu/design.html). The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
 [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
 
 ![Thinbus SRP Register Diagram](http://simonmassey.bitbucket.io/thinbus/register.png "Thinbus SRP Register Diagram")
 
-In the diagram above the user is shown a standard registration form which includes email and password fields. 
+In the diagram above the user is shown a standard registration form which includes both the username (e.g email) and password fields. 
 They enter their email and password and click the register button. JavaScript then generates their random `salt` 
 and uses the salt, email and password to generate an SRP `verififer`. Only the `salt` and the `verifier` are transmitted to 
 the server and they are saved into the database keyed by the users email. 
@@ -82,6 +81,8 @@ server knows the verifier matching the user password.
 session key from the thinbus object and destroy the thinbus object as discussed above. The typical way to do this is to put the session key 
 into browser local session storage. Then you can unload the login page then load a main landing page that collects the session key 
 from storage.  
+
+**Note** You don't have to use AJAX for SRP. It is used in the examples to hide the fact that with SRP you need an additional round-trip to the server to generate a challenge using the users verifier. You can avoid using AJAX by splitting the username and password fields across two pages. Have the user submit their username using the page place their salt and the challenge into hidden fields on the password page. 
 
 ## Custom Configuration
 
