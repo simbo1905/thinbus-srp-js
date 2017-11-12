@@ -53,6 +53,12 @@ a one-time client challenge `A` and uses all the information to compute a passwo
 the email, `A`, and `M1` as the users credentials. The server uses all the information to check the password proof. Only the email, 
 client challenge `A` and the password proof `M1` are transmitted to the server. 
 
+There is an optional step `client.step3(M2)` where `M2` is the server's proof of a shared session key to the client. 
+You can return `M2` from the server to check the browser has a matching shared secret if you wish to use that for further cryptography. 
+If your web application is distributed as a native mobile application such that the client is running trusted JavaScript 
+then the `M2` proof is an additional check of the authenticity of the server; it confirms to trusted JavaScript that the 
+server knows the verifier matching the user password. 
+
 **Note** As per RFC 2945 the user ID (usually their email) is concatenated to their password when generating the verifier. This means that if a user changes *either* their email address or their password you need to generate a new verifier and replace the old one in the database. 
 
 **Note** Always use browser developer tools to inspect what you actually post to the server and only post the values shown 
@@ -65,17 +71,11 @@ the password form field the user typed their password into. The normal way to ac
 the login page after every login attempt. This is trivial to do by reloading the login page upon authentication failure or by loading a main 
 landing page upon successful login. 
 
-**Note** that the server has to remember the one-time server challenge `B` that it gave to the browser in order to check the users password proof. 
-This requires storing the one-time challenge value either in the database, the server session or a server cache for the short duration of the login protocol. 
+**Note** that the server has to remember the private ephemeral key `b` that matches the public ephemeral key `B` sent as a one-time server challenge to the user. 
+This requires storing `b` either in the database, the server session or a server cache for the short duration of the login protocol. 
 You cannot pass this value back to the server from the client without compromising security. 
 The server should not use any values transmitted from the client other than those shown in the sequence diagram and 
 named in the [SRP design page](http://srp.stanford.edu/design.html).
-
-There is an optional step `client.step3(M2)` where `M2` is the server's proof of a shared session key to the client. 
-You can return `M2` from the server to check the browser has a matching shared secret if you wish to use that for further cryptography. 
-If your web application is distributed as a native mobile application such that the client is running trusted JavaScript 
-then the `M2` proof is an additional check of the authenticity of the server; it confirms to trusted JavaScript that the 
-server knows the verifier matching the user password. 
 
 **Note** if you want to use the shared session key for follow-on cryptography you should use `client.getSessionKey()` to retrieved the
 session key from the thinbus object and destroy the thinbus object as discussed above. The typical way to do this is to put the session key 
