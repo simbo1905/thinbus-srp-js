@@ -194,6 +194,10 @@ My thanks go to ej-technologies for giving free JProfiler licenses to opensource
 
 ## Release Notes
 
+Version 1.5.1
+
+1. Had accidentally released as java1.9 code when codeship.com the CI that I am using only has 1.7. Thinking about it since I don't use any features beyond 1.7 its best to release it as that version from maximum compatibility. 
+
 Version 1.5.0
 
 1. Added a JavaScript server SRP class. This can be used by Node.js to authenticate a client. See `TestSRP6JavascriptServerSessionSHA256.js` for usage. This is a precursor to releasing an npm version of thinbus. 
