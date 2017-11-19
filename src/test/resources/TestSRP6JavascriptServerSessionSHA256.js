@@ -29,7 +29,7 @@ tests({
 	*/
 	testMutualAuthentication: function() {
 
-	    for( var i = 0; i < 8; i++) {
+	    for( var i = 0; i < 4; i++) {
 	
             // client constructor requires a variable SRP6CryptoParams is defined which sets N, g, k
             var client = new SRP6JavascriptClientSessionSHA256();
