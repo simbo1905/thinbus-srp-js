@@ -21,7 +21,7 @@ The spring demo app has been checked on IE8+, Edge, Chrome, FireFox, and Safari.
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.4.2</version>
+		<version>1.5.0</version>
 	</dependency>
 ```
 
@@ -193,6 +193,10 @@ Note that if you build on jdk1.7 the junit-js tests which test the javascript cr
 My thanks go to ej-technologies for giving free JProfiler licenses to opensource projects [ ![Profiled using JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](http://www.ej-technologies.com/products/jprofiler/overview.html)
 
 ## Release Notes
+
+Version 1.5.0
+
+1. Added a JavaScript server SRP class. This can be used by Node.js to authenticate a client. See `TestSRP6JavascriptServerSessionSHA256.js` for usage. This is a precursor to releasing an npm version of thinbus. 
 
 Version 1.4.2
 

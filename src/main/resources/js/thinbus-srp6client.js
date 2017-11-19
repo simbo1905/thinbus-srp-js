@@ -439,7 +439,11 @@ SRP6JavascriptClientSession.prototype.step2 = function(s, BB) {
 	//console.log("jsS:" + this.toHex(this.S));
 	
 	var AA = this.toHex(this.A);
-	
+
+//	console.log("cAA:"+AA);
+//	console.log("cBB:"+BB);
+//	console.log("cSS:"+this.toHex(this.S));
+
 	this.M1str = this.H(AA+BB+this.toHex(this.S));
 	this.check(this.M1str, "M1str");
 	
