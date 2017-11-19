@@ -21,7 +21,7 @@ The spring demo app has been checked on IE8+, Edge, Chrome, FireFox, and Safari.
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.5.0</version>
+		<version>1.5.1</version>
 	</dependency>
 ```
 
