@@ -82,7 +82,7 @@ session key from the thinbus object and destroy the thinbus object as discussed 
 into browser local session storage. Then you can unload the login page then load a main landing page that collects the session key 
 from storage.  
 
-**Note** You don't have to use AJAX for SRP. It is used in the examples to hide the fact that with SRP you need an additional round-trip to the server to generate a challenge using the users verifier. You can avoid using AJAX by splitting the username and password fields across two pages. Have the user submit their username using the page place their salt and the challenge into hidden fields on the password page. 
+**Note** You don't have to use AJAX for SRP. It is used in the examples to hide the fact that with SRP you need an additional round-trip to the server to generate a challenge using the users verifier. You can avoid using AJAX by splitting the username and password fields across two pages. The first page can send the username and the next page can have a hidden fields containing the user specific salt and the server challenge `B`. This simply replaces the AJAX trip with an explicit page load. 
 
 ## Custom Configuration
 
