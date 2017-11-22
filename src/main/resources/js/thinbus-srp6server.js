@@ -176,8 +176,9 @@ SRP6JavascriptServerSession.prototype.step1 = function(identity, salt, verifier)
         throw new Error("IllegalStateException not in state INIT");
     }
 
-	this.check(salt, "salt");
-	this.check(password, "verifier");
+    this.check(identity, "identity");
+    this.check(salt, "salt");
+    this.check(verifier, "verifier");
 	this.I = identity;
 	this.v = this.fromHex(verifier);
 	this.salt = this.fromHex(salt);
