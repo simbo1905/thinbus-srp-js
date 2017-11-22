@@ -1,7 +1,7 @@
 /**
  * Thinbus Javascript Secure Remote Password (SRP)
  * Version  ${project.version}
- * Copyright 2014-2015 Simon Massey
+ * Copyright 2014-2017 Simon Massey
  * http://www.apache.org/licenses/LICENSE-2.0
 */
 function SRP6JavascriptClientSession() {
