@@ -158,7 +158,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 ## License
 
 ```
-   Copyright 2014-2015 Simon Massey
+   Copyright 2014-2017 Simon Massey
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
