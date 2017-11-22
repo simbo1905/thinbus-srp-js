@@ -21,7 +21,7 @@ The spring demo app has been checked on IE8+, Edge, Chrome, FireFox, and Safari.
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.5.1</version>
+		<version>1.5.2</version>
 	</dependency>
 ```
 
@@ -193,6 +193,10 @@ Note that if you build on jdk1.7 the junit-js tests which test the javascript cr
 My thanks go to ej-technologies for giving free JProfiler licenses to opensource projects [ ![Profiled using JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](http://www.ej-technologies.com/products/jprofiler/overview.html)
 
 ## Release Notes
+
+Version 1.5.2
+
+1. Fixed JavaScript server session method `getSessionKey()`.
 
 Version 1.5.1
 

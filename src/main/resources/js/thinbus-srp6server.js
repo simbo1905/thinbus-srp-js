@@ -44,10 +44,8 @@ function SRP6JavascriptServerSession() {
 	this.b = null; // server private key
 	this.B = null; // server public key
 	this.k = null; // constant computed by the server
-//	this.u = null; // blended public keys
 	this.S = null; // shared secret key long form
-//	this.K = null; // shared secret hashed form
-//	this.M1str = null; // password proof
+	this.K = null; // shared secret hashed form
 	
 	// private
 	this.check = function(v, name) {
@@ -124,6 +122,7 @@ SRP6JavascriptServerSession.prototype.getState = function() {
 SRP6JavascriptServerSession.prototype.getSessionKey = function(hash) {
 	"use strict";
 	if( this.S === null ) {
+	    //console.log("S is null");
 		return null;
 	}
 	this.SS = this.toHex(this.S);

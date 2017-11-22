@@ -64,7 +64,7 @@ tests({
             client.step3(M2);
 
             // the javascript client defaults to hashing the session key as that is additional protection of the password in case the key is accidentally exposed to an attacker.
-            assert.assertTrue(client.getSessionKey() == client.getSessionKey(true));
+            assert.assertEquals(client.getSessionKey(), server.getSessionKey());
 
         }
 
