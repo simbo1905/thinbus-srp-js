@@ -2,7 +2,7 @@
  
 This package provides a Javascript [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for web browsers to perform a zero-knowledge proof-of-password to a web server. It comes with compatible Java classes which use the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
 
-There are some implementations of SRP which are compatible with the Thinbus client code. This allows you to use Thibus client code in the broswer but other languages on the server: 
+There are some implementations of SRP which are compatible with the Thinbus client code. This allows you to use Thinbus client code in the broswer but other languages on the server: 
 
 1. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) A Spring MVC application which uses the Thinbus JavaScript library to create accounts and login users with Spring Security. 
 2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) Uses the Thinbus Javascript library to do SRP authentication to PHP server code. It also includes a PHP SRP client that you can use for server-to-server authentication or for generating temporary passwords. 
