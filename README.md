@@ -156,6 +156,8 @@ Other JavaScript source files in the jar show the original copyright of the libr
 * You can prevent privileged accounts from logging in using legacy browsers by checking `random16byteHex.isWebCryptoAPI()` when fetching the user salt; simply abort the protocol for privileged accounts when secure random numbers are not available at the browser. If you allow the use of browsers that don't have the `WebCryptoAPI` secure random number APIs then the fallback random generator hashes `window.cookie` as part of the generator seed. Consider adding a secure random cookie to help seed the fallback generator; see PRNG.md for more info.
 * Don't include any JS files [or any CSS files](http://stackoverflow.com/a/3613162/329496) from external sites onto your login page. 
 * Count the number of failed password attempts and present the user with a CAPTCHA after a dozen attempts. This slows down scripted online dictionary attacks. Consider suspending the account (possibly temporarily) after a large number of contiguous failed attempts to defeat someone carefully researching a user then trying to guess their likely password. 
+* Don't use an expensive hash function as you will open yourself up to large cloud usage bills and denial of service attacks. Also an expensive hash that will slow down a GPU a little may slow down a browser a lot. You can add your own hashcash feature to your login page if you must. 
+* Do expire the temporary login state `b` in the database. Usually the broswer and network take only hundreds of milliseconds to complete the protocol. Clocks might drift by a few seconds. So you should consider a low timeout (single digit seconds) on your cache to prevent someone making lots of guesses using the same challenge. 
 
 ## License
 
