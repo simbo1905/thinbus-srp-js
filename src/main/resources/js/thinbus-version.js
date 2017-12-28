@@ -1,7 +1,7 @@
 /*
  * Thinbus Javascript Secure Remote Password (SRP)
  * Version  ${project.version}
- * Copyright 2014-2015 Simon Massey
+ * Copyright 2014-2015 Simon Massey originally published at https://bitbucket.org/simon_massey/thinbus-srp-js
  * http://www.apache.org/licenses/LICENSE-2.0
  * ----------------------------------------------------------------------
  * "jsbn.js"
