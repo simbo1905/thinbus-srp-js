@@ -23,7 +23,7 @@ The spring demo app has been checked on IE8+, Edge, Chrome, FireFox, and Safari.
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.5.2</version>
+		<version>1.6.0</version>
 	</dependency>
 ```
 
@@ -197,6 +197,10 @@ Note that if you build on jdk1.7 the junit-js tests which test the javascript cr
 My thanks go to ej-technologies for giving free JProfiler licenses to opensource projects [ ![Profiled using JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](http://www.ej-technologies.com/products/jprofiler/overview.html)
 
 ## Release Notes
+
+Version 1.6.0
+
+1. Added a `module.exports` that matches the client session factory used in the [thinbus-srp-npm](https://github.com/simbo1905/thinbus-srp-npm) client code.  
 
 Version 1.5.2
 
