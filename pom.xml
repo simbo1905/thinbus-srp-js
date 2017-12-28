@@ -6,7 +6,7 @@
 
 	<groupId>org.bitbucket.simon_massey</groupId>
 	<artifactId>thinbus-srp6a-js</artifactId>
-	<version>1.5.3-SNAPSHOT</version>
+	<version>1.6.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Thinbus SRP6a</name>
@@ -155,6 +155,16 @@
 								<include>${project.build.directory}/classes/js/thinbus-srp6a-deps-min.js</include>
 								<include>${project.build.directory}/classes/js/thinbus-srp6client-min.js</include>
 								<include>${project.build.directory}/classes/js/thinbus-srp6client-sha256.js</include>
+							</includes>
+						</aggregation>
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
+							<output>${project.build.directory}/classes/js/thinbus-srp6a-sha256-npm.js</output>
+							<includes>
+								<include>${project.build.directory}/classes/js/thinbus-version.js</include>
+								<include>${project.build.directory}/classes/js/sha256-min.js</include>
+								<include>${project.build.directory}/classes/js/thinbus-srp6a-deps-min.js</include>
+								<include>${project.build.directory}/classes/js/thinbus-srp6client.js</include>
 							</includes>
 						</aggregation>
 					</aggregations>
