@@ -2,7 +2,10 @@
 
 *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* 
 
-There is a npm version of this library up on GitHub at [thinbus-srp-npm](https://github.com/simbo1905/thinbus-srp-npm) in the mid term I plan to remove the JavaScript from this Java version and update the demos to have the npm version be the canonical JavaScript. 
+There is a npm version of the JavaScript code from this project up on GitHub at 
+[thinbus-srp-npm](https://github.com/simbo1905/thinbus-srp-npm). In the long term I plan to 
+update the build scripts in this repo and the demos to fetch the JavaScript from the npm package 
+and delete the version in this repo. 
 
 *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* 
 
