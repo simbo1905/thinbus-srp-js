@@ -165,7 +165,7 @@ Other JavaScript source files in the jar show the original copyright of the libr
 * Count the number of failed password attempts and present the user with a CAPTCHA after a dozen attempts. This slows down scripted online dictionary attacks. Consider suspending the account (possibly temporarily) after a large number of contiguous failed attempts to defeat someone carefully researching a user then trying to guess their likely password. 
 * Don't use an expensive hash function as you will open yourself up to large cloud usage bills and denial of service attacks. Also an expensive hash that will slow down a GPU a little may slow down a browser a lot. You can add your own hashcash feature to your login page if you must. 
 * Do expire the temporary login state `b` in the database. Usually the broswer and network take only hundreds of milliseconds to complete the protocol. Clocks might drift by a few seconds. So you should consider a low timeout (single digit seconds) on your cache to prevent someone making lots of guesses using the same challenge. 
-
+* *NEW* Use [Subresource Integrity (SRI)](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) on *all* your assets to defeat trojan js and css attacks especially on you login page.
 ## License
 
 ```
