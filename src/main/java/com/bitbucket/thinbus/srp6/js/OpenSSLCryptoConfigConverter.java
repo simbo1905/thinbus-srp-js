@@ -27,21 +27,31 @@ public class OpenSSLCryptoConfigConverter {
 	public List<String> run(String hash, List<String> lines) throws Exception {
 		int generator = 0;
 		StringBuilder hexparts = new StringBuilder();
+		boolean capture = false;
 
 		for (String line : lines) {
-			if (line.endsWith("prime:")) {
-				// skip this one
-			} else if (line.endsWith(":")) {
-				hexparts.append(line.trim());
-			} else if (line.contains("generator")) {
+			// skip everything up to and including 'prime:' then enable capture
+            if( !capture ) {
+				if (line.endsWith("prime:")) {
+					capture = true;
+				}
+				continue;
+			}
+
+			// if we see 'generator' we are done. capture it and break
+			if(line.contains("generator")) {
 				try {
 					generator = generator(line.trim());
+					break;
 				} catch (Exception e) {
 					throw new AssertionError(
 							"could not parse 'generator: x' number out of line containing 'generator': "
 									+ line);
 				}
 			}
+
+			// if we got this far its the prime
+			hexparts.append(line.trim());
 		}
 
 		if (generator <= 0) {
@@ -54,6 +64,7 @@ public class OpenSSLCryptoConfigConverter {
 		List<String> output = new ArrayList<String>();
 
 		BigInteger N = new BigInteger(primeHex, 16);
+		if( ! N.isProbablePrime(1)) throw new AssertionError("parsed N isn't prime. Aborting.");
 		BigInteger g = new BigInteger(generator + "");
 
 		output.add("hashing to create 'k' using " + hash);
