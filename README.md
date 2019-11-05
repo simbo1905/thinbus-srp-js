@@ -30,7 +30,7 @@ The spring demo app has been checked on IE8+, Edge, Chrome, FireFox, and Safari.
 	<dependency>
 		<groupId>org.bitbucket.simon_massey</groupId>
 		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.6.0</version>
+		<version>1.6.2</version>
 	</dependency>
 ```
 
@@ -213,8 +213,11 @@ mvn release:prepare -DdryRun=true
 # clean the dry run
 mvn release:clean
 
-# pull the trigger 
+# make the actual tag 
 mvn release:prepare 
+
+# checkout and deply the tag
+mvn release:perform
 ```
 
 ## Thankyou
