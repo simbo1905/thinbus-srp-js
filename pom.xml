@@ -5,7 +5,7 @@
 
 	<groupId>org.bitbucket.simon_massey</groupId>
 	<artifactId>thinbus-srp6a-js</artifactId>
-	<version>1.6.2-SNAPSHOT</version>
+	<version>1.6.2</version>
 	<packaging>jar</packaging>
 
 	<name>Thinbus SRP6a</name>
@@ -32,7 +32,7 @@
 		<connection>scm:git:git@bitbucket.org:simon_massey/thinbus-srp-js.git</connection>
 		<developerConnection>scm:git:git@bitbucket.org:simon_massey/thinbus-srp-js.git</developerConnection>
 		<url>git@bitbucket.org:simon_massey/thinbus-srp-js.git</url>
-		<tag>HEAD</tag>
+		<tag>1.6.2</tag>
 	</scm>
 
 	<properties>
