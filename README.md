@@ -201,6 +201,22 @@ mvn package
 
 Note that if you build on jdk1.7 the junit-js tests which test the javascript cryptography take a long while to run. It is highly recommended that you build with JDK1.8 or higher as the Javascript testing is 10x faster than JDK1.7 due to the Nashorn EMCAScript engine in Java1.8. 
 
+## Releasing
+
+```shell script
+# do a snaphost release
+mvn clean deploy
+
+# do a dry run of the real release
+mvn release:prepare -DdryRun=true
+
+# clean the dry run
+mvn release:clean
+
+# pull the trigger 
+mvn release:prepare 
+```
+
 ## Thankyou
 
 My thanks go to ej-technologies for giving free JProfiler licenses to opensource projects [ ![Profiled using JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)](http://www.ej-technologies.com/products/jprofiler/overview.html)
