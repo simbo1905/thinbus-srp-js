@@ -207,6 +207,14 @@ My thanks go to ej-technologies for giving free JProfiler licenses to opensource
 
 ## Release Notes
 
+Version 1.6.2
+
+1. Bump to nimbus 2.1.0
+
+Version 1.6.1
+
+1. closes bug #21 'Bug creating a custom large safe prime'
+
 Version 1.6.0
 
 1. Added a `module.exports` that matches the client session factory used in the [thinbus-srp-npm](https://github.com/simbo1905/thinbus-srp-npm) client code.  
