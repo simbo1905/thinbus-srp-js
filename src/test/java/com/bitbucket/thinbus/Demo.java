@@ -45,8 +45,9 @@ public class Demo {
                 N_base10, g_base10, SRP6JavascriptServerSessionSHA1.SHA_1);
 
         // The client cooks the verifier. This must be securely registered with the server.
-        // Note: The verifier includes the hash of the username. So if the user changes eitehr their password or their
-        // username they must generate a new verifier and securely register it with the server.
+        // Note: The verifier includes the hash of the username. So if the user changes either
+        // their password or their username they must generate a new verifier and securely
+        // register it with the server.
         final String verifier = generator.generateVerifier(salt, username, password);
 
         // ---------------------------------------------------
