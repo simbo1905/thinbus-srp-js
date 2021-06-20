@@ -36,7 +36,9 @@ The spring demo app has been checked on IE8+, Edge, Chrome, FireFox, and Safari.
 
 ## Using
 
-Check the [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). The build tool can run it locally for you. 
+See the demo file at [Demo.java](https://bitbucket.org/simon_massey/thinbus-srp-js/src/master/src/test/java/com/bitbucket/thinbus/Demo.java)
+
+Check out the [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). The build tool can run it locally for you. 
 
 For the definitions of the values discussed below please refer to the [SRP design page](http://srp.stanford.edu/design.html). The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
 [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
