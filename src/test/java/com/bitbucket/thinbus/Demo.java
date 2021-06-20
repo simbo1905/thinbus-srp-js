@@ -80,12 +80,28 @@ public class Demo {
         // created the verifier!
         System.out.println("The server has verified the client knows the password that matches the verifier!");
 
+        // ---------------------------------------------------
+        //
+        // Server Authentication. Note in Java-2-Java this is a very good idea.
+        // It doesn't make much sense in a browser JavaScript-2-Java scenario
+        // when the server send the JavaScript to the client.
+        //
+
         // The server can send the M2 to the client to check.
         // Note this will throw an exception if the server does not know the true verifier.
         client.step3(M2);
 
         // Success! The last step did not throw so the client knows that the server knows the verifier.
         System.out.println("The client has verified the server knows the verifier!");
+
+        // ---------------------------------------------------
+        //
+        // Follow-On Cryptography. A side effect of the password proof is that the client
+        // and server share a secret key 'k'. This can be used to sign the payloads of
+        // both the client and the server using something like HMAC. That way if there is
+        // some man-in-the-middle they cannot inject fact traffic into the conversation.
+        //
+
 
         // Now both share a strong session key.
         String cS = client.getSessionKey(false);
