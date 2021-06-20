@@ -195,13 +195,28 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
 ## Building
 
+This codebase will aim to run against the latest JDK Long Term Support. 
+At the moment that is JDK 11. This codebase run the JavaScript client
+code against the Java server to ensure that a webbrowser running the JS can 
+authenticate to the server. It does that in the OpenJDK JVM using GraalVM: 
+
 ```sh
 git clone https://bitbucket.org/simon_massey/thinbus-srp-js
 cd thinbus-srp-js
-mvn package
+if java -version 2>&1 | grep 'openjdk version "11' ; then 
+  mvn -Pjdk11 test package 
+else 
+  echo "ERROR test on openjdk 11 please ";  
+fi
 ```
 
-Note that if you build on jdk1.7 the junit-js tests which test the javascript cryptography take a long while to run. It is highly recommended that you build with JDK1.8 or higher as the Javascript testing is 10x faster than JDK1.7 due to the Nashorn EMCAScript engine in Java1.8. 
+## Contributing
+
+Contributions are most welcome. Before submitting a PR please ensure that both the Java and JavaScript unit tests work. 
+Contributions that do not pass all the tests on the current OpenJDK Long Term Support version (current OpenJDK 11) will 
+not be accepted. To run on the particlar JDK (either 8 or 11) run with the appropriate maven profile, e.g.:
+
+`mvn -Pjdk11 package`  
 
 ## Releasing
 
