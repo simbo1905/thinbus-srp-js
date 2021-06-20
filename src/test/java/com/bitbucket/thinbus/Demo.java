@@ -36,9 +36,7 @@ public class Demo {
         final SRP6JavaClientSessionSHA1 client = new SRP6JavaClientSessionSHA1(
                 N_base10, g_base10);
 
-        // Once and only once a random salt needs to be generated. it is a public value.
-        // use generate it at the client as the client needs to use it to cook up their
-        // verier to send to the server along with the salt.
+        // Once and only once a random salt needs to be generated.
         final String salt = client
                 .generateRandomSalt(SRP6JavascriptServerSessionSHA1.HASH_BYTE_LENGTH);
 
