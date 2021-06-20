@@ -220,7 +220,7 @@ not be accepted. To run on the particlar JDK (either 8 or 11) run with the appro
 
 ## Releasing
 
-```shell script
+```
 # do a snaphost release
 mvn clean deploy
 
