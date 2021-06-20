@@ -99,9 +99,8 @@ public class Demo {
         // Follow-On Cryptography. A side effect of the password proof is that the client
         // and server share a secret key 'k'. This can be used to sign the payloads of
         // both the client and the server using something like HMAC. That way if there is
-        // some man-in-the-middle they cannot inject fact traffic into the conversation.
+        // some man-in-the-middle they cannot inject fake traffic into the conversation.
         //
-
 
         // Now both share a strong session key.
         String cS = client.getSessionKey(false);
