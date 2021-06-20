@@ -37,9 +37,14 @@ public class Demo {
 
         SRP6ClientCredentials credentials = client.step2(salt, B);
 
+        // this method will throw if the client proof "A" is bad
         String M2 = server.step2(toHex(credentials.A), toHex(credentials.M1));
 
+        System.out.println("The server has verified the client knows the password that matches the verifier!");
+
         client.step3(M2);
+
+        System.out.println("The client has verified the server knows the verifier!");
 
         // both share a strong session key.
         String cS = client.getSessionKey(false);
@@ -51,6 +56,6 @@ public class Demo {
         String sK = server.getSessionKey(true);
         Assert.assertEquals(cK, sK);
 
-        System.out.println(String.format("we have a shard key! %s", sK));
+        System.out.println(String.format("We have a shared session key we can use! %s", sK));
     }
 }
