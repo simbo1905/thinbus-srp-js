@@ -157,6 +157,10 @@ gh pr review <pr-number> --approve
 
 #### Repository Synchronization
 
+The repositories use different default branch names:
+- Bitbucket repository uses `master` as the default branch
+- GitHub repository uses `main` as the default branch
+
 To keep both repositories in sync:
 
 ```bash
@@ -164,12 +168,17 @@ To keep both repositories in sync:
 git remote add origin git@bitbucket.org:simon_massey/thinbus-srp-js.git
 git remote add github git@github.com:simbo1905/thinbus-srp-js.git
 
-# Push changes to both repositories
-git push origin <branch-name>
-git push github <branch-name>
+# Push changes to both repositories (note the different branch names)
+git push origin master     # For Bitbucket
+git push github main       # For GitHub
 
 # Pull changes from Bitbucket (primary)
-git pull origin <branch-name>
+git pull origin master
+
+# If working on GitHub's main branch, you'll need to sync with Bitbucket's master
+git checkout main
+git pull origin master
+git push github main
 ```
 
 ### 2. Generating Custom Safe Primes
