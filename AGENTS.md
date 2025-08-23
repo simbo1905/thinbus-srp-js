@@ -122,9 +122,21 @@ The repository provides implementations of both client and server roles in the S
 
 ## Common Tasks
 
-### 1. GitHub Workflow
+### 1. Repository Management
 
-This project uses GitHub for source control. The GitHub CLI (`gh`) is available for managing issues and pull requests:
+This project is maintained in two repositories that are kept in sync:
+
+- **Original Upstream Repository**: [Bitbucket](https://bitbucket.org/simon_massey/thinbus-srp-js)
+- **Mirror Repository**: [GitHub](https://github.com/simbo1905/thinbus-srp-js)
+
+When contributing to this project, be aware that changes need to be synchronized between both repositories. The typical workflow involves:
+
+1. Making changes in one repository
+2. Pushing those changes to the other repository to maintain synchronization
+
+#### GitHub Workflow
+
+The GitHub CLI (`gh`) is available for managing issues and pull requests on the GitHub repository:
 
 ```bash
 # Create a new issue
@@ -141,6 +153,23 @@ gh pr checkout <pr-number>
 
 # Review a PR
 gh pr review <pr-number> --approve
+```
+
+#### Repository Synchronization
+
+To keep both repositories in sync:
+
+```bash
+# Add both remotes (if not already configured)
+git remote add origin git@bitbucket.org:simon_massey/thinbus-srp-js.git
+git remote add github git@github.com:simbo1905/thinbus-srp-js.git
+
+# Push changes to both repositories
+git push origin <branch-name>
+git push github <branch-name>
+
+# Pull changes from Bitbucket (primary)
+git pull origin <branch-name>
 ```
 
 ### 2. Generating Custom Safe Primes
