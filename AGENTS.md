@@ -1,33 +1,56 @@
 # Thinbus SRP JavaScript Agent Guide
 
-This repository contains a JavaScript implementation of the [Secure Remote Password (SRP-6a)](http://srp.stanford.edu/) protocol for web browsers, along with compatible Java server-side classes. SRP allows for zero-knowledge proof-of-password authentication between a client and server.
+This repository contains a JavaScript implementation of the [Secure Remote Password (SRP-6a)](http://srp.stanford.edu/) protocol, along with compatible Java classes. SRP allows for zero-knowledge proof-of-password authentication between a client and server.
 
 ## Repository Overview
 
-- **JavaScript Client**: Browser-side implementation of SRP-6a
-- **Java Server**: Compatible server-side implementation using Nimbus SRP6a Java library
+The repository provides implementations of both client and server roles in the SRP-6a protocol in both JavaScript and Java:
+
+- **JavaScript SRP Client**: Implementation of the SRP-6a client role, commonly used in web browsers
+- **JavaScript SRP Server**: Implementation of the SRP-6a server role, can be used in Node.js environments
+- **Java SRP Client**: Implementation of the SRP-6a client role in Java
+- **Java SRP Server**: Implementation of the SRP-6a server role in Java using Nimbus SRP6a library
 - **Utilities**: Tools for generating safe primes and other cryptographic parameters
-- **Tests**: Comprehensive test suite for both JavaScript and Java components
+- **Tests**: Comprehensive test suite for all implementations
 
 ## Architecture Overview
 
 ### Core Components
 
-1. **JavaScript Client** (`src/main/resources/js/`)
-   - `thinbus-srp6client.js` - Main client implementation
-   - `sha1.js` / `sha256.js` - Hash implementations
-   - `isaac.js` - PRNG fallback when WebCryptoAPI unavailable
-   - `random.js` - Secure random number generation wrapper
+1. **JavaScript Implementations** (`src/main/resources/js/`)
+   - **SRP Client Role**:
+     - `thinbus-srp6client.js` - Base client implementation
+     - `thinbus-srp6client-sha256.js` - SHA-256 client implementation (recommended)
+     - `thinbus-srp6client-sha1.js` - SHA-1 client implementation (legacy)
+   - **SRP Server Role**:
+     - `thinbus-srp6server.js` - Base server implementation
+     - `thinbus-srp6server-sha256.js` - SHA-256 server implementation (recommended)
+     - `thinbus-srp6server-sha1.js` - SHA-1 server implementation (legacy)
+   - **Supporting Libraries**:
+     - `sha1.js` / `sha256.js` - Hash implementations
+     - `isaac.js` - PRNG fallback when WebCryptoAPI unavailable
+     - `random.js` - Secure random number generation wrapper
+     - `biginteger.js` - Big integer math library
 
-2. **Java Server** (`src/main/java/com/bitbucket/thinbus/srp6/js/`)
-   - `SRP6JavascriptServerSessionSHA256` - Main server session (recommended)
-   - `SRP6JavascriptServerSessionSHA1` - Legacy SHA-1 support
-   - `SRP6JavaClientSession` - For Java-to-Java authentication
-   - `HexHashedVerifierGenerator` - Creates salt and verifier from password
+2. **Java Implementations** (`src/main/java/com/bitbucket/thinbus/srp6/js/`)
+   - **SRP Server Role**:
+     - `SRP6JavascriptServerSessionSHA256` - SHA-256 server implementation (recommended)
+     - `SRP6JavascriptServerSessionSHA1` - SHA-1 server implementation (legacy)
+   - **SRP Client Role**:
+     - `SRP6JavaClientSessionSHA256` - SHA-256 client implementation
+     - `SRP6JavaClientSessionSHA1` - SHA-1 client implementation
+   - **Utilities**:
+     - `HexHashedVerifierGenerator` - Creates salt and verifier from password
 
 ### Key Design Patterns
 
-- **Zero-Knowledge Proof**: Client proves password knowledge without sending it
+- **Zero-Knowledge Proof**: The SRP protocol allows a client to prove knowledge of a password without sending it
+- **Client-Server Protocol Roles**: 
+  - In the SRP protocol, there are two distinct roles: "client" and "server"
+  - These roles are independent of where the code is deployed (browser, Node.js server, Java application, etc.)
+  - A JavaScript application running in Node.js can act as either an SRP client or an SRP server
+  - A Java application can act as either an SRP client or an SRP server
+  - Browser JavaScript is typically limited to the SRP client role due to browser sandbox restrictions
 - **Session-Based**: Each authentication creates a new session with fresh ephemeral keys
 - **Multi-Hash Support**: SHA-256 (default) and SHA-1 (legacy)
 - **No External Dependencies**: JavaScript is self-contained for easy deployment
@@ -65,12 +88,18 @@ This repository contains a JavaScript implementation of the [Secure Remote Passw
 - JavaScript tests are executed via GraalVM integration that runs JavaScript code directly
 - Test files location:
   - Java tests: `src/test/java/`
-  - JavaScript tests: `src/test/javascript/`
+  - JavaScript tests: `src/test/resources/`
 - Key test classes:
-  - `TestSRP6JavascriptClientSessionSHA256.java`: Tests the SHA-256 JavaScript client
-  - `TestSRP6JavascriptServerSessionSHA256.java`: Tests the SHA-256 server implementation
-  - `TestJavaClient.java`: Tests the Java client implementation
-- Cross-platform testing: Verify changes work in both Java and JavaScript contexts
+  - `TestSRP6JavascriptClientSessionSHA256.java`: Tests the JavaScript SRP client implementation with SHA-256
+  - `TestSRP6JavascriptServerSessionSHA256.java`: Tests the JavaScript SRP server implementation with SHA-256
+  - `TestJavaClient.java`: Tests the Java SRP client implementation
+  - `TestSRP6JavascriptClientSessionSHA1.java`: Tests the JavaScript SRP client implementation with SHA-1
+  - `TestSRP6JavascriptServerSessionSHA1.java`: Tests the JavaScript SRP server implementation with SHA-1
+- Cross-role testing:
+  - Tests verify that a JavaScript SRP client can authenticate with a Java SRP server
+  - Tests verify that a Java SRP client can authenticate with a JavaScript SRP server
+  - Tests verify that a JavaScript SRP client can authenticate with a JavaScript SRP server
+  - Tests verify that a Java SRP client can authenticate with a Java SRP server
 
 ## Code Style and Conventions
 
@@ -127,7 +156,26 @@ mvn assembly:assembly
 java -jar target/thinbus-srp6a-js-<version>-jar-with-dependencies.jar /tmp/my_dhparam.txt SHA-256
 ```
 
-### 3. Implementing SRP Authentication Flow
+### 3. Understanding SRP Client and Server Roles
+
+The SRP protocol defines two distinct roles:
+
+1. **SRP Client Role**:
+   - Generates verifier during registration
+   - Proves knowledge of password during authentication
+   - Can be implemented in JavaScript (browser or Node.js) or Java
+
+2. **SRP Server Role**:
+   - Stores salt and verifier (not the password)
+   - Verifies client's proof during authentication
+   - Can be implemented in JavaScript (Node.js) or Java
+
+These roles are independent of deployment environment:
+- A Java application can act as either an SRP client or server
+- A Node.js application can act as either an SRP client or server
+- A browser application is typically limited to the SRP client role
+
+### 4. Implementing SRP Authentication Flow
 
 See the `Demo.java` file for a complete example of:
 - Client registration (generating salt and verifier)
@@ -135,7 +183,7 @@ See the `Demo.java` file for a complete example of:
 - Server verification
 - Session key generation for follow-on cryptography
 
-### 4. Integrating with Web Applications
+### 5. Integrating with Web Applications
 
 - For Spring applications, see the [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview)
 - For PHP applications, see [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview)
