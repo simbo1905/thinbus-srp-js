@@ -93,7 +93,28 @@ This repository contains a JavaScript implementation of the [Secure Remote Passw
 
 ## Common Tasks
 
-### 1. Generating Custom Safe Primes
+### 1. GitHub Workflow
+
+This project uses GitHub for source control. The GitHub CLI (`gh`) is available for managing issues and pull requests:
+
+```bash
+# Create a new issue
+gh issue create --title "Issue title" --body "Issue description"
+
+# Create a pull request
+gh pr create --title "PR title" --body "PR description"
+
+# List open issues
+gh issue list
+
+# Check out a PR for review
+gh pr checkout <pr-number>
+
+# Review a PR
+gh pr review <pr-number> --approve
+```
+
+### 2. Generating Custom Safe Primes
 
 ```bash
 # Create parameters with openssl
@@ -106,7 +127,7 @@ mvn assembly:assembly
 java -jar target/thinbus-srp6a-js-<version>-jar-with-dependencies.jar /tmp/my_dhparam.txt SHA-256
 ```
 
-### 2. Implementing SRP Authentication Flow
+### 3. Implementing SRP Authentication Flow
 
 See the `Demo.java` file for a complete example of:
 - Client registration (generating salt and verifier)
@@ -114,7 +135,7 @@ See the `Demo.java` file for a complete example of:
 - Server verification
 - Session key generation for follow-on cryptography
 
-### 3. Integrating with Web Applications
+### 4. Integrating with Web Applications
 
 - For Spring applications, see the [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview)
 - For PHP applications, see [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview)
