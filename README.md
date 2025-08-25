@@ -1,15 +1,21 @@
-# Thinbus Javascript Secure Remote Password (SRP)
+# Thinbus SRP Java Implementation
 
-*NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* 
+This package provides a standalone Java [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation using the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library for cryptographic operations. It is designed to be compatible with the [thinbus-srp npm package](https://github.com/simbo1905/thinbus-srp-npm) for cross-platform interoperability.
 
-There is a npm version of the JavaScript code from this project up on GitHub at 
-[thinbus-srp-npm](https://github.com/simbo1905/thinbus-srp-npm). In the long term I plan to 
-update the build scripts in this repo and the demos to fetch the JavaScript from the npm package 
-and delete the version in this repo. 
+## Architecture
 
-*NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* 
+This repository provides:
 
-This package provides a Javascript [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for web browsers to perform a zero-knowledge proof-of-password to a web server. It comes with compatible Java classes which use the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
+1. **Standalone Java SRP6a Implementation**: Complete RFC5054-compliant SRP implementation using Nimbus for cryptographic math
+2. **Cross-Platform Compatibility**: Designed to interoperate with the JavaScript implementation in browsers, Node.js, and Deno
+3. **Flexible Deployment**: Can act as SRP client or server in various scenarios:
+   - SpringBoot server authenticating browser clients
+   - SpringBoot microservice acting as SRP client to a Deno/Node.js SRP server
+   - Java-to-Java SRP authentication
+4. **Validates RFC5054**: Ensures Java implementation matches RFC5054 test vectors and uses standard RFC5054 safe primes
+5. **Interoperability Testing**: Uses GraalVM Polyglot to test compatibility with the JavaScript implementation
+
+The JavaScript implementation is separately maintained and tested in the [thinbus-srp-npm](https://github.com/simbo1905/thinbus-srp-npm) repository. 
 
 There are some implementations of SRP which are compatible with the Thinbus client code. This allows you to use Thinbus client code in the browser but other languages on the server: 
 
@@ -23,22 +29,47 @@ The spring demo app has been checked on IE8+, Edge, Chrome, FireFox, and Safari.
 
 **Note**: This project has migrated from Bitbucket to GitHub. Legacy CI builds were on Codeship but are no longer active. Future CI/CD will be configured on GitHub Actions.
 
+## Requirements
+
+- Java 21+
+- GraalVM Polyglot (included as dependency)
+- For client-side JavaScript: Use [thinbus-srp@2.0.2](https://www.npmjs.com/package/thinbus-srp) npm package
+
 ## Maven Dependency
 
+```xml
+<!-- Thinbus SRP Java Wrapper -->
+<dependency>
+    <groupId>org.bitbucket.simon_massey</groupId>
+    <artifactId>thinbus-srp6a-js</artifactId>
+    <version>2.0.0</version>
+</dependency>
 ```
-	<!-- Thinbus SRP -->
-	<dependency>
-		<groupId>org.bitbucket.simon_massey</groupId>
-		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.6.2</version>
-	</dependency>
+
+## Client-Side JavaScript
+
+For browser or Node.js applications, install the npm package:
+
+```bash
+npm install thinbus-srp@2.0.2
+```
+
+Then import the client or server modules:
+
+```javascript
+// ES2020 modules
+import { SRP6JavascriptClientSession } from 'thinbus-srp/client.mjs';
+import { SRP6JavascriptServerSession } from 'thinbus-srp/server.mjs';
+
+// Or browser bundle
+import 'thinbus-srp/browser.js';
 ```
 
 ## Using
 
-See the demo file at [Demo.java](https://github.com/simbo1905/thinbus-srp-js/blob/main/src/test/java/com/github/simbo1905/thinbus/Demo.java)
+See the demo file at [Demo.java](https://github.com/simbo1905/thinbus-srp-js/blob/main/src/test/java/com/bitbucket/thinbus/Demo.java)
 
-Check out the [Thinbus Spring Demo](https://github.com/simbo1905/thinbus-srp-spring-demo). The build tool can run it locally for you. 
+The Java implementation provides both SRP client and server classes that can interoperate with the JavaScript implementation across different platforms while maintaining RFC5054 compliance. 
 
 For the definitions of the values discussed below please refer to the [SRP design page](http://srp.stanford.edu/design.html). The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
 [Thinbus Spring Demo](https://github.com/simbo1905/thinbus-srp-spring-demo). 

@@ -1,6 +1,6 @@
-# Thinbus SRP JavaScript Agent Guide
+# Thinbus SRP Java Implementation Agent Guide
 
-This repository contains a JavaScript implementation of the [Secure Remote Password (SRP-6a)](http://srp.stanford.edu/) protocol, along with compatible Java classes. SRP allows for zero-knowledge proof-of-password authentication between a client and server.
+This repository contains a standalone Java implementation of the [Secure Remote Password (SRP-6a)](http://srp.stanford.edu/) protocol using the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. It is designed to be compatible with the [thinbus-srp npm package](https://github.com/simbo1905/thinbus-srp-npm) for cross-platform interoperability.
 
 ## Prerequisites
 
@@ -22,12 +22,22 @@ gh --help  # Verify installation
 
 ## Repository Overview
 
-The repository provides implementations of both client and server roles in the SRP-6a protocol in both JavaScript and Java:
+This repository provides a standalone Java SRP6a implementation that can interoperate with JavaScript implementations across different platforms:
 
-- **JavaScript SRP Client**: Implementation of the SRP-6a client role, commonly used in web browsers
-- **JavaScript SRP Server**: Implementation of the SRP-6a server role, can be used in Node.js environments
-- **Java SRP Client**: Implementation of the SRP-6a client role in Java
-- **Java SRP Server**: Implementation of the SRP-6a server role in Java using Nimbus SRP6a library
+### Java Implementation (Primary Focus)
+- **Java SRP Client**: RFC5054-compliant SRP client implementation using Nimbus cryptographic library
+- **Java SRP Server**: RFC5054-compliant SRP server implementation using Nimbus cryptographic library
+- **Validates RFC5054**: Ensures Java implementation matches RFC5054 test vectors and uses standard RFC5054 safe primes (N_1024, N_1536, N_2048)
+- **Cross-Platform Compatibility**: Designed to work with JavaScript SRP implementations in browsers, Node.js, and Deno
+- **Flexible Deployment Scenarios**:
+  - SpringBoot server authenticating browser clients using JavaScript SRP
+  - SpringBoot microservice acting as SRP client to Node.js/Deno SRP servers
+  - Java-to-Java SRP authentication for server-to-server communication
+
+### JavaScript Interoperability Testing
+- **GraalVM Polyglot Integration**: Tests compatibility with the thinbus-srp@2.0.2 npm package
+- **String Encoding Validation**: Ensures consistent encoding/decoding between Java and JavaScript
+- **Cross-Platform Protocol Validation**: Verifies SRP protocol compatibility across platforms
 - **Utilities**: Tools for generating safe primes and other cryptographic parameters
 - **Tests**: Comprehensive test suite for all implementations
 
@@ -104,24 +114,37 @@ The repository provides implementations of both client and server roles in the S
 
 ## Testing Instructions
 
+**Testing Strategy**: This repository focuses on Java-JavaScript interoperability testing using GraalVM Polyglot. The JavaScript implementation itself is thoroughly tested in the upstream [thinbus-srp-npm](https://github.com/simbo1905/thinbus-srp-npm) repository.
+
+### Test Categories
+
+1. **Java RFC5054 Compliance**: Validates Java implementation against RFC5054 test vectors and uses standard RFC5054 safe primes (N_1024, N_1536, N_2048)
+2. **JavaScript Interoperability**: Tests Java-JavaScript string encoding/decoding compatibility using GraalVM
+3. **Integration Testing**: Ensures Java implementation correctly interoperates with thinbus-srp@2.0.2 npm package
+
+### Running Tests
+
 - Run all tests: `mvnd test` (or `mvn test`)
 - Run specific test: `mvnd test -Dtest=TestClassName` (or `mvn test -Dtest=TestClassName`)
 - Run tests with relaxed warnings: `mvnd test -P relaxed` (or `mvn test -P relaxed`)
-- JavaScript tests are executed via GraalVM Polyglot integration that runs JavaScript code directly
-- Test files location:
-  - Java tests: `src/test/java/`
-  - JavaScript tests: `src/test/resources/`
-- Key test classes:
-  - `TestSRP6JavascriptClientSessionSHA256.java`: Tests the JavaScript SRP client implementation with SHA-256
-  - `TestSRP6JavascriptServerSessionSHA256.java`: Tests the JavaScript SRP server implementation with SHA-256
-  - `TestJavaClient.java`: Tests the Java SRP client implementation
-  - `TestSRP6JavascriptClientSessionSHA1.java`: Tests the JavaScript SRP client implementation with SHA-1
-  - `TestSRP6JavascriptServerSessionSHA1.java`: Tests the JavaScript SRP server implementation with SHA-1
-- Cross-role testing:
-  - Tests verify that a JavaScript SRP client can authenticate with a Java SRP server
-  - Tests verify that a Java SRP client can authenticate with a JavaScript SRP server
-  - Tests verify that a JavaScript SRP client can authenticate with a JavaScript SRP server
-  - Tests verify that a Java SRP client can authenticate with a Java SRP server
+
+### Test Files Location
+
+- Java tests: `src/test/java/`
+- Modern JavaScript modules: `src/main/resources/js-modern/` (from thinbus-srp@2.0.2)
+
+### Key Test Classes
+
+- `PolyglotVerificationTest.java`: GraalVM Polyglot verification and interoperability tests
+- `Demo.java`: Main demo and integration tests
+- `RFC5054Test.java`: RFC5054 test vector validation (planned)
+- Legacy test classes for backward compatibility testing
+
+### Cross-Platform Testing
+
+- Tests verify that Java wrapper correctly interoperates with thinbus-srp@2.0.2 JavaScript
+- Tests ensure consistent string encoding between Java and JavaScript implementations
+- Tests validate RFC5054 compliance across both platforms
 
 ## Code Style and Conventions
 

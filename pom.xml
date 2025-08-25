@@ -37,10 +37,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>21</maven.compiler.source>
-		<maven.compiler.target>21</maven.compiler.target>
+		<maven.compiler.release>21</maven.compiler.release>
         <nimbusds.version>2.1.0</nimbusds.version>
-        <junit-js.version>1.1.0</junit-js.version>
+        <junit-js.version>2.0.0</junit-js.version>
 		<dhParamMainClass>com.bitbucket.thinbus.srp6.js.OpenSSLCryptoConfigConverter</dhParamMainClass>
 		<graalvm.polyglot.version>24.1.0</graalvm.polyglot.version>
 	</properties>
@@ -146,8 +145,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.11.0</version>
 				<configuration>
-					<source>21</source>
-					<target>21</target>
+					<release>21</release>
 					<compilerArgument>-Xlint</compilerArgument>
 				</configuration>
 			</plugin>
@@ -159,68 +157,6 @@
 					<systemPropertyVariables>
 						<polyglot.engine.WarnInterpreterOnly>false</polyglot.engine.WarnInterpreterOnly>
 					</systemPropertyVariables>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>net.alchim31.maven</groupId>
-				<artifactId>yuicompressor-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compress</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<jswarn>false</jswarn>
-					<failOnWarning>false</failOnWarning>
-					<aggregations>
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.directory}/classes/js/thinbus-srp6a-deps-min.js</output>
-							<includes>
-								<include>${project.build.directory}/classes/js/biginteger-min.js</include>
-								<include>${project.build.directory}/classes/js/isaac-min.js</include>
-								<include>${project.build.directory}/classes/js/random-min.js</include>
-							</includes>
-						</aggregation>
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.directory}/classes/js/thinbus-srp6a-sha256-min.js</output>
-							<includes>
-								<include>${project.build.directory}/classes/js/sha256-min.js</include>
-								<include>${project.build.directory}/classes/js/thinbus-srp6a-deps-min.js</include>
-								<include>${project.build.directory}/classes/js/thinbus-srp6client-min.js</include>
-								<include>${project.build.directory}/classes/js/thinbus-srp6client-sha256.js</include>
-							</includes>
-						</aggregation>
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.directory}/classes/js/thinbus-srp6a-sha256-npm.js</output>
-							<includes>
-								<include>${project.build.directory}/classes/js/thinbus-version.js</include>
-								<include>${project.build.directory}/classes/js/sha256-min.js</include>
-								<include>${project.build.directory}/classes/js/thinbus-srp6a-deps-min.js</include>
-								<include>${project.build.directory}/classes/js/thinbus-srp6client.js</include>
-							</includes>
-						</aggregation>
-					</aggregations>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>ro.isdc.wro4j</groupId>
-				<artifactId>wro4j-maven-plugin</artifactId>
-				<version>1.7.6</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jshint</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<options>devel,noarg,latedef,undef,unused,strict,browser,nonbsp,noempty,newcap,immed,freeze,eqeqeq,bitwise</options>
 				</configuration>
 			</plugin>
 			<plugin>
