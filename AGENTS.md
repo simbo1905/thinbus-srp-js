@@ -12,6 +12,14 @@ java --version
 
 The output should show Java 21 or higher. If you don't have Java 21+, you'll need to install it before proceeding.
 
+**Bitbucket CLI (bb) is required** for issue and PR management. Install and authenticate:
+
+```bash
+# Install bb CLI and authenticate
+bb auth login
+bb --help  # Verify installation
+```
+
 ## Repository Overview
 
 The repository provides implementations of both client and server roles in the SRP-6a protocol in both JavaScript and Java:
