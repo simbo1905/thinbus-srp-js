@@ -13,15 +13,15 @@ This package provides a Javascript [Secure Remote Password](http://srp.stanford.
 
 There are some implementations of SRP which are compatible with the Thinbus client code. This allows you to use Thinbus client code in the browser but other languages on the server: 
 
-1. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) A Spring MVC application which uses the Thinbus JavaScript library to create accounts and login users with Spring Security. 
-2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) Uses the Thinbus Javascript library to do SRP authentication to PHP server code. It also includes a PHP SRP client that you can use for server-to-server authentication or for generating temporary passwords. 
+1. [thinbus-srp-spring-demo](https://github.com/simbo1905/thinbus-srp-spring-demo) A Spring MVC application which uses the Thinbus JavaScript library to create accounts and login users with Spring Security. 
+2. [thinbus-php](https://github.com/simbo1905/thinbus-php) Uses the Thinbus Javascript library to do SRP authentication to PHP server code. It also includes a PHP SRP client that you can use for server-to-server authentication or for generating temporary passwords. 
 3. [pysrp_thinbus](https://github.com/SthPhoenix/pysrp_thinbus) is a fork of [pysrp](https://github.com/cocagne/pysrp) which is compatible with Thinbus so that you can use Python on the server. 
 
 The spring demo app has been checked on IE8+, Edge, Chrome, FireFox, and Safari. 
 
-## CI Build Status
+## Build Status
 
-[ ![Codeship Status for simon_massey/thinbus-srp-js](https://codeship.com/projects/f95bffe0-3b5d-0133-b993-428ee47fa127/status?branch=master)](https://codeship.com/projects/102093)
+**Note**: This project has migrated from Bitbucket to GitHub. Legacy CI builds were on Codeship but are no longer active. Future CI/CD will be configured on GitHub Actions.
 
 ## Maven Dependency
 
@@ -36,12 +36,12 @@ The spring demo app has been checked on IE8+, Edge, Chrome, FireFox, and Safari.
 
 ## Using
 
-See the demo file at [Demo.java](https://bitbucket.org/simon_massey/thinbus-srp-js/src/master/src/test/java/com/bitbucket/thinbus/Demo.java)
+See the demo file at [Demo.java](https://github.com/simbo1905/thinbus-srp-js/blob/main/src/test/java/com/github/simbo1905/thinbus/Demo.java)
 
-Check out the [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). The build tool can run it locally for you. 
+Check out the [Thinbus Spring Demo](https://github.com/simbo1905/thinbus-srp-spring-demo). The build tool can run it locally for you. 
 
 For the definitions of the values discussed below please refer to the [SRP design page](http://srp.stanford.edu/design.html). The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
-[Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
+[Thinbus Spring Demo](https://github.com/simbo1905/thinbus-srp-spring-demo). 
 
 ![Thinbus SRP Register Diagram](http://simonmassey.bitbucket.io/thinbus/register.png "Thinbus SRP Register Diagram")
 
@@ -200,7 +200,7 @@ This codebase runs the JavaScript client code against the Java server to ensure 
 authenticate to the server. It does that in the JVM using GraalVM Polyglot: 
 
 ```sh
-git clone https://bitbucket.org/simon_massey/thinbus-srp-js
+git clone https://github.com/simbo1905/thinbus-srp-js
 cd thinbus-srp-js
 
 # Verify Java 21+ is available

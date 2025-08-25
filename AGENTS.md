@@ -12,12 +12,12 @@ java --version
 
 The output should show Java 21 or higher. If you don't have Java 21+, you'll need to install it before proceeding.
 
-**Bitbucket CLI (bb) is required** for issue and PR management. Install and authenticate:
+**GitHub CLI (gh) is required** for issue and PR management. Install and authenticate:
 
 ```bash
-# Install bb CLI and authenticate
-bb auth login
-bb --help  # Verify installation
+# Install gh CLI and authenticate
+gh auth login
+gh --help  # Verify installation
 ```
 
 ## Repository Overview
@@ -50,7 +50,7 @@ The repository provides implementations of both client and server roles in the S
      - `random.js` - Secure random number generation wrapper
      - `biginteger.js` - Big integer math library
 
-2. **Java Implementations** (`src/main/java/com/bitbucket/thinbus/srp6/js/`)
+2. **Java Implementations** (`src/main/java/com/github/simbo1905/thinbus/srp6/js/`)
    - **SRP Server Role**:
      - `SRP6JavascriptServerSessionSHA256` - SHA-256 server implementation (recommended)
      - `SRP6JavascriptServerSessionSHA1` - SHA-1 server implementation (legacy)
@@ -97,7 +97,7 @@ The repository provides implementations of both client and server roles in the S
    - JSHint runs automatically during build for validation
    - Run tests to verify changes
 3. **Java Changes**:
-   - Source files are in `src/main/java/com/bitbucket/thinbus/srp6/js/`
+   - Source files are in `src/main/java/com/github/simbo1905/thinbus/srp6/js/`
    - Ensure compatibility with JavaScript client
    - Requires Java 21+ for building/testing
    - Use `-P relaxed` profile during development, but fix all warnings before committing
@@ -148,17 +148,21 @@ The repository provides implementations of both client and server roles in the S
 
 This project is maintained in two repositories that are kept in sync:
 
-- **Original Upstream Repository**: [Bitbucket](https://bitbucket.org/simon_massey/thinbus-srp-js)
-- **Mirror Repository**: [GitHub](https://github.com/simbo1905/thinbus-srp-js)
+- **Primary Repository**: [GitHub](https://github.com/simbo1905/thinbus-srp-js) (migrated from Bitbucket)
+- **Mirror Repository**: [Bitbucket](https://bitbucket.org/simon_massey/thinbus-srp-js) (legacy mirror for old links)
 
-When contributing to this project, be aware that changes need to be synchronized between both repositories. The typical workflow involves:
+**Migration Status**: This project has migrated from Bitbucket to GitHub as the primary repository. Bitbucket now serves as a legacy mirror for old documentation and links.
 
-1. Making changes in one repository
-2. Pushing those changes to the other repository to maintain synchronization
+#### Development Workflow
 
-#### GitHub Workflow
+All development work should be done on GitHub:
 
-The GitHub CLI (`gh`) is available for managing issues and pull requests on the GitHub repository:
+1. **Primary Development**: Work on [GitHub repository](https://github.com/simbo1905/thinbus-srp-js)
+2. **Pull Requests**: Submit PRs to GitHub
+3. **Issues**: Create issues on GitHub
+4. **Releases**: Publish releases from GitHub
+
+The GitHub CLI (`gh`) is available for managing issues and pull requests:
 
 ```bash
 # Create a new issue
@@ -177,31 +181,53 @@ gh pr checkout <pr-number>
 gh pr review <pr-number> --approve
 ```
 
-#### Repository Synchronization
+#### Repository Configuration
 
-The repositories use different default branch names:
-- Bitbucket repository uses `master` as the default branch
-- GitHub repository uses `main` as the default branch
+The repositories use different default branch names for legacy compatibility:
+- **GitHub** (primary): Uses `main` as the default branch
+- **Bitbucket** (mirror): Uses `master` as the default branch
 
-To keep both repositories in sync:
+Standard development workflow:
 
 ```bash
-# Add both remotes (if not already configured)
-git remote add origin git@bitbucket.org:simon_massey/thinbus-srp-js.git
-git remote add github git@github.com:simbo1905/thinbus-srp-js.git
+# Add GitHub as primary remote
+git remote add origin git@github.com:simbo1905/thinbus-srp-js.git
 
-# Push changes to both repositories (note the different branch names)
-git push origin master     # For Bitbucket
-git push github main       # For GitHub
+# Standard development workflow
+git push origin main       # Push to GitHub (primary)
+git pull origin main       # Pull from GitHub (primary)
 
-# Pull changes from Bitbucket (primary)
-git pull origin master
-
-# If working on GitHub's main branch, you'll need to sync with Bitbucket's master
-git checkout main
-git pull origin master
-git push github main
+# Maintainer-only: Sync to Bitbucket mirror when needed
+git remote add bitbucket git@bitbucket.org:simon_massey/thinbus-srp-js.git
+git push bitbucket main:master  # Sync GitHub main to Bitbucket master
 ```
+
+#### Git Identity and Commit Guidelines
+
+**IMPORTANT**: When working on this project, agents must commit and push using the actual user's identity, not an agent identity. This ensures proper ownership and accountability for all changes.
+
+**Git Configuration**:
+- Use the user's real name for commits
+- Respect GitHub's "Keep my email addresses private" setting
+- Use the user's GitHub private email format: `000000+username@users.noreply.github.com`
+- Never commit as "openhands" or other agent identities
+
+Example configuration:
+```bash
+# Set user's real identity
+git config --global user.name "User Real Name"
+git config --global user.email "322608+username@users.noreply.github.com"
+```
+
+#### Maven Coordinates and Release Policy
+
+**CRITICAL**: The Maven coordinates remain unchanged despite the repository migration:
+
+- **GroupId**: `org.bitbucket.simon_massey` (unchanged)
+- **ArtifactId**: `thinbus-srp6a-js` (unchanged)
+- **Repository URLs**: Updated to GitHub for development, but Maven coordinates preserved
+
+**Rationale**: Changing Maven coordinates would break existing users and prevent them from receiving security updates. The repository location change does not require coordinate changes.
 
 ### 2. Generating Custom Safe Primes
 
@@ -245,8 +271,8 @@ See the `Demo.java` file for a complete example of:
 
 ### 5. Integrating with Web Applications
 
-- For Spring applications, see the [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview)
-- For PHP applications, see [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview)
+- For Spring applications, see the [thinbus-srp-spring-demo](https://github.com/simbo1905/thinbus-srp-spring-demo)
+- For PHP applications, see [thinbus-php](https://github.com/simbo1905/thinbus-php)
 - For Python applications, see [pysrp_thinbus](https://github.com/SthPhoenix/pysrp_thinbus)
 
 ## Troubleshooting

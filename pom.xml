@@ -10,7 +10,7 @@
 
 	<name>Thinbus SRP6a</name>
 	<description>Complete Secure Remote Password (SRP-6a) client session implementation written in Javascript / EMCAScript with a compatible server implementation written with Java Nimbus SRP6a. </description>
-	<url>https://bitbucket.org/simon_massey/thinbus-srp-js</url>
+	<url>https://github.com/simbo1905/thinbus-srp-js</url>
 
 	<licenses>
 		<license>
@@ -24,14 +24,14 @@
 			<name>Simon Massey</name>
 			<email>simon_massey@hotmail.com</email>
 			<organization>spouse</organization>
-			<organizationUrl>https://bitbucket.org/simon_massey</organizationUrl>
+			<organizationUrl>https://github.com/simbo1905</organizationUrl>
 		</developer>
 	</developers>
 
 	<scm>
-		<connection>scm:git:git@bitbucket.org:simon_massey/thinbus-srp-js.git</connection>
-		<developerConnection>scm:git:git@bitbucket.org:simon_massey/thinbus-srp-js.git</developerConnection>
-		<url>git@bitbucket.org:simon_massey/thinbus-srp-js.git</url>
+		<connection>scm:git:git@github.com:simbo1905/thinbus-srp-js.git</connection>
+		<developerConnection>scm:git:git@github.com:simbo1905/thinbus-srp-js.git</developerConnection>
+		<url>git@github.com:simbo1905/thinbus-srp-js.git</url>
 		<tag>HEAD</tag>
 	</scm>
 

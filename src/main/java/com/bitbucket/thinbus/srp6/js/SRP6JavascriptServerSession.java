@@ -170,7 +170,7 @@ abstract public class SRP6JavascriptServerSession implements Serializable {
 	/**
 	 * Gets the password salt 's'.
 	 * 
-	 * @deprecated This value is returned by step1 having a getter means holding onto more memory see issue #4 at https://bitbucket.org/simon_massey/thinbus-srp-js/issues/4
+	 * @deprecated This value is returned by step1 having a getter means holding onto more memory see issue #4 at https://github.com/simbo1905/thinbus-srp-js/issues/4
 	 * 
 	 * @return The salt 's' if available, else {@code null}.
 	 */
@@ -182,7 +182,7 @@ abstract public class SRP6JavascriptServerSession implements Serializable {
 	/**
 	 * Gets the public server value 'B'.
 	 * 
-	 * @deprecated This value is returned by step1 having a getter means holding onto more memory see issue #4 at https://bitbucket.org/simon_massey/thinbus-srp-js/issues/4
+	 * @deprecated This value is returned by step1 having a getter means holding onto more memory see issue #4 at https://github.com/simbo1905/thinbus-srp-js/issues/4
 	 * 
 	 * @return The public server value 'B' if available, else {@code null}.
 	 */
@@ -194,7 +194,7 @@ abstract public class SRP6JavascriptServerSession implements Serializable {
 	/**
 	 * Gets the server evidence message 'M2'.
 	 *
-	 * @deprecated This value is returned by step2 having a getter means holding onto more memory see issue #4 at https://bitbucket.org/simon_massey/thinbus-srp-js/issues/4
+	 * @deprecated This value is returned by step2 having a getter means holding onto more memory see issue #4 at https://github.com/simbo1905/thinbus-srp-js/issues/4
 	 * 
 	 * @return The server evidence message 'M2' if available, else {@code null}.
 	 */
