@@ -190,33 +190,41 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
 ## Build Prerequisites
 
-  - Java Platform (JDK 7+) http://www.oracle.com/technetwork/java/javase/downloads/index.html
-  - Maven2 http://maven.apache.org/
+  - Java Platform (JDK 21+) - https://adoptium.net/ or https://www.oracle.com/java/technologies/downloads/
+  - Maven 3.6+ http://maven.apache.org/ (or use `mvnd` for faster builds)
 
 ## Building
 
-This codebase will aim to run against the latest JDK Long Term Support. 
-At the moment that is JDK 11. This codebase run the JavaScript client
-code against the Java server to ensure that a webbrowser running the JS can 
-authenticate to the server. It does that in the OpenJDK JVM using GraalVM: 
+This codebase requires Java 21 or higher (the current LTS version). 
+This codebase runs the JavaScript client code against the Java server to ensure that a web browser running the JS can 
+authenticate to the server. It does that in the JVM using GraalVM Polyglot: 
 
 ```sh
 git clone https://bitbucket.org/simon_massey/thinbus-srp-js
 cd thinbus-srp-js
-if java -version 2>&1 | grep 'openjdk version "11' ; then 
-  mvn -Pjdk11 test package 
-else 
-  echo "ERROR test on openjdk 11 please ";  
-fi
+
+# Verify Java 21+ is available
+java --version
+
+# Build and test (prefer mvnd for faster builds)
+mvnd clean compile test package
+# or use regular Maven if mvnd is not available
+mvn clean compile test package
 ```
 
 ## Contributing
 
 Contributions are most welcome. Before submitting a PR please ensure that both the Java and JavaScript unit tests work. 
-Contributions that do not pass all the tests on the current OpenJDK Long Term Support version (current OpenJDK 11) will 
-not be accepted. To run on the particlar JDK (either 8 or 11) run with the appropriate maven profile, e.g.:
+Contributions that do not pass all the tests on Java 21+ will not be accepted. 
 
-`mvn -Pjdk11 package`  
+To build and test:
+```sh
+# Preferred (faster builds)
+mvnd clean compile test package
+
+# Alternative
+mvn clean compile test package
+```  
 
 ## Releasing
 

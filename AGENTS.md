@@ -2,6 +2,16 @@
 
 This repository contains a JavaScript implementation of the [Secure Remote Password (SRP-6a)](http://srp.stanford.edu/) protocol, along with compatible Java classes. SRP allows for zero-knowledge proof-of-password authentication between a client and server.
 
+## Prerequisites
+
+**Java 21 or higher is required** for building and running this project. Before starting any work, verify your Java version:
+
+```bash
+java --version
+```
+
+The output should show Java 21 or higher. If you don't have Java 21+, you'll need to install it before proceeding.
+
 ## Repository Overview
 
 The repository provides implementations of both client and server roles in the SRP-6a protocol in both JavaScript and Java:
@@ -57,13 +67,17 @@ The repository provides implementations of both client and server roles in the S
 
 ## Setup Commands
 
-- **Basic build and test** (requires OpenJDK 11): `mvn -Pjdk11 test package`
-- **Run tests with relaxed warnings**: `mvn test -P relaxed`
-- **Run specific test class**: `mvn -Pjdk11 test -Dtest=TestClassName`
-- **Generate JAR with dependencies**: `mvn assembly:assembly`
-- **Deploy snapshot to Sonatype**: `mvn clean deploy`
-- **Full build with strict compiler warnings**: `mvn clean package`
+**Preferred Build Tool**: Use `mvnd` (Maven Daemon) for faster builds when available. Fall back to `mvn` or `mvnw` if `mvnd` is not installed.
+
+- **Basic build and test**: `mvnd clean compile test` (or `mvn clean compile test`)
+- **Run tests with relaxed warnings**: `mvnd test -P relaxed` (or `mvn test -P relaxed`)
+- **Run specific test class**: `mvnd test -Dtest=TestClassName` (or `mvn test -Dtest=TestClassName`)
+- **Generate JAR with dependencies**: `mvnd assembly:assembly` (or `mvn assembly:assembly`)
+- **Deploy snapshot to Sonatype**: `mvnd clean deploy` (or `mvn clean deploy`)
+- **Full build with strict compiler warnings**: `mvnd clean package` (or `mvn clean package`)
 - **Generate custom parameters**: `java -jar target/thinbus-srp6a-js-<version>-jar-with-dependencies.jar /path/to/dhparam.txt <hash>`
+
+**Note**: All commands assume Java 21+ is available. The old `-Pjdk11` profile is no longer needed as Java 21 is now the minimum requirement.
 
 ## Development Workflow
 
@@ -77,15 +91,15 @@ The repository provides implementations of both client and server roles in the S
 3. **Java Changes**:
    - Source files are in `src/main/java/com/bitbucket/thinbus/srp6/js/`
    - Ensure compatibility with JavaScript client
-   - Requires OpenJDK 11 for building/testing
+   - Requires Java 21+ for building/testing
    - Use `-P relaxed` profile during development, but fix all warnings before committing
 
 ## Testing Instructions
 
-- Run all tests: `mvn -Pjdk11 test`
-- Run specific test: `mvn -Pjdk11 test -Dtest=TestClassName`
-- Run tests with relaxed warnings: `mvn test -P relaxed`
-- JavaScript tests are executed via GraalVM integration that runs JavaScript code directly
+- Run all tests: `mvnd test` (or `mvn test`)
+- Run specific test: `mvnd test -Dtest=TestClassName` (or `mvn test -Dtest=TestClassName`)
+- Run tests with relaxed warnings: `mvnd test -P relaxed` (or `mvn test -P relaxed`)
+- JavaScript tests are executed via GraalVM Polyglot integration that runs JavaScript code directly
 - Test files location:
   - Java tests: `src/test/java/`
   - JavaScript tests: `src/test/resources/`
