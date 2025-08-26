@@ -2,6 +2,37 @@
 
 This repository contains a standalone Java implementation of the [Secure Remote Password (SRP-6a)](http://srp.stanford.edu/) protocol using the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. It is designed to be compatible with the [thinbus-srp npm package](https://github.com/simbo1905/thinbus-srp-npm) for cross-platform interoperability.
 
+## Software Engineering Practices
+
+### Issue/Commit/PR Guidelines
+
+**Issues** should only state WHAT and WHY:
+- What functionality is needed or broken
+- Why it's important for the project
+- NO solution approaches, implementation details, or technical specifics
+- Focus on business requirements and user impact
+
+**Commits** should state WHAT was achieved and HOW to test:
+- What specific changes were made
+- How to verify the changes work (test commands, expected results)
+- Technical implementation details
+- DO NOT repeat issue content
+- Include Co-authored-by for AI assistance
+
+**Pull Requests** should show the work and discuss caveats:
+- Link to the issue being addressed
+- Highlight important implementation decisions
+- Discuss any trade-offs or limitations
+- Request specific feedback on technical approaches
+- DO NOT repeat commit messages or issue descriptions
+- When merged, should reference the issue closed and how to use the feature
+
+**CRITICAL: Zero Broken Tests Policy**
+- NEVER create a PR with failing tests
+- All PRs must be marked as DRAFT until 100% of tests pass
+- CI must verify exact test counts to prevent silent failures
+- Any test failures must be fixed before marking PR as ready for review
+
 ## Prerequisites
 
 **Java 21 or higher is required** for building and running this project. Before starting any work, verify your Java version:

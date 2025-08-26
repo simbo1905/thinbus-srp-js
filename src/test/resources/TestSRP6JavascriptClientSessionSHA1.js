@@ -2,9 +2,41 @@
 // no need to warm up the fallback random number generator when testing
 var test_random16byteHexAdvance = 0;
 
-// Load modern polyfill and browser.js bundle
-load("src/main/resources/js-modern/graalvm-polyfill.js");
-load("src/main/resources/js-modern/browser.js");
+// Load legacy JS files for JSRunner tests (order matters!)
+load("src/main/resources/js/biginteger.js");
+load("src/main/resources/js/sha1.js");
+load("src/main/resources/js/isaac.js");
+load("src/main/resources/js/random.js");
+
+// Load the main client and then the SHA1 variant
+load("src/main/resources/js/thinbus-srp6client.js");
+load("src/main/resources/js/thinbus-srp6client-sha1.js");
+
+// Add getBytes polyfill for JavaScript strings
+String.prototype.getBytes = function() {
+    var bytes = [];
+    for (var i = 0; i < this.length; i++) {
+        bytes.push(this.charCodeAt(i));
+    }
+    return bytes;
+};
+
+// Define thinbus factory function for compatibility with test
+function thinbus(N_base10, g_base10, k_base16) {
+    function SRP6JavascriptClientSessionSHA1Custom() {}
+    SRP6JavascriptClientSessionSHA1Custom.prototype = new SRP6JavascriptClientSession();
+    SRP6JavascriptClientSessionSHA1Custom.prototype.N = function() {
+        return new BigInteger(N_base10, 10);
+    };
+    SRP6JavascriptClientSessionSHA1Custom.prototype.g = function() {
+        return new BigInteger(g_base10, 10);
+    };
+    SRP6JavascriptClientSessionSHA1Custom.prototype.H = function(x) {
+        return CryptoJS.SHA1(x).toString().toLowerCase();
+    };
+    SRP6JavascriptClientSessionSHA1Custom.prototype.k = new BigInteger(k_base16, 16);
+    return SRP6JavascriptClientSessionSHA1Custom;
+}
 
 // ** you must define crypo params before importing the particular configuration thinbus-srp6a-config*.js and they must match the java server config **
 var SRP6CryptoParams= {

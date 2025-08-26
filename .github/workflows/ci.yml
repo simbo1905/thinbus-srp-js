@@ -46,17 +46,17 @@ jobs:
         TEST_OUTPUT=$(mvn test 2>&1)
         echo "$TEST_OUTPUT"
         
-        # Check for expected test count (28 total tests)
+        # Check for expected test count (32 total tests)
         TOTAL_TESTS=$(echo "$TEST_OUTPUT" | grep -o "Tests run: [0-9]*" | tail -1 | grep -o "[0-9]*")
         echo "Total tests run: $TOTAL_TESTS"
         
-        if [ "$TOTAL_TESTS" -ne 28 ]; then
-          echo "❌ ERROR: Expected 28 tests, but got $TOTAL_TESTS"
+        if [ "$TOTAL_TESTS" -ne 32 ]; then
+          echo "❌ ERROR: Expected 32 tests, but got $TOTAL_TESTS"
           echo "This indicates JSRunner tests may not be loading properly"
           exit 1
         fi
         
-        # Check for passing tests (should be at least 23)
+        # Check for passing tests (should be 32 - all tests must pass)
         PASSING_TESTS=$(echo "$TEST_OUTPUT" | grep -E "Tests run: [0-9]+, Failures: [0-9]+, Errors: [0-9]+, Skipped: [0-9]+" | tail -1 | awk -F', ' '{
           total = $1; gsub(/Tests run: /, "", total);
           failures = $2; gsub(/Failures: /, "", failures);
@@ -68,14 +68,14 @@ jobs:
         
         echo "Passing tests: $PASSING_TESTS"
         
-        if [ "$PASSING_TESTS" -lt 23 ]; then
-          echo "❌ ERROR: Expected at least 23 passing tests, but got $PASSING_TESTS"
-          echo "Core functionality may be broken"
+        if [ "$PASSING_TESTS" -ne 32 ]; then
+          echo "❌ ERROR: Expected 32 passing tests, but got $PASSING_TESTS"
+          echo "All tests must pass - zero broken tests policy"
           exit 1
         fi
         
         echo "✅ Test verification passed:"
-        echo "  - Total tests: $TOTAL_TESTS (expected: 28)"
-        echo "  - Passing tests: $PASSING_TESTS (minimum: 23)"
+        echo "  - Total tests: $TOTAL_TESTS (expected: 32)"
+        echo "  - Passing tests: $PASSING_TESTS (required: 32)"
         echo "  - JSRunner tests are being detected and executed"
         echo "  - Core Java-JavaScript interoperability is working"

@@ -2,9 +2,24 @@
 // no need to warm up the fallback random number generator when testing
 var test_random16byteHexAdvance = 0;
 
-// Load modern polyfill and browser.js bundle
-load("src/main/resources/js-modern/graalvm-polyfill.js");
-load("src/main/resources/js-modern/browser.js");
+// Load legacy JS files for JSRunner tests (order matters!)
+load("src/main/resources/js/biginteger.js");
+load("src/main/resources/js/sha256.js");
+load("src/main/resources/js/isaac.js");
+load("src/main/resources/js/random.js");
+
+// Load the main client and then the SHA256 variant
+load("src/main/resources/js/thinbus-srp6client.js");
+load("src/main/resources/js/thinbus-srp6client-sha256.js");
+
+// Add getBytes polyfill for JavaScript strings
+String.prototype.getBytes = function() {
+    var bytes = [];
+    for (var i = 0; i < this.length; i++) {
+        bytes.push(this.charCodeAt(i));
+    }
+    return bytes;
+};
 
 // Define SRP6CryptoParams constants (RFC 5054 1024-bit)
 var SRP6CryptoParams = {
