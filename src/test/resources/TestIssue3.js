@@ -5,12 +5,9 @@ var test_random16byteHexAdvance = 0;
 // simulate having a cookie
 var document = { cookie: "JSESSIONID=1A530637289A03B07199A44E8D531427" };
 
-// import collaborators
-load("src/main/resources/js/biginteger.js");
-load("src/main/resources/js/sha256.js");
-load("src/main/resources/js/isaac.js");
-load("src/main/resources/js/random.js");
-load("src/main/resources/js/thinbus-srp6client.js");
+// Load modern polyfill and browser.js bundle
+load("src/main/resources/js-modern/graalvm-polyfill.js");
+load("src/main/resources/js-modern/browser.js");
 
 // ** you must define crypo params before importing the particular configuration thinbus-srp6a-config*.js and they must match the java server config **
 load("src/test/resources/js/issue3-config.js");
@@ -32,8 +29,9 @@ function fromHex(h) {
 tests({
 
 	testVerifierIssue3: function() {
-		// client constructor requires a variable SRP6CryptoParams is defined which sets N, g, k 
-		var client = new SRP6JavascriptClientSessionSHA256();
+		// client constructor using modern factory API
+		var SRP6JavascriptClientSession = thinbus(SRP6CryptoParams.N_base10, SRP6CryptoParams.g_base10, SRP6CryptoParams.k_base16);
+		var client = new SRP6JavascriptClientSession();
 
 		var salt = client.generateRandomSalt();
 

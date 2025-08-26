@@ -2,12 +2,9 @@
 // no need to warm up the fallback random number generator when testing
 var test_random16byteHexAdvance = 0;
 
-// import collaborators
-load("src/main/resources/js/biginteger.js");
-load("src/main/resources/js/sha1.js");
-load("src/main/resources/js/isaac.js");
-load("src/main/resources/js/random.js");
-load("src/main/resources/js/thinbus-srp6client.js");
+// Load modern polyfill and browser.js bundle
+load("src/main/resources/js-modern/graalvm-polyfill.js");
+load("src/main/resources/js-modern/browser.js");
 
 // ** you must define crypo params before importing the particular configuration thinbus-srp6a-config*.js and they must match the java server config **
 var SRP6CryptoParams= {
@@ -38,7 +35,8 @@ var javaClientSession = Packages.com.bitbucket.thinbus.srp6.js.SRP6JavaClientSes
 tests({
 	
 	saltNoOptionalSanityCheck: function() {
-		var jsClientSession = new SRP6JavascriptClientSessionSHA1();
+		var SRP6JavascriptClientSession = thinbus(SRP6CryptoParams.N_base10, SRP6CryptoParams.g_base10, SRP6CryptoParams.k_base16);
+		var jsClientSession = new SRP6JavascriptClientSession();
 		var randoms = [];
 		for( var i = 0; i < 10; i++ ) {
 			var r = jsClientSession.generateRandomSalt();
@@ -53,7 +51,8 @@ tests({
 	}, 
 	
 	saltWithOptionalSanityCheck: function() {
-		var jsClientSession = new SRP6JavascriptClientSessionSHA1();
+		var SRP6JavascriptClientSession = thinbus(SRP6CryptoParams.N_base10, SRP6CryptoParams.g_base10, SRP6CryptoParams.k_base16);
+		var jsClientSession = new SRP6JavascriptClientSession();
 		var randoms = [];
 		for( var i = 0; i < 10; i++ ) {
 			var r = jsClientSession.generateRandomSalt(Math.random());
@@ -68,7 +67,8 @@ tests({
 	}, 
 	
 	testVerifierInputs: function() {
-		var jsClientSession = new SRP6JavascriptClientSessionSHA1();
+		var SRP6JavascriptClientSession = thinbus(SRP6CryptoParams.N_base10, SRP6CryptoParams.g_base10, SRP6CryptoParams.k_base16);
+		var jsClientSession = new SRP6JavascriptClientSession();
 		try {
 			jsClientSession.generateVerifier(null, username, password);
 			fail();
@@ -113,7 +113,8 @@ tests({
 	*/
 	testVerifier: function() {
 	
-		var jsClient = new SRP6JavascriptClientSessionSHA1();
+		var SRP6JavascriptClientSession = thinbus(SRP6CryptoParams.N_base10, SRP6CryptoParams.g_base10, SRP6CryptoParams.k_base16);
+		var jsClient = new SRP6JavascriptClientSession();
 		
 		var salt = jsClient.generateRandomSalt(); 
 		
@@ -128,7 +129,8 @@ tests({
 	},
 
     testRandoms: function() {
-        var client = new SRP6JavascriptClientSessionSHA1();
+        var SRP6JavascriptClientSession = thinbus(SRP6CryptoParams.N_base10, SRP6CryptoParams.g_base10, SRP6CryptoParams.k_base16);
+        var client = new SRP6JavascriptClientSession();
         var a = client.randomA(new BigInteger(SRP6CryptoParams.N_base10, 10));
     }
 });

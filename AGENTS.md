@@ -146,6 +146,88 @@ This repository provides a standalone Java SRP6a implementation that can interop
 - Tests ensure consistent string encoding between Java and JavaScript implementations
 - Tests validate RFC5054 compliance across both platforms
 
+### Debugging Hanging Tests - Critical Wisdom
+
+**NEVER modify existing quality code when debugging hanging tests!** Instead:
+
+1. **Preserve Original Code**: Keep the original working code intact (e.g., don't change loop counts from 8 to 1)
+2. **Create Separate Debug Tests**: Build new minimal test files from scratch to isolate issues
+3. **Manual Baby Steps**: Add one line at a time with console.log, timing, and sleep statements
+4. **Line-by-Line Logging**: Debug the manual way with detailed logging at each step
+5. **Build Up Incrementally**: Start with nothing and build up to a working test step by step
+
+This approach prevents breaking working code and allows systematic isolation of the exact hanging point. The original author spent significant effort creating quality software - respect that by debugging properly without shortcuts.
+
+**SOFTWARE ENGINEERING PATTERN (CRITICAL):**
+When debugging complex issues, follow this pattern religiously:
+1. **Baby steps first** - get the core functionality working step by step in debug files
+2. **Keep everything in sync** - the moment you see an error in baby steps, immediately fix it in BOTH baby steps AND all real test files
+3. **Iterate until baby works** - only when baby steps are completely solid do you run the full test suite
+4. **Final cleanup** - with baby steps proving no blockers, you only have a few final glitches to iron out
+
+This prevents wasting time on broken approaches and ensures systematic progress. Also agents crash, forget, and get distracted, so the systematic methodology ensures work gets done systematically. Don't run full suites until baby steps prove the approach works.
+
+**CRITICAL: Use ONLY Modern Distribution Files**
+
+- **NEVER EVER restore legacy JS files** from `src/main/resources/js/` (biginteger.js, sha256.js, isaac.js, random.js, etc.)
+- **THESE ARE 7-YEAR-OLD LEGACY FILES** written for Android browsers 10 years ago and Rhino/Java 11 legacy runtimes
+- **THEY HAVE BEEN DELETED 4+ TIMES** - DO NOT RESTORE THEM AGAIN UNDER ANY CIRCUMSTANCES
+- **ONLY use modern distribution** from `src/main/resources/js-modern/` (browser.js, client.mjs, server.mjs)
+- The upstream HAS browser support via puppeteer e2e tests - it's NOT "Node.js only"
+- If GraalVM needs polyfills for modern JS, find MODERN minimal polyfills, not 7-year-old hand-written code
+- This is part of the 1.x to 2.x upgrade - finish the fucking upgrade properly with MODERN approaches!
+
+**GraalVM + Modern JS Integration:**
+- Use browser.js UMD bundle, NOT ES modules (client.mjs/server.mjs cause import.meta issues in GraalVM)
+- Pattern: `load("src/main/resources/js-modern/browser.js"); var SRP6JavascriptClientSession = thinbus(N, g, k);`
+- The upstream uses Babel to transpile ES2020 to browser-compatible UMD - use that transpiled version
+
+**Example Debug Approach**:
+```javascript
+// Create TestDebugSHA256.js - separate from original
+console.log("DEBUG: Test file loaded");
+tests({
+    testStep1_LoadLibraries: function() {
+        console.log("DEBUG: Step 1 - Loading libraries");
+        load("src/main/resources/js/biginteger.js");
+        console.log("DEBUG: biginteger.js loaded");
+        assert.assertTrue(true);
+    }
+});
+```
+
+**Critical Timeout Debug Script** (save as `debug_test.sh`):
+```bash
+#!/bin/bash
+# Debug script with timeout to prevent hanging tests from blocking development
+mvn test -Dtest="TestDebugSHA256" > test-debug-step.log 2>&1 &
+TEST_PID=$!
+echo "Testing debug step, PID: $TEST_PID"
+
+# Wait 20 seconds (tests normally take 10-15s)
+for i in {1..20}; do
+    if ! kill -0 "$TEST_PID" 2>/dev/null; then
+        echo "Debug step completed in $i seconds"
+        wait "$TEST_PID"
+        echo "Exit code: $?"
+        break
+    fi
+    sleep 1
+done
+
+if kill -0 "$TEST_PID" 2>/dev/null; then
+    echo "Debug step hanging after 20 seconds, killing..."
+    kill -TERM "$TEST_PID" 2>/dev/null || true
+    sleep 2
+    kill -KILL "$TEST_PID" 2>/dev/null || true
+fi
+
+echo "Debug output:"
+grep "DEBUG:" test-debug-step.log | tail -3
+```
+
+This script prevents infinite hangs and provides immediate feedback on where tests are failing.
+
 ## Code Style and Conventions
 
 - **Java**:
@@ -314,3 +396,5 @@ See the `Demo.java` file for a complete example of:
     <version>1.6.2</version>
 </dependency>
 ```
+
+IMPORTANT: you have a short memory. you must never disblbe test by renaming them as you forget about them. mvn lets you filter tests so it is a bug in your brain that you would do something so stupid as renaming the test files.

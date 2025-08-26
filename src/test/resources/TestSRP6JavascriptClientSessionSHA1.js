@@ -2,12 +2,9 @@
 // no need to warm up the fallback random number generator when testing
 var test_random16byteHexAdvance = 0;
 
-// import collaborators
-load("src/main/resources/js/biginteger.js");
-load("src/main/resources/js/sha1.js");
-load("src/main/resources/js/isaac.js");
-load("src/main/resources/js/random.js");
-load("src/main/resources/js/thinbus-srp6client.js");
+// Load modern polyfill and browser.js bundle
+load("src/main/resources/js-modern/graalvm-polyfill.js");
+load("src/main/resources/js-modern/browser.js");
 
 // ** you must define crypo params before importing the particular configuration thinbus-srp6a-config*.js and they must match the java server config **
 var SRP6CryptoParams= {
@@ -46,7 +43,8 @@ tests({
 	
 		// run this 64 times to catch any problems with dropping leading zeros in BigDecimal conversions to and from hex
 		for( var i = 0; i < 64; i++) {
-			var client = new SRP6JavascriptClientSessionSHA1();
+			var SRP6JavascriptClientSession = thinbus(SRP6CryptoParams.N_base10, SRP6CryptoParams.g_base10, SRP6CryptoParams.k_base16);
+			var client = new SRP6JavascriptClientSession();
 			
 			var salt = client.generateRandomSalt(); // consider passing server secure random to this method
 			

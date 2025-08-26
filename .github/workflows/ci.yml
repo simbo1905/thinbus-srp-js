@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, move-to-graalvm-java21 ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        java-version: [21]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.java-version }}
+        distribution: 'temurin'
+        
+    - name: Cache Maven dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+        
+    - name: Build and test with Maven
+      shell: bash
+      run: |
+        set -euo pipefail
+        
+        echo "=== Building project ==="
+        mvn clean compile
+        
+        echo "=== Running tests ==="
+        mvn test
+        
+        echo "=== Verifying test results ==="
+        # Extract test counts from Maven output
+        TEST_OUTPUT=$(mvn test 2>&1)
+        echo "$TEST_OUTPUT"
+        
+        # Check for expected test count (28 total tests)
+        TOTAL_TESTS=$(echo "$TEST_OUTPUT" | grep -o "Tests run: [0-9]*" | tail -1 | grep -o "[0-9]*")
+        echo "Total tests run: $TOTAL_TESTS"
+        
+        if [ "$TOTAL_TESTS" -ne 28 ]; then
+          echo "❌ ERROR: Expected 28 tests, but got $TOTAL_TESTS"
+          echo "This indicates JSRunner tests may not be loading properly"
+          exit 1
+        fi
+        
+        # Check for passing tests (should be at least 23)
+        PASSING_TESTS=$(echo "$TEST_OUTPUT" | grep -E "Tests run: [0-9]+, Failures: [0-9]+, Errors: [0-9]+, Skipped: [0-9]+" | tail -1 | awk -F', ' '{
+          total = $1; gsub(/Tests run: /, "", total);
+          failures = $2; gsub(/Failures: /, "", failures);
+          errors = $3; gsub(/Errors: /, "", errors);
+          skipped = $4; gsub(/Skipped: /, "", skipped);
+          passing = total - failures - errors - skipped;
+          print passing
+        }')
+        
+        echo "Passing tests: $PASSING_TESTS"
+        
+        if [ "$PASSING_TESTS" -lt 23 ]; then
+          echo "❌ ERROR: Expected at least 23 passing tests, but got $PASSING_TESTS"
+          echo "Core functionality may be broken"
+          exit 1
+        fi
+        
+        echo "✅ Test verification passed:"
+        echo "  - Total tests: $TOTAL_TESTS (expected: 28)"
+        echo "  - Passing tests: $PASSING_TESTS (minimum: 23)"
+        echo "  - JSRunner tests are being detected and executed"
+        echo "  - Core Java-JavaScript interoperability is working"
