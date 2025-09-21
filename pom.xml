@@ -37,7 +37,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <nimbusds.version>2.1.0</nimbusds.version>
         <junit-js.version>1.1.0</junit-js.version>
 		<dhParamMainClass>com.bitbucket.thinbus.srp6.js.OpenSSLCryptoConfigConverter</dhParamMainClass>
 		<graalvm.version>19.0.0</graalvm.version>
@@ -45,12 +44,7 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.nimbusds</groupId>
-			<artifactId>srp6a</artifactId>
-			<version>${nimbusds.version}</version>
-			<scope>compile</scope>
-		</dependency>
+		<!-- vendored: com.nimbusds:srp6a -->
 
 		<dependency>
             <groupId>org.bitbucket.thinbus</groupId>
@@ -256,8 +250,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<compilerArgument>-Xlint</compilerArgument>
 				</configuration>
 			</plugin>
