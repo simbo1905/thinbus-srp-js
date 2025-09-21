@@ -6,3 +6,10 @@
 .idea/
 thinbus-srp6a-js.iml
 node_modules/
+
+.claude/*
+.vscode/*
+
+.openhands-config/
+
+.openhands/

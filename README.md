@@ -1,47 +1,78 @@
-# Thinbus Javascript Secure Remote Password (SRP)
+# Thinbus SRP Java Implementation
 
-*NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* 
+This package provides a standalone Java [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation using the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library for cryptographic operations. It is designed to be compatible with the [thinbus-srp npm package](https://github.com/simbo1905/thinbus-srp-npm) for cross-platform interoperability.
 
-There is a npm version of the JavaScript code from this project up on GitHub at 
-[thinbus-srp-npm](https://github.com/simbo1905/thinbus-srp-npm). In the long term I plan to 
-update the build scripts in this repo and the demos to fetch the JavaScript from the npm package 
-and delete the version in this repo. 
+## Architecture
 
-*NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* *NEW* 
+This repository provides:
 
-This package provides a Javascript [Secure Remote Password](http://srp.stanford.edu/) [SRP-6a](http://srp.stanford.edu/doc.html#papers) implementation for web browsers to perform a zero-knowledge proof-of-password to a web server. It comes with compatible Java classes which use the [Nimbus SRP6a Java](https://bitbucket.org/connect2id/nimbus-srp) library. 
+1. **Standalone Java SRP6a Implementation**: Complete RFC5054-compliant SRP implementation using Nimbus for cryptographic math
+2. **Cross-Platform Compatibility**: Designed to interoperate with the JavaScript implementation in browsers, Node.js, and Deno
+3. **Flexible Deployment**: Can act as SRP client or server in various scenarios:
+   - SpringBoot server authenticating browser clients
+   - SpringBoot microservice acting as SRP client to a Deno/Node.js SRP server
+   - Java-to-Java SRP authentication
+4. **Validates RFC5054**: Ensures Java implementation matches RFC5054 test vectors and uses standard RFC5054 safe primes
+5. **Interoperability Testing**: Uses GraalVM Polyglot to test compatibility with the JavaScript implementation
+
+The JavaScript implementation is separately maintained and tested in the [thinbus-srp-npm](https://github.com/simbo1905/thinbus-srp-npm) repository. 
 
 There are some implementations of SRP which are compatible with the Thinbus client code. This allows you to use Thinbus client code in the browser but other languages on the server: 
 
-1. [thinbus-srp-spring-demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview) A Spring MVC application which uses the Thinbus JavaScript library to create accounts and login users with Spring Security. 
-2. [thinbus-php](https://bitbucket.org/simon_massey/thinbus-php/overview) Uses the Thinbus Javascript library to do SRP authentication to PHP server code. It also includes a PHP SRP client that you can use for server-to-server authentication or for generating temporary passwords. 
+1. [thinbus-srp-spring-demo](https://github.com/simbo1905/thinbus-srp-spring-demo) A Spring MVC application which uses the Thinbus JavaScript library to create accounts and login users with Spring Security. 
+2. [thinbus-php](https://github.com/simbo1905/thinbus-php) Uses the Thinbus Javascript library to do SRP authentication to PHP server code. It also includes a PHP SRP client that you can use for server-to-server authentication or for generating temporary passwords. 
 3. [pysrp_thinbus](https://github.com/SthPhoenix/pysrp_thinbus) is a fork of [pysrp](https://github.com/cocagne/pysrp) which is compatible with Thinbus so that you can use Python on the server. 
 
 The spring demo app has been checked on IE8+, Edge, Chrome, FireFox, and Safari. 
 
-## CI Build Status
+## Build Status
 
-[ ![Codeship Status for simon_massey/thinbus-srp-js](https://codeship.com/projects/f95bffe0-3b5d-0133-b993-428ee47fa127/status?branch=master)](https://codeship.com/projects/102093)
+**Note**: This project has migrated from Bitbucket to GitHub. Legacy CI builds were on Codeship but are no longer active. Future CI/CD will be configured on GitHub Actions.
+
+## Requirements
+
+- Java 21+
+- GraalVM Polyglot (included as dependency)
+- For client-side JavaScript: Use [thinbus-srp@2.0.2](https://www.npmjs.com/package/thinbus-srp) npm package
 
 ## Maven Dependency
 
+```xml
+<!-- Thinbus SRP Java Wrapper -->
+<dependency>
+    <groupId>org.bitbucket.simon_massey</groupId>
+    <artifactId>thinbus-srp6a-js</artifactId>
+    <version>2.0.0</version>
+</dependency>
 ```
-	<!-- Thinbus SRP -->
-	<dependency>
-		<groupId>org.bitbucket.simon_massey</groupId>
-		<artifactId>thinbus-srp6a-js</artifactId>
-		<version>1.6.2</version>
-	</dependency>
+
+## Client-Side JavaScript
+
+For browser or Node.js applications, install the npm package:
+
+```bash
+npm install thinbus-srp@2.0.2
+```
+
+Then import the client or server modules:
+
+```javascript
+// ES2020 modules
+import { SRP6JavascriptClientSession } from 'thinbus-srp/client.mjs';
+import { SRP6JavascriptServerSession } from 'thinbus-srp/server.mjs';
+
+// Or browser bundle
+import 'thinbus-srp/browser.js';
 ```
 
 ## Using
 
-See the demo file at [Demo.java](https://bitbucket.org/simon_massey/thinbus-srp-js/src/master/src/test/java/com/bitbucket/thinbus/Demo.java)
+See the demo file at [Demo.java](https://github.com/simbo1905/thinbus-srp-js/blob/main/src/test/java/com/bitbucket/thinbus/Demo.java)
 
-Check out the [Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). The build tool can run it locally for you. 
+The Java implementation provides both SRP client and server classes that can interoperate with the JavaScript implementation across different platforms while maintaining RFC5054 compliance. 
 
 For the definitions of the values discussed below please refer to the [SRP design page](http://srp.stanford.edu/design.html). The following sequence diagram shows how to register a user with an SRP salt and verifier as demonstrated by the 
-[Thinbus Spring Demo](https://bitbucket.org/simon_massey/thinbus-srp-spring-demo/overview). 
+[Thinbus Spring Demo](https://github.com/simbo1905/thinbus-srp-spring-demo). 
 
 ![Thinbus SRP Register Diagram](http://simonmassey.bitbucket.io/thinbus/register.png "Thinbus SRP Register Diagram")
 
@@ -190,33 +221,41 @@ Other JavaScript source files in the jar show the original copyright of the libr
 
 ## Build Prerequisites
 
-  - Java Platform (JDK 7+) http://www.oracle.com/technetwork/java/javase/downloads/index.html
-  - Maven2 http://maven.apache.org/
+  - Java Platform (JDK 21+) - https://adoptium.net/ or https://www.oracle.com/java/technologies/downloads/
+  - Maven 3.6+ http://maven.apache.org/ (or use `mvnd` for faster builds)
 
 ## Building
 
-This codebase will aim to run against the latest JDK Long Term Support. 
-At the moment that is JDK 11. This codebase run the JavaScript client
-code against the Java server to ensure that a webbrowser running the JS can 
-authenticate to the server. It does that in the OpenJDK JVM using GraalVM: 
+This codebase requires Java 21 or higher (the current LTS version). 
+This codebase runs the JavaScript client code against the Java server to ensure that a web browser running the JS can 
+authenticate to the server. It does that in the JVM using GraalVM Polyglot: 
 
 ```sh
-git clone https://bitbucket.org/simon_massey/thinbus-srp-js
+git clone https://github.com/simbo1905/thinbus-srp-js
 cd thinbus-srp-js
-if java -version 2>&1 | grep 'openjdk version "11' ; then 
-  mvn -Pjdk11 test package 
-else 
-  echo "ERROR test on openjdk 11 please ";  
-fi
+
+# Verify Java 21+ is available
+java --version
+
+# Build and test (prefer mvnd for faster builds)
+mvnd clean compile test package
+# or use regular Maven if mvnd is not available
+mvn clean compile test package
 ```
 
 ## Contributing
 
 Contributions are most welcome. Before submitting a PR please ensure that both the Java and JavaScript unit tests work. 
-Contributions that do not pass all the tests on the current OpenJDK Long Term Support version (current OpenJDK 11) will 
-not be accepted. To run on the particlar JDK (either 8 or 11) run with the appropriate maven profile, e.g.:
+Contributions that do not pass all the tests on Java 21+ will not be accepted. 
 
-`mvn -Pjdk11 package`  
+To build and test:
+```sh
+# Preferred (faster builds)
+mvnd clean compile test package
+
+# Alternative
+mvn clean compile test package
+```  
 
 ## Releasing
 

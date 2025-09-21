@@ -10,7 +10,7 @@
 
 	<name>Thinbus SRP6a</name>
 	<description>Complete Secure Remote Password (SRP-6a) client session implementation written in Javascript / EMCAScript with a compatible server implementation written with Java Nimbus SRP6a. </description>
-	<url>https://bitbucket.org/simon_massey/thinbus-srp-js</url>
+	<url>https://github.com/simbo1905/thinbus-srp-js</url>
 
 	<licenses>
 		<license>
@@ -24,24 +24,24 @@
 			<name>Simon Massey</name>
 			<email>simon_massey@hotmail.com</email>
 			<organization>spouse</organization>
-			<organizationUrl>https://bitbucket.org/simon_massey</organizationUrl>
+			<organizationUrl>https://github.com/simbo1905</organizationUrl>
 		</developer>
 	</developers>
 
 	<scm>
-		<connection>scm:git:git@bitbucket.org:simon_massey/thinbus-srp-js.git</connection>
-		<developerConnection>scm:git:git@bitbucket.org:simon_massey/thinbus-srp-js.git</developerConnection>
-		<url>git@bitbucket.org:simon_massey/thinbus-srp-js.git</url>
+		<connection>scm:git:git@github.com:simbo1905/thinbus-srp-js.git</connection>
+		<developerConnection>scm:git:git@github.com:simbo1905/thinbus-srp-js.git</developerConnection>
+		<url>git@github.com:simbo1905/thinbus-srp-js.git</url>
 		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.release>21</maven.compiler.release>
         <nimbusds.version>2.1.0</nimbusds.version>
-        <junit-js.version>1.1.0</junit-js.version>
+        <junit-js.version>2.0.0</junit-js.version>
 		<dhParamMainClass>com.bitbucket.thinbus.srp6.js.OpenSSLCryptoConfigConverter</dhParamMainClass>
-		<graalvm.version>19.0.0</graalvm.version>
-		<compiler.dir>${project.build.directory}/compiler</compiler.dir>
+		<graalvm.polyglot.version>24.1.0</graalvm.polyglot.version>
 	</properties>
 
 	<dependencies>
@@ -58,6 +58,27 @@
 			<version>${junit-js.version}</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- GraalVM Polyglot Dependencies -->
+		<dependency>
+			<groupId>org.graalvm.polyglot</groupId>
+			<artifactId>polyglot</artifactId>
+			<version>${graalvm.polyglot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.polyglot</groupId>
+			<artifactId>js</artifactId>
+			<version>${graalvm.polyglot.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<!-- JUnit for testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>
@@ -67,139 +88,7 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-	<profiles>
-		<profile>
-			<id>jdk11</id>
-			<activation>
-				<jdk>11</jdk>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>org.graalvm.sdk</groupId>
-					<artifactId>graal-sdk</artifactId>
-					<version>${graalvm.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>org.graalvm.js</groupId>
-					<artifactId>js</artifactId>
-					<version>${graalvm.version}</version>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.graalvm.js</groupId>
-					<artifactId>js-scriptengine</artifactId>
-					<version>${graalvm.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>org.graalvm.tools</groupId>
-					<artifactId>profiler</artifactId>
-					<version>${graalvm.version}</version>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.graalvm.tools</groupId>
-					<artifactId>chromeinspector</artifactId>
-					<version>${graalvm.version}</version>
-					<scope>runtime</scope>
-				</dependency>
-			</dependencies>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>2.22.1</version>
-						<configuration>
-							<argLine>-XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI --module-path=${compiler.dir} --upgrade-module-path=${compiler.dir}/compiler.jar</argLine>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<version>2.10</version>
-						<executions>
-							<execution>
-								<id>copy</id>
-								<phase>process-test-classes</phase>
-								<goals>
-									<goal>copy</goal>
-								</goals>
-								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>org.graalvm.compiler</groupId>
-											<artifactId>compiler</artifactId>
-											<version>${graalvm.version}</version>
-											<type>jar</type>
-											<overWrite>true</overWrite>
-											<destFileName>compiler.jar</destFileName>
-										</artifactItem>
-										<artifactItem>
-											<groupId>org.graalvm.truffle</groupId>
-											<artifactId>truffle-api</artifactId>
-											<version>${graalvm.version}</version>
-											<type>jar</type>
-											<overWrite>true</overWrite>
-											<destFileName>truffle-api.jar</destFileName>
-										</artifactItem>
-										<artifactItem>
-											<groupId>org.graalvm.sdk</groupId>
-											<artifactId>graal-sdk</artifactId>
-											<version>${graalvm.version}</version>
-											<type>jar</type>
-											<overWrite>true</overWrite>
-											<destFileName>graal-sdk.jar</destFileName>
-										</artifactItem>
-									</artifactItems>
-									<outputDirectory>${compiler.dir}</outputDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>jdk8</id>
-			<activation>
-				<jdk>1.8</jdk>
-				<file>
-					<missing>${java.home}/lib/truffle/truffle-api.jar</missing>
-				</file>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>org.graalvm.sdk</groupId>
-					<artifactId>graal-sdk</artifactId>
-					<version>${graalvm.version}</version>
-					<scope>compile</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.graalvm.js</groupId>
-					<artifactId>js</artifactId>
-					<version>${graalvm.version}</version>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.graalvm.js</groupId>
-					<artifactId>js-scriptengine</artifactId>
-					<version>${graalvm.version}</version>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.graalvm.tools</groupId>
-					<artifactId>profiler</artifactId>
-					<version>${graalvm.version}</version>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>org.graalvm.tools</groupId>
-					<artifactId>chromeinspector</artifactId>
-					<version>${graalvm.version}</version>
-					<scope>runtime</scope>
-				</dependency>
-			</dependencies>
-		</profile>
-	</profiles>
+
 
 	<build>
 		<resources>
@@ -229,7 +118,7 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.1</version>
 				<configuration>
-					<source>8</source>
+					<source>21</source>
 					<linksource>true</linksource>
 				</configuration>
 				<executions>
@@ -254,73 +143,20 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>3.11.0</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<release>21</release>
 					<compilerArgument>-Xlint</compilerArgument>
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>net.alchim31.maven</groupId>
-				<artifactId>yuicompressor-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compress</goal>
-						</goals>
-					</execution>
-				</executions>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.1.2</version>
 				<configuration>
-					<jswarn>false</jswarn>
-					<failOnWarning>false</failOnWarning>
-					<aggregations>
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.directory}/classes/js/thinbus-srp6a-deps-min.js</output>
-							<includes>
-								<include>${project.build.directory}/classes/js/biginteger-min.js</include>
-								<include>${project.build.directory}/classes/js/isaac-min.js</include>
-								<include>${project.build.directory}/classes/js/random-min.js</include>
-							</includes>
-						</aggregation>
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.directory}/classes/js/thinbus-srp6a-sha256-min.js</output>
-							<includes>
-								<include>${project.build.directory}/classes/js/sha256-min.js</include>
-								<include>${project.build.directory}/classes/js/thinbus-srp6a-deps-min.js</include>
-								<include>${project.build.directory}/classes/js/thinbus-srp6client-min.js</include>
-								<include>${project.build.directory}/classes/js/thinbus-srp6client-sha256.js</include>
-							</includes>
-						</aggregation>
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.directory}/classes/js/thinbus-srp6a-sha256-npm.js</output>
-							<includes>
-								<include>${project.build.directory}/classes/js/thinbus-version.js</include>
-								<include>${project.build.directory}/classes/js/sha256-min.js</include>
-								<include>${project.build.directory}/classes/js/thinbus-srp6a-deps-min.js</include>
-								<include>${project.build.directory}/classes/js/thinbus-srp6client.js</include>
-							</includes>
-						</aggregation>
-					</aggregations>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>ro.isdc.wro4j</groupId>
-				<artifactId>wro4j-maven-plugin</artifactId>
-				<version>1.7.6</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jshint</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<options>devel,noarg,latedef,undef,unused,strict,browser,nonbsp,noempty,newcap,immed,freeze,eqeqeq,bitwise</options>
+					<systemPropertyVariables>
+						<polyglot.engine.WarnInterpreterOnly>false</polyglot.engine.WarnInterpreterOnly>
+					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 			<plugin>
