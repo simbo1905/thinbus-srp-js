@@ -8,11 +8,6 @@ load("src/main/resources/js/sha256.js");
 load("src/main/resources/js/isaac.js");
 load("src/main/resources/js/random.js");
 
-// Load the main client and then the SHA256 variant
-load("src/main/resources/js/thinbus-srp6client.js");
-load("src/main/resources/js/thinbus-srp6server.js");
-load("src/main/resources/js/thinbus-srp6server-sha256.js");
-
 // Add getBytes polyfill for JavaScript strings
 String.prototype.getBytes = function() {
     var bytes = [];
@@ -39,6 +34,19 @@ function thinbus(N_base10, g_base10, k_base16) {
     return SRP6JavascriptClientSessionSHA256Custom;
 }
 
+// Add server factory method
+thinbus.server = function(N_base10, g_base10, k_base16) {
+    function SRP6JavascriptServerSessionSHA256Custom() {}
+    SRP6JavascriptServerSessionSHA256Custom.prototype = new SRP6JavascriptServerSession();
+    SRP6JavascriptServerSessionSHA256Custom.prototype.N = new BigInteger(N_base10, 10);
+    SRP6JavascriptServerSessionSHA256Custom.prototype.g = new BigInteger(g_base10, 10);
+    SRP6JavascriptServerSessionSHA256Custom.prototype.H = function(x) {
+        return CryptoJS.SHA256(x).toString().toLowerCase();
+    };
+    SRP6JavascriptServerSessionSHA256Custom.prototype.k = new BigInteger(k_base16, 16);
+    return SRP6JavascriptServerSessionSHA256Custom;
+};
+
 // ** you must define crypo params before importing the particular configuration thinbus-srp6a-config*.js and they must match the java server config **
 var SRP6CryptoParams= {
 	// WARNING this is a tiny 256 bit prime DO NOT COPY THIS it is recommended to use 2048 bit safe primes
@@ -47,6 +55,9 @@ var SRP6CryptoParams= {
 	k_base16: "a2ebd09734ae9220587a89c7eb230dec95169bce"
 }
 
+// Load the main client and server files and then the SHA256 variants
+load("src/main/resources/js/thinbus-srp6client.js");
+load("src/main/resources/js/thinbus-srp6server.js");
 load("src/main/resources/js/thinbus-srp6client-sha256.js");
 load("src/main/resources/js/thinbus-srp6server-sha256.js");
 

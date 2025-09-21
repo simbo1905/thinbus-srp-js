@@ -520,6 +520,60 @@ SRP6JavascriptClientSession.prototype.step3 = function(M2) {
 };
 
 /**
+ * Factory function that takes SRP parameters and returns a SRP6JavascriptClientSession class using SHA256 and the parameters bound to it.
+ * Only define this if it doesn't already exist (to allow tests to override it).
+ *
+ * @param {string} N_base10 Safe prime N as decimal string.
+ * @param {string} g_base10 Generator g as decimal string.
+ * @param {string} k_base16 Symmetry braking k as hexidecimal string. See https://bitbucket.org/simon_massey/thinbus-srp-js/overview
+ */
+if (typeof thinbus === 'undefined') {
+    var thinbus = function(N_base10, g_base10, k_base16) {
+
+        function SRP6JavascriptClientSessionSHA256(){ }
+
+        SRP6JavascriptClientSessionSHA256.prototype = new SRP6JavascriptClientSession();
+
+        SRP6JavascriptClientSessionSHA256.prototype.N = function() {
+            return new BigInteger(N_base10, 10);
+        }
+
+        SRP6JavascriptClientSessionSHA256.prototype.g = function() {
+            return new BigInteger(g_base10, 10);
+        }
+
+        SRP6JavascriptClientSessionSHA256.prototype.H = function (x) {
+                return CryptoJS.SHA256(x).toString().toLowerCase();
+        }
+
+        SRP6JavascriptClientSessionSHA256.prototype.k = new BigInteger(k_base16, 16);
+
+      // return the new session class
+      return SRP6JavascriptClientSessionSHA256;
+    };
+    
+    // Add server factory method
+    thinbus.server = function(N_base10, g_base10, k_base16) {
+        function SRP6JavascriptServerSessionSHA256(){ }
+
+        SRP6JavascriptServerSessionSHA256.prototype = new SRP6JavascriptServerSession();
+
+        SRP6JavascriptServerSessionSHA256.prototype.N = new BigInteger(N_base10, 10);
+
+        SRP6JavascriptServerSessionSHA256.prototype.g = new BigInteger(g_base10, 10);
+
+        SRP6JavascriptServerSessionSHA256.prototype.H = function (x) {
+                return CryptoJS.SHA256(x).toString().toLowerCase();
+        }
+
+        SRP6JavascriptServerSessionSHA256.prototype.k = new BigInteger(k_base16, 16);
+
+        // return the new session class
+        return SRP6JavascriptServerSessionSHA256;
+    };
+}
+
+/**
  * For the node.js world we optionally export a factory closure which takes SRP parameters and returns a SRP6JavascriptClientSession class using SHA256 and the parameters bound to it.
  *
  * @param {string} N_base10 Safe prime N as decimal string.
@@ -529,27 +583,5 @@ SRP6JavascriptClientSession.prototype.step3 = function(M2) {
 /* jshint ignore:start */
 if( typeof module !== 'undefined')
     if( typeof module.exports !== 'undefined' )
-        module.exports = function srpClientFactory (N_base10, g_base10, k_base16) {
-
-            function SRP6JavascriptClientSessionSHA256(){ }
-
-            SRP6JavascriptClientSessionSHA256.prototype = new SRP6JavascriptClientSession();
-
-            SRP6JavascriptClientSessionSHA256.prototype.N = function() {
-                return new BigInteger(N_base10, 10);
-            }
-
-            SRP6JavascriptClientSessionSHA256.prototype.g = function() {
-                return new BigInteger(g_base10, 10);
-            }
-
-            SRP6JavascriptClientSessionSHA256.prototype.H = function (x) {
-                    return CryptoJS.SHA256(x).toString().toLowerCase();
-            }
-
-            SRP6JavascriptClientSessionSHA256.prototype.k = new BigInteger(k_base16, 16);
-
-          // return the new session class
-          return SRP6JavascriptClientSessionSHA256;
-        }
+        module.exports = thinbus;
  /* jshint ignore:end */

@@ -8,10 +8,6 @@ load("src/main/resources/js/sha1.js");
 load("src/main/resources/js/isaac.js");
 load("src/main/resources/js/random.js");
 
-// Load the main client and then the SHA1 variant
-load("src/main/resources/js/thinbus-srp6client.js");
-load("src/main/resources/js/thinbus-srp6client-sha1.js");
-
 // Add getBytes polyfill for JavaScript strings
 String.prototype.getBytes = function() {
     var bytes = [];
@@ -46,7 +42,8 @@ var SRP6CryptoParams= {
 	k_base16: "a2ebd09734ae9220587a89c7eb230dec95169bce"
 }
 
-// import config for test
+// Load the main client and then the SHA1 variant
+load("src/main/resources/js/thinbus-srp6client.js");
 load("src/main/resources/js/thinbus-srp6client-sha1.js");
 
 var username = "tom@arcot.com";

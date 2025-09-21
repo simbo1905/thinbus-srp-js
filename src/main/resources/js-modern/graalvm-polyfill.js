@@ -81,9 +81,12 @@ if (typeof require === 'undefined') {
             return function(message) {
                 var MessageDigest = Java.type('java.security.MessageDigest');
                 var StandardCharsets = Java.type('java.nio.charset.StandardCharsets');
+                var JavaString = Java.type('java.lang.String');
                 
                 var digest = MessageDigest.getInstance('SHA-256');
-                var hash = digest.digest(message.toString().getBytes(StandardCharsets.UTF_8));
+                // Convert JavaScript string to Java String and then get bytes
+                var javaString = new JavaString(message.toString());
+                var hash = digest.digest(javaString.getBytes(StandardCharsets.UTF_8));
                 
                 // Convert to hex string
                 var hexString = '';
@@ -145,4 +148,30 @@ if (typeof global === 'undefined') {
 // Polyfill globalThis
 if (typeof globalThis === 'undefined') {
     var globalThis = this;
+}
+
+// Add getBytes method to String prototype for GraalVM compatibility
+// Note: This implementation avoids recursion by using a simple character code approach
+if (typeof String.prototype.getBytes === 'undefined') {
+    String.prototype.getBytes = function(charset) {
+        // Simple implementation that converts each character to its UTF-8 byte representation
+        var bytes = [];
+        for (var i = 0; i < this.length; i++) {
+            var code = this.charCodeAt(i);
+            if (code < 0x80) {
+                bytes.push(code);
+            } else if (code < 0x800) {
+                bytes.push(0xc0 | (code >> 6));
+                bytes.push(0x80 | (code & 0x3f));
+            } else if (code < 0xd800 || code >= 0xe000) {
+                bytes.push(0xe0 | (code >> 12));
+                bytes.push(0x80 | ((code >> 6) & 0x3f));
+                bytes.push(0x80 | (code & 0x3f));
+            } else {
+                // Surrogate pair - simplified handling
+                bytes.push(0xef, 0xbf, 0xbd); // replacement character
+            }
+        }
+        return Java.to(bytes, 'byte[]');
+    };
 }
